@@ -1,0 +1,15 @@
+platform :ios, '13.0'
+
+target 'jisikin-ios' do
+  use_frameworks!
+
+  pod 'DropDown'
+
+  target 'jisikin-iosTests' do
+    inherit! :search_paths
+  end
+
+  target 'jisikin-iosUITests' do
+  end
+
+end

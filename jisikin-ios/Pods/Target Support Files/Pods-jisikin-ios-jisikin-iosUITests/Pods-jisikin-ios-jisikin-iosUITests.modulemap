@@ -1,0 +1,6 @@
+framework module Pods_jisikin_ios_jisikin_iosUITests {
+  umbrella header "Pods-jisikin-ios-jisikin-iosUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

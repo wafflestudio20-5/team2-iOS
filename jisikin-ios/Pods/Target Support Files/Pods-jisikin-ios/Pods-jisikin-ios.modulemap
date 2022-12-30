@@ -1,0 +1,6 @@
+framework module Pods_jisikin_ios {
+  umbrella header "Pods-jisikin-ios-umbrella.h"
+
+  export *
+  module * { export * }
+}
