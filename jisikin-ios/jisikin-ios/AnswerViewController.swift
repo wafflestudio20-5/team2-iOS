@@ -39,6 +39,8 @@ class QuestionTableViewCell:UITableViewCell{
         fatalError("init(coder:) has not been implemented")
     }
     func setLayout(){
+        
+        
         questionTitleView = UILabel()
         questionTitleView.numberOfLines = 1
         questionTitleView.textColor = .black
@@ -277,6 +279,9 @@ extension AnswerViewController:UITableViewDelegate,UITableViewDataSource{
         cell.configure(question:dummy[indexPath.row])
         return cell
         
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        navigationController?.pushViewController(QuestionDetailViewController(), animated: false)
     }
     
     

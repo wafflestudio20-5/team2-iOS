@@ -370,6 +370,7 @@ class QuestionDetailViewController:UIViewController{
     }
     func setLayout(){
    
+        navigationController?.isNavigationBarHidden = false
         
         
         answerTableView = UITableView(frame: .zero, style: .grouped)
