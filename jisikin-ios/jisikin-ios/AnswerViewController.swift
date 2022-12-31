@@ -9,7 +9,7 @@ import UIKit
 
 let BLUE_COLOR = UIColor(red: 111/255.0, green:200/255.0, blue: 240/255.0, alpha: 1.0)
 let dummy = [
-    Question(title: "학원 미환불 교육청민원", content:"학원에서 교습비를 미환불해줘서 교육청에서 주의,권고로 끝냈습니다. 처음이라고요 결국 학원측에서 환불해준다해놓고 4일째인데 안들어옵니더 수강일 넘어서 3분의1떼고 환불해줄심보인지 전산상문제인지모르겠지만 내일 본사전화해보고 안되겠으면, 교육청에 재신고할예정인데 2차니까 교습정지처분 인가요?", time: "1일 전", likeNumber: 1, answerNumber: 2),
+    Question(title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet convallis purus. Praesent auctor, justo eu feugiat consequat, lorem lacus vestibulum velit, eget luctus mi tellus a lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Duis at nibh enim. Ut aliquet porta elit sit amet fringilla. Nullam tincidunt orci ut neque porta, ut semper diam posuere. Sed commodo nisl quis dolor hendrerit eleifend. Nullam ornare odio eget elit tincidunt, a faucibus dui porta. Integer molestie in nisl sit amet facilisis. Ut nunc nisi, malesuada ac iaculis nec, accumsan eu nisi. Cras ut ultrices eros, ut dictum nisl. Nulla lobortis consequat ipsum at interdum.", content:"Maecenas at viverra magna. Suspendisse iaculis, mi ut sagittis convallis, odio est mattis eros, sed ultrices dolor arcu id nibh. Morbi in est placerat, dapibus justo eget, finibus erat. Pellentesque feugiat suscipit finibus. Proin venenatis nisi quam, et molestie velit convallis finibus. Praesent blandit, ligula sit amet ultrices dignissim, odio nisi rhoncus massa, vel ullamcorper mi nisl at diam. Pellentesque tellus eros, lacinia non pretium ac, placerat a felis. Donec vitae pretium metus. Vestibulum lectus est, lobortis sed ex sit amet, sollicitudin elementum libero. Praesent at vulputate ex. Donec ultrices magna a dui finibus porttitor non eget enim. Quisque auctor malesuada ex, sed luctus leo blandit et.", time: "1일 전", likeNumber: 1, answerNumber: 2),
     Question(title: "title2", content:"content2", time: "1일 전", likeNumber: 1, answerNumber: 2),
     Question(title: "title3", content:"content3", time: "1일 전", likeNumber: 1, answerNumber: 2),
     Question(title: "title4", content:"content4", time: "1일 전", likeNumber: 1, answerNumber: 2),
@@ -28,6 +28,7 @@ class QuestionTableViewCell:UITableViewCell{
     var lineBetweenTimeAndAnswerNumber:UIView!
     var lineBetweenAnswerNumberAndLikeNumber:UIView!
     var lineAtBottom:UIView!
+    var lineAtTop:UIView!
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
@@ -48,29 +49,32 @@ class QuestionTableViewCell:UITableViewCell{
         questionContentView = UILabel()
         questionContentView.numberOfLines = 2
         questionContentView.font = questionContentView.font.withSize(25)
-        questionContentView.textColor = .gray
+        questionContentView.textColor = .init(red: 194/255, green: 194/255, blue: 194/255, alpha: 1)
         
         postedTimeView = UILabel()
         postedTimeView.textColor = .gray
-        
+        postedTimeView.textColor = UIColor(red: 147/255, green: 147/255, blue: 147/255, alpha: 1)
         lineBetweenTimeAndAnswerNumber = UIView()
-        lineBetweenTimeAndAnswerNumber.backgroundColor = .gray
-        
+        lineBetweenTimeAndAnswerNumber.backgroundColor = UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
+    
         answerNumberView = UILabel()
         answerNumberView.textAlignment = .center
         answerNumberView.font = answerNumberView.font.withSize(20)
-        answerNumberView.backgroundColor = .systemGray6
+        answerNumberView.backgroundColor = UIColor(red: 250/255.0, green: 250/255.0, blue: 250/255.0, alpha: 1)
         
         likeNumberView = UILabel()
         likeNumberView.textAlignment = .center
         likeNumberView.font = likeNumberView.font.withSize(20)
-        likeNumberView.backgroundColor = .systemGray6
+        likeNumberView.backgroundColor = UIColor(red: 250/255.0, green: 250/255.0, blue: 250/255.0, alpha: 1)
         
         lineBetweenAnswerNumberAndLikeNumber = UIView()
-        lineBetweenAnswerNumberAndLikeNumber.backgroundColor = .gray
+        lineBetweenAnswerNumberAndLikeNumber.backgroundColor = UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
         
         lineAtBottom = UIView()
-        lineAtBottom.backgroundColor = .gray
+        lineAtBottom.backgroundColor = UIColor(red: 235/255.0, green: 235/255.0, blue: 235/255.0, alpha: 1)
+
+        lineAtTop = UIView()
+        lineAtTop.backgroundColor = UIColor(red: 241/255.0, green: 241/255.0, blue: 241/255.0, alpha: 1)
         
         questionTitleView.translatesAutoresizingMaskIntoConstraints = false
         questionContentView.translatesAutoresizingMaskIntoConstraints = false
@@ -80,6 +84,7 @@ class QuestionTableViewCell:UITableViewCell{
         lineBetweenAnswerNumberAndLikeNumber.translatesAutoresizingMaskIntoConstraints = false
         likeNumberView.translatesAutoresizingMaskIntoConstraints = false
         lineAtBottom.translatesAutoresizingMaskIntoConstraints = false
+        lineAtTop.translatesAutoresizingMaskIntoConstraints = false
         
         contentView.addSubview(questionTitleView)
         contentView.addSubview(questionContentView)
@@ -89,10 +94,17 @@ class QuestionTableViewCell:UITableViewCell{
         contentView.addSubview(lineBetweenAnswerNumberAndLikeNumber)
         contentView.addSubview(likeNumberView)
         contentView.addSubview(lineAtBottom)
+        contentView.addSubview(lineAtTop)
     }
     func setConstraints(){
         NSLayoutConstraint.activate([
-            questionTitleView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
+            lineAtTop.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
+            lineAtTop.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
+            lineAtTop.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor),
+            lineAtTop.heightAnchor.constraint(equalToConstant: 2.0)
+        ])
+        NSLayoutConstraint.activate([
+            questionTitleView.topAnchor.constraint(equalTo: lineAtTop.bottomAnchor,constant:10.0),
             questionTitleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 20.0),
             questionTitleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -20.0)
                         
@@ -171,15 +183,19 @@ class AnswerViewController: UIViewController {
     func setLayout(){
         titleView = UILabel()
         titleView.text = "답변하기"
-        titleView.font = titleView.font.withSize(40.0)
+        titleView.font = titleView.font.withSize(25.0)
+        
         
         searchButton = UIButton()
-        searchButton.setImage(UIImage(systemName:"magnifyingglass",withConfiguration: UIImage.SymbolConfiguration(scale: .large)),for:.normal)
-        
+        searchButton.setImage(UIImage(systemName:"magnifyingglass",withConfiguration: UIImage.SymbolConfiguration(scale: .large))!.withTintColor(.black, renderingMode: .alwaysOriginal),for:.normal)
+        searchButton.contentHorizontalAlignment = .fill
+        searchButton.contentVerticalAlignment = .fill
+        searchButton.imageView?.contentMode = .scaleAspectFit
         sortMethodSegment = PlainSegmentedControl(items:["최신순","공감순"])
+        sortMethodSegment.backgroundColor = UIColor(red: 248/255.0, green: 248/255.0, blue: 248/255.0, alpha: 1)
         sortMethodSegment.setTitleTextAttributes(
             [
-                NSAttributedString.Key.foregroundColor: UIColor.gray,
+                NSAttributedString.Key.foregroundColor: UIColor(red: 129/255.0, green: 129/255.0, blue: 129/255.0, alpha: 1),
                 .font: UIFont.systemFont(ofSize: 20, weight:.regular)
             ],
             for: .normal
@@ -217,14 +233,17 @@ class AnswerViewController: UIViewController {
             titleView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
         ])
         NSLayoutConstraint.activate([
-            searchButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor),
-            searchButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant:-20.0)
+            searchButton.topAnchor.constraint(equalTo: titleView.topAnchor),
+            searchButton.bottomAnchor.constraint(equalTo: titleView.bottomAnchor),
+            searchButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant:-30.0),
+            searchButton.widthAnchor.constraint(equalTo: searchButton.heightAnchor)
+        
             
         ])
         NSLayoutConstraint.activate([
             sortMethodSegment.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,constant: 20.0),
             sortMethodSegment.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant:-20.0),
-            sortMethodSegment.topAnchor.constraint(equalTo: titleView.bottomAnchor,constant: 5.0),
+            sortMethodSegment.topAnchor.constraint(equalTo: titleView.bottomAnchor,constant: 50.0),
             sortMethodSegment.heightAnchor.constraint(equalToConstant: 50.0)
         ])
         NSLayoutConstraint.activate([
