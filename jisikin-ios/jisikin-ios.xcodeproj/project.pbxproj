@@ -13,6 +13,10 @@
 		4E8BAE1D29559F63001CE4BD /* jisikin_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8BAE1C29559F63001CE4BD /* jisikin_iosTests.swift */; };
 		4E8BAE2729559F63001CE4BD /* jisikin_iosUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8BAE2629559F63001CE4BD /* jisikin_iosUITests.swift */; };
 		4E8BAE2929559F63001CE4BD /* jisikin_iosUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8BAE2829559F63001CE4BD /* jisikin_iosUITestsLaunchTests.swift */; };
+		4E9CAE792960001800D92F30 /* plainSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CAE752960001800D92F30 /* plainSegmentedControl.swift */; };
+		4E9CAE7A2960001800D92F30 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CAE762960001800D92F30 /* Question.swift */; };
+		4E9CAE7B2960001800D92F30 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CAE772960001800D92F30 /* SearchViewController.swift */; };
+		4E9CAE7C2960001800D92F30 /* QuestionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CAE782960001800D92F30 /* QuestionDetailViewController.swift */; };
 		C002B11E295AE1DA003303B7 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B11D295AE1DA003303B7 /* TabBarViewController.swift */; };
 		C002B120295AE21B003303B7 /* AnswerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B11F295AE21B003303B7 /* AnswerViewController.swift */; };
 		C002B122295AE228003303B7 /* QuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B121295AE228003303B7 /* QuestionViewController.swift */; };
@@ -47,6 +51,10 @@
 		4E8BAE2229559F63001CE4BD /* jisikin-iosUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "jisikin-iosUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E8BAE2629559F63001CE4BD /* jisikin_iosUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jisikin_iosUITests.swift; sourceTree = "<group>"; };
 		4E8BAE2829559F63001CE4BD /* jisikin_iosUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jisikin_iosUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		4E9CAE752960001800D92F30 /* plainSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = plainSegmentedControl.swift; sourceTree = "<group>"; };
+		4E9CAE762960001800D92F30 /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
+		4E9CAE772960001800D92F30 /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		4E9CAE782960001800D92F30 /* QuestionDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionDetailViewController.swift; sourceTree = "<group>"; };
 		C002B11D295AE1DA003303B7 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		C002B11F295AE21B003303B7 /* AnswerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerViewController.swift; sourceTree = "<group>"; };
 		C002B121295AE228003303B7 /* QuestionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewController.swift; sourceTree = "<group>"; };
@@ -105,6 +113,10 @@
 				4E8BAE0729559F62001CE4BD /* SceneDelegate.swift */,
 				C002B11D295AE1DA003303B7 /* TabBarViewController.swift */,
 				C002B11F295AE21B003303B7 /* AnswerViewController.swift */,
+				4E9CAE752960001800D92F30 /* plainSegmentedControl.swift */,
+				4E9CAE762960001800D92F30 /* Question.swift */,
+				4E9CAE782960001800D92F30 /* QuestionDetailViewController.swift */,
+				4E9CAE772960001800D92F30 /* SearchViewController.swift */,
 				C002B121295AE228003303B7 /* QuestionViewController.swift */,
 				C002B123295AE236003303B7 /* MyViewController.swift */,
 				4E8BAE0E29559F63001CE4BD /* Assets.xcassets */,
@@ -260,9 +272,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C002B11E295AE1DA003303B7 /* TabBarViewController.swift in Sources */,
+				4E9CAE7A2960001800D92F30 /* Question.swift in Sources */,
 				C002B122295AE228003303B7 /* QuestionViewController.swift in Sources */,
+				4E9CAE7B2960001800D92F30 /* SearchViewController.swift in Sources */,
 				C002B124295AE236003303B7 /* MyViewController.swift in Sources */,
+				4E9CAE7C2960001800D92F30 /* QuestionDetailViewController.swift in Sources */,
 				C002B120295AE21B003303B7 /* AnswerViewController.swift in Sources */,
+				4E9CAE792960001800D92F30 /* plainSegmentedControl.swift in Sources */,
 				4E8BAE0629559F62001CE4BD /* AppDelegate.swift in Sources */,
 				4E8BAE0829559F62001CE4BD /* SceneDelegate.swift in Sources */,
 			);
