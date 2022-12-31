@@ -4,6 +4,7 @@ target 'jisikin-ios' do
   use_frameworks!
 
   pod 'DropDown'
+  pod 'Alamofire'
 
   target 'jisikin-iosTests' do
     inherit! :search_paths
