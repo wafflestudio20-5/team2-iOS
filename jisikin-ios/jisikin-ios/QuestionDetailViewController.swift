@@ -15,9 +15,11 @@ class QuestionView:UIView{
     var questionTimeView:UILabel!
     var questionEditButton:UIButton!
     var questionDeleteButton:UIButton!
-    var questionImage:UIImageView!
     var likeButton:UIButton!
     var answerButton:UIButton!
+    var imageStackView:UIStackView!
+    var questionImages:[UIImage] = []
+    
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -49,9 +51,6 @@ class QuestionView:UIView{
         likeButton.setTitle("15", for: .normal)
         likeButton.setTitleColor(.black, for: .normal)
         likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
-       
-        questionImage = UIImageView(image: UIColor.yellow.image(CGSize(width: 100, height: 100)))
-        questionImage.contentMode = .scaleAspectFit
         
         questionTimeView = UILabel()
         questionTimeView.text = "2022.12.16"
@@ -68,12 +67,29 @@ class QuestionView:UIView{
         answerButton.backgroundColor = BLUE_COLOR
         answerButton.setTitle("답변하기", for: .normal)
         
+        questionImages = [UIColor.yellow.image(CGSize(width: 100, height: 100)),UIColor.orange.image(CGSize(width: 100, height: 100)),UIColor.blue.image(CGSize(width: 1200, height: 800))]
+        
+        imageStackView = UIStackView()
+        imageStackView.axis = .vertical
+        imageStackView.distribution = .equalSpacing
+        imageStackView.alignment = .leading
+        imageStackView.spacing = 20
+        for image in questionImages{
+            let imageView = UIImageView(image: image)
+            imageView.contentMode = .scaleAspectFit
+            imageStackView.addArrangedSubview(imageView)
+            NSLayoutConstraint.activate([
+                imageView.widthAnchor.constraint(lessThanOrEqualTo:imageStackView.widthAnchor),
+                imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: image.size.width/image.size.height)
+            ])
+        }
+        
         
         questionTitleView.translatesAutoresizingMaskIntoConstraints = false
         questionUserInfo.translatesAutoresizingMaskIntoConstraints = false
         questionContentView.translatesAutoresizingMaskIntoConstraints = false
         likeButton.translatesAutoresizingMaskIntoConstraints = false
-        questionImage.translatesAutoresizingMaskIntoConstraints = false
+        imageStackView.translatesAutoresizingMaskIntoConstraints = false
         questionTimeView.translatesAutoresizingMaskIntoConstraints = false
         questionEditButton.translatesAutoresizingMaskIntoConstraints = false
         questionDeleteButton.translatesAutoresizingMaskIntoConstraints = false
@@ -82,7 +98,7 @@ class QuestionView:UIView{
         addSubview(questionUserInfo)
         addSubview(questionContentView)
         addSubview(likeButton)
-        addSubview(questionImage)
+        addSubview(imageStackView)
         addSubview(questionTimeView)
         addSubview(questionEditButton)
         addSubview(questionDeleteButton)
@@ -109,13 +125,13 @@ class QuestionView:UIView{
             questionContentView.topAnchor.constraint(equalTo: likeButton.bottomAnchor,constant: 5.0)
         ])
         NSLayoutConstraint.activate([
-            questionImage.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
-            questionImage.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor),
-            questionImage.topAnchor.constraint(equalTo: questionContentView.bottomAnchor,constant: 5.0)
+            imageStackView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
+            imageStackView.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor),
+            imageStackView.topAnchor.constraint(equalTo: questionContentView.bottomAnchor,constant: 5.0)
         ])
         NSLayoutConstraint.activate([
             questionTimeView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
-            questionTimeView.topAnchor.constraint(equalTo: questionImage.bottomAnchor,constant: 5.0),
+            questionTimeView.topAnchor.constraint(equalTo: imageStackView.bottomAnchor,constant: 5.0),
           
         ])
         NSLayoutConstraint.activate([
@@ -204,6 +220,8 @@ class AnswerTableCell:UITableViewCell{
     var likeButton:UIButton!
     var dislikeButton:UIButton!
     var answerPicture:UIImageView!
+    var imageStackView:UIStackView!
+    var answerImages:[UIImage] = []
     var answerTimeView:UILabel!
     var answerEditButton:UIButton!
     var answerDeleteButton:UIButton!
@@ -231,6 +249,22 @@ class AnswerTableCell:UITableViewCell{
         answerPicture = UIImageView(image: UIColor.green.image(CGSize(width: 60, height: 40)))
         answerPicture.contentMode = .scaleAspectFit
         
+        answerImages = [UIColor.yellow.image(CGSize(width: 100, height: 100)),UIColor.orange.image(CGSize(width: 100, height: 100)),UIColor.blue.image(CGSize(width: 1200, height: 800))]
+        imageStackView = UIStackView()
+        imageStackView.axis = .vertical
+        imageStackView.distribution = .equalSpacing
+        imageStackView.alignment = .leading
+        imageStackView.spacing = 20
+        for image in answerImages{
+            let imageView = UIImageView(image: image)
+            imageView.contentMode = .scaleAspectFit
+            imageStackView.addArrangedSubview(imageView)
+            NSLayoutConstraint.activate([
+                imageView.widthAnchor.constraint(lessThanOrEqualTo:imageStackView.widthAnchor),
+                imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: image.size.width/image.size.height)
+            ])
+        }
+        
         likeButton = UIButton()
         likeButton.setTitle("2", for: .normal)
         likeButton.setTitleColor(.black, for: .normal)
@@ -256,7 +290,7 @@ class AnswerTableCell:UITableViewCell{
         profile.translatesAutoresizingMaskIntoConstraints = false
         answerContentView.translatesAutoresizingMaskIntoConstraints = false
         answerTimeView.translatesAutoresizingMaskIntoConstraints = false
-        answerPicture.translatesAutoresizingMaskIntoConstraints = false
+        imageStackView.translatesAutoresizingMaskIntoConstraints = false
         answerEditButton.translatesAutoresizingMaskIntoConstraints = false
         answerDeleteButton.translatesAutoresizingMaskIntoConstraints = false
         likeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -264,7 +298,7 @@ class AnswerTableCell:UITableViewCell{
         contentView.addSubview(profile)
         contentView.addSubview(answerContentView)
         contentView.addSubview(answerTimeView)
-        contentView.addSubview(answerPicture)
+        contentView.addSubview(imageStackView)
         contentView.addSubview(answerEditButton)
         contentView.addSubview(answerDeleteButton)
         contentView.addSubview(likeButton)
@@ -297,12 +331,12 @@ class AnswerTableCell:UITableViewCell{
             answerContentView.trailingAnchor.constraint(equalTo: dislikeButton.trailingAnchor)
         ])
         NSLayoutConstraint.activate([
-            answerPicture.topAnchor.constraint(equalTo: answerContentView.bottomAnchor,constant: 5.0),
-            answerPicture.leadingAnchor.constraint(equalTo: answerContentView.leadingAnchor),
-            answerPicture.trailingAnchor.constraint(equalTo: answerContentView.trailingAnchor)
+            imageStackView.topAnchor.constraint(equalTo: answerContentView.bottomAnchor,constant: 5.0),
+            imageStackView.leadingAnchor.constraint(equalTo: answerContentView.leadingAnchor),
+            imageStackView.trailingAnchor.constraint(equalTo: answerContentView.trailingAnchor)
         ])
         NSLayoutConstraint.activate([
-            answerTimeView.topAnchor.constraint(equalTo: answerPicture.bottomAnchor,constant: 5.0),
+            answerTimeView.topAnchor.constraint(equalTo: imageStackView.bottomAnchor,constant: 5.0),
             answerTimeView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 5.0),
             answerTimeView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -5.0)
         ])
