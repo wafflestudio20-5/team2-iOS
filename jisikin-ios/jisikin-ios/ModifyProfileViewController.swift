@@ -15,7 +15,7 @@ class ModifyProfileViewController: UIViewController {
     let nickNameLabel = UILabel()
     let modifyNickNameField = UITextField()
     let genderLabel = UILabel()
-    let genderSegment = UISegmentedControl(items: ["남", "여", "기타"])
+    let genderSegment = UISegmentedControl(items: ["남", "여"])
     let modifyCancelBtn = UILabel()
     let modifySaveBtn = UILabel()
     
