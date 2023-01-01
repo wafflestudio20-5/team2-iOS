@@ -23,6 +23,7 @@
 		4E9CAE7E296066F300D92F30 /* QuestionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CAE7D296066F300D92F30 /* QuestionTableViewCell.swift */; };
 		4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */; };
 		4ED26AC8295F0D670034F1A7 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */; };
+		4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */; };
 		6669E963AA0FE71A0C45E7EE /* Pods_jisikin_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489CD149E57C0EA9C5D9B4C4 /* Pods_jisikin_iosTests.framework */; };
 		8EAA9FD4F818743CC10321BD /* Pods_jisikin_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5748C32360EEF24721FF4D75 /* Pods_jisikin_ios.framework */; };
 		C002B11E295AE1DA003303B7 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B11D295AE1DA003303B7 /* TabBarViewController.swift */; };
@@ -73,6 +74,7 @@
 		4E9CAE7D296066F300D92F30 /* QuestionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionTableViewCell.swift; sourceTree = "<group>"; };
 		4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
+		4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		5541333EDBCB937116F222C7 /* Pods-jisikin-iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jisikin-iosTests.release.xcconfig"; path = "Target Support Files/Pods-jisikin-iosTests/Pods-jisikin-iosTests.release.xcconfig"; sourceTree = "<group>"; };
 		5748C32360EEF24721FF4D75 /* Pods_jisikin_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_jisikin_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C4A7C809D4CC5C4A465821B /* Pods-jisikin-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jisikin-ios.debug.xcconfig"; path = "Target Support Files/Pods-jisikin-ios/Pods-jisikin-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 				4E152C17296007A5000E9D9A /* TestRepository.swift */,
 				4E010325296009860060F342 /* TestViewcontroller.swift */,
 				4E9CAE7D296066F300D92F30 /* QuestionTableViewCell.swift */,
+				4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */,
 			);
 			path = "jisikin-ios";
 			sourceTree = "<group>";
@@ -447,6 +450,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */,
 				4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */,
 				C002B11E295AE1DA003303B7 /* TabBarViewController.swift in Sources */,
 				4E9CAE7A2960001800D92F30 /* Question.swift in Sources */,

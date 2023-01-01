@@ -20,7 +20,7 @@ class SignupViewController: UIViewController {
     let nameLabel = UILabel()
     let nameTextfield = TextFieldWithPadding()
     let genderLabel = UILabel()
-    let genderTextfield = UIButton()
+    let genderButton = UIButton()
     let dropDown = DropDown()
     let signupButton = UIButton()
     
@@ -33,7 +33,7 @@ class SignupViewController: UIViewController {
     func viewInit() {
         self.view.backgroundColor = UIColor(named: "BackgroundColor")
         let buttonConfig = UIButton.Configuration.plain()
-        genderTextfield.configuration = buttonConfig
+        genderButton.configuration = buttonConfig
     }
     
     func setLayout() {
@@ -48,7 +48,7 @@ class SignupViewController: UIViewController {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameTextfield.translatesAutoresizingMaskIntoConstraints = false
         genderLabel.translatesAutoresizingMaskIntoConstraints = false
-        genderTextfield.translatesAutoresizingMaskIntoConstraints = false
+        genderButton.translatesAutoresizingMaskIntoConstraints = false
         signupButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(logoImgView)
@@ -61,7 +61,7 @@ class SignupViewController: UIViewController {
         view.addSubview(nameLabel)
         view.addSubview(nameTextfield)
         view.addSubview(genderLabel)
-        view.addSubview(genderTextfield)
+        view.addSubview(genderButton)
         view.addSubview(signupButton)
 
         logoImgView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 50).isActive = true
@@ -78,9 +78,9 @@ class SignupViewController: UIViewController {
         nameLabel.leadingAnchor.constraint(equalTo: nameTextfield.leadingAnchor).isActive = true
         nameTextfield.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         nameTextfield.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        genderLabel.leadingAnchor.constraint(equalTo: genderTextfield.leadingAnchor).isActive = true
-        genderTextfield.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        genderTextfield.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
+        genderLabel.leadingAnchor.constraint(equalTo: genderButton.leadingAnchor).isActive = true
+        genderButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
+        genderButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         signupButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         signupButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
 
@@ -99,9 +99,9 @@ class SignupViewController: UIViewController {
         nameTextfield.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5).isActive = true
         nameTextfield.bottomAnchor.constraint(equalTo: nameTextfield.topAnchor, constant:50).isActive = true
         genderLabel.topAnchor.constraint(equalTo: nameTextfield.bottomAnchor, constant: 20).isActive = true
-        genderTextfield.topAnchor.constraint(equalTo: genderLabel.bottomAnchor, constant: 5).isActive = true
-        genderTextfield.bottomAnchor.constraint(equalTo: genderTextfield.topAnchor, constant:50).isActive = true
-        signupButton.topAnchor.constraint(equalTo: genderTextfield.bottomAnchor, constant: 20).isActive = true
+        genderButton.topAnchor.constraint(equalTo: genderLabel.bottomAnchor, constant: 5).isActive = true
+        genderButton.bottomAnchor.constraint(equalTo: genderButton.topAnchor, constant:50).isActive = true
+        signupButton.topAnchor.constraint(equalTo: genderButton.bottomAnchor, constant: 20).isActive = true
         signupButton.bottomAnchor.constraint(equalTo: signupButton.topAnchor, constant: 60).isActive = true
 
     }
@@ -148,21 +148,21 @@ class SignupViewController: UIViewController {
         genderLabel.font = UIFont.boldSystemFont(ofSize: 15)
         
         dropDown.dataSource = ["남자", "여자"]
-        dropDown.anchorView = genderTextfield
+        dropDown.anchorView = genderButton
         
         dropDown.selectionAction = { [weak self] (index, item) in
-            self!.genderTextfield.setTitle(item, for: .normal)
+            self!.genderButton.setTitle(item, for: .normal)
         }
         
-        genderTextfield.setTitle("성별", for: .normal)
-        genderTextfield.setTitleColor(.black, for: .normal)
-        genderTextfield.setImage(UIImage(systemName: "chevron.down"), for: .normal)
-        genderTextfield.contentHorizontalAlignment = .fill
-        genderTextfield.configuration?.imagePlacement = .trailing
-        genderTextfield.backgroundColor = .white
-        genderTextfield.layer.borderColor = UIColor.lightGray.cgColor
-        genderTextfield.layer.borderWidth = 1.0
-        genderTextfield.addTarget(self, action: #selector(tapGenderButton), for: .touchUpInside)
+        genderButton.setTitle("성별", for: .normal)
+        genderButton.setTitleColor(.black, for: .normal)
+        genderButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        genderButton.contentHorizontalAlignment = .fill
+        genderButton.configuration?.imagePlacement = .trailing
+        genderButton.backgroundColor = .white
+        genderButton.layer.borderColor = UIColor.lightGray.cgColor
+        genderButton.layer.borderWidth = 1.0
+        genderButton.addTarget(self, action: #selector(tapGenderButton), for: .touchUpInside)
 
         
         signupButton.setTitle("회원가입", for: .normal)
@@ -179,6 +179,48 @@ class SignupViewController: UIViewController {
     
 
     @objc func tapSignupButton() {
-        self.navigationController?.popViewController(animated: true)
+        if(usernameTextfield.text == "") {
+            showAlert(message:"아이디를 입력하세요", popVC: false)
+        }
+        
+        else if(passwordTextfield.text == ""){
+            showAlert(message:"비밀번호를 입력하세요", popVC: false)
+        }
+        
+        else if(passwordRetypeTextfield.text == ""){
+            showAlert(message:"비밀번호를 다시 입력하세요", popVC: false)
+        }
+        
+        else if(passwordTextfield.text != passwordRetypeTextfield.text){
+            showAlert(message:"비밀번호가 일치하지 않습니다", popVC: false)
+        }
+        
+        else if(genderButton.title(for: .normal) == "성별"){
+            showAlert(message:"성별을 선택하세요", popVC: false)
+        }
+        
+        else {
+            showAlert(message: "회원가입 성공", popVC: true)
+        }
+    }
+    
+    func showAlert(message: String, popVC: Bool){
+        let setAlert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        
+        var setAction: UIAlertAction
+        
+        if(popVC == true){
+            setAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { setAction in
+                self.navigationController?.popViewController(animated: true)
+            })
+        }
+        
+        else {
+            setAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default)
+        }
+        
+        setAlert.addAction(setAction)
+        
+        self.present(setAlert, animated: false)
     }
 }
