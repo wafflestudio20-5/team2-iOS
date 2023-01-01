@@ -75,7 +75,7 @@ class AnswerViewController: UIViewController {
         NSLayoutConstraint.activate([
             sortMethodSegment.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,constant: 20.0),
             sortMethodSegment.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant:-20.0),
-            sortMethodSegment.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 50.0),
+            sortMethodSegment.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 10.0),
             sortMethodSegment.heightAnchor.constraint(equalToConstant: 50.0)
         ])
         NSLayoutConstraint.activate([
@@ -114,7 +114,7 @@ extension AnswerViewController:UITableViewDelegate,UITableViewDataSource{
         
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        navigationController?.pushViewController(QuestionDetailViewController(), animated: false)
+        navigationController?.pushViewController(QuestionDetailViewController(), animated: true)
     }
     
     
