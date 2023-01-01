@@ -55,7 +55,8 @@ class LoginViewController: UIViewController {
         
         
         logoImgView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        usernameTextfield.topAnchor.constraint(equalTo: logoImgView.bottomAnchor).isActive = true
+        logoImgView.bottomAnchor.constraint(equalTo: logoImgView.topAnchor, constant: 70).isActive = true
+        usernameTextfield.topAnchor.constraint(equalTo: logoImgView.bottomAnchor, constant: 30).isActive = true
         usernameTextfield.bottomAnchor.constraint(equalTo: usernameTextfield.topAnchor, constant: 40).isActive = true
         passwordTextfield.topAnchor.constraint(equalTo: usernameTextfield.bottomAnchor, constant: 20).isActive = true
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfield.topAnchor, constant: 40).isActive = true
