@@ -215,6 +215,7 @@ class AnswerProfileView:UIView{
 class AnswerTableCell:UITableViewCell{
     static let ID = "AnswerTableCell"
     
+    var lineAtTop:UIView!
     var profile:AnswerProfileView!
     var answerContentView:UILabel!
     var likeButton:UIButton!
@@ -236,6 +237,9 @@ class AnswerTableCell:UITableViewCell{
         fatalError("init(coder:) has not been implemented")
     }
     func setLayout(){
+        lineAtTop = UIView()
+        lineAtTop.backgroundColor = UIColor(red: 235/255.0, green: 235/255.0, blue: 235/255.0, alpha: 1)
+        
         profile = AnswerProfileView()
         
         answerContentView = UILabel()
@@ -297,6 +301,9 @@ class AnswerTableCell:UITableViewCell{
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         dislikeButton.translatesAutoresizingMaskIntoConstraints = false
         answerChoiceButton.translatesAutoresizingMaskIntoConstraints = false
+        lineAtTop.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(lineAtTop)
         contentView.addSubview(profile)
         contentView.addSubview(answerContentView)
         contentView.addSubview(answerTimeView)
@@ -308,6 +315,12 @@ class AnswerTableCell:UITableViewCell{
         contentView.addSubview(dislikeButton)
     }
     func setConstraints(){
+        NSLayoutConstraint.activate([
+            lineAtTop.topAnchor.constraint(equalTo: contentView.topAnchor),
+            lineAtTop.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            lineAtTop.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            lineAtTop.heightAnchor.constraint(equalToConstant: 2.0)
+        ])
         NSLayoutConstraint.activate([
             profile.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 5.0),
             profile.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:20.0),
@@ -361,18 +374,19 @@ class AnswerTableCell:UITableViewCell{
         ])
     }
     func setIsChosen(isChosen:Bool){
+        let redColor = UIColor(red: 253/255, green: 95/255, blue: 86/255, alpha: 1)
         if(isChosen){
             answerChoiceButton.isEnabled = false
             answerChoiceButton.backgroundColor = .white
             answerChoiceButton.setTitle("질문자 채택", for: .normal)
-            answerChoiceButton.setTitleColor(.red, for: .normal)
+            answerChoiceButton.setTitleColor(redColor, for: .normal)
             answerChoiceButton.titleLabel!.font = answerChoiceButton.titleLabel!.font.withSize(20)
             answerChoiceButton.setImage(UIImage(systemName: "checkmark.circle"),for: .normal)
             answerChoiceButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
         }
         else{
             answerChoiceButton.isEnabled = true
-            answerChoiceButton.backgroundColor = .red
+            answerChoiceButton.backgroundColor = redColor
             answerChoiceButton.setTitle("채택하기", for: .normal)
             answerChoiceButton.titleLabel!.font = answerChoiceButton.titleLabel!.font.withSize(20)
             answerChoiceButton.setTitleColor(.white, for: .normal)
