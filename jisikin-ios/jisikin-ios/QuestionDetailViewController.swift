@@ -225,6 +225,7 @@ class AnswerTableCell:UITableViewCell{
     var answerTimeView:UILabel!
     var answerEditButton:UIButton!
     var answerDeleteButton:UIButton!
+    var answerChoiceButton:UIButton!
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
@@ -286,7 +287,7 @@ class AnswerTableCell:UITableViewCell{
         answerEditButton = UIButton()
         answerEditButton.setTitle("수정", for: .normal)
         answerEditButton.setTitleColor(.black, for: .normal)
-        
+        answerChoiceButton = UIButton()
         profile.translatesAutoresizingMaskIntoConstraints = false
         answerContentView.translatesAutoresizingMaskIntoConstraints = false
         answerTimeView.translatesAutoresizingMaskIntoConstraints = false
@@ -295,6 +296,7 @@ class AnswerTableCell:UITableViewCell{
         answerDeleteButton.translatesAutoresizingMaskIntoConstraints = false
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         dislikeButton.translatesAutoresizingMaskIntoConstraints = false
+        answerChoiceButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(profile)
         contentView.addSubview(answerContentView)
         contentView.addSubview(answerTimeView)
@@ -302,6 +304,7 @@ class AnswerTableCell:UITableViewCell{
         contentView.addSubview(answerEditButton)
         contentView.addSubview(answerDeleteButton)
         contentView.addSubview(likeButton)
+        contentView.addSubview(answerChoiceButton)
         contentView.addSubview(dislikeButton)
     }
     func setConstraints(){
@@ -338,7 +341,13 @@ class AnswerTableCell:UITableViewCell{
         NSLayoutConstraint.activate([
             answerTimeView.topAnchor.constraint(equalTo: imageStackView.bottomAnchor,constant: 5.0),
             answerTimeView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 5.0),
-            answerTimeView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -5.0)
+          
+        ])
+        NSLayoutConstraint.activate([
+            answerChoiceButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            answerChoiceButton.topAnchor.constraint(equalTo: answerTimeView.bottomAnchor,constant: 5.0),
+            answerChoiceButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -5.0),
+           
         ])
         NSLayoutConstraint.activate([
             answerDeleteButton.topAnchor.constraint(equalTo: answerTimeView.topAnchor),
@@ -350,6 +359,25 @@ class AnswerTableCell:UITableViewCell{
             answerEditButton.bottomAnchor.constraint(equalTo: answerTimeView.bottomAnchor),
             answerEditButton.trailingAnchor.constraint(equalTo: answerDeleteButton.leadingAnchor,constant: -5.0)
         ])
+    }
+    func setIsChosen(isChosen:Bool){
+        if(isChosen){
+            answerChoiceButton.isEnabled = false
+            answerChoiceButton.backgroundColor = .white
+            answerChoiceButton.setTitle("질문자 채택", for: .normal)
+            answerChoiceButton.setTitleColor(.red, for: .normal)
+            answerChoiceButton.titleLabel!.font = answerChoiceButton.titleLabel!.font.withSize(20)
+            answerChoiceButton.setImage(UIImage(systemName: "checkmark.circle"),for: .normal)
+            answerChoiceButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        }
+        else{
+            answerChoiceButton.isEnabled = true
+            answerChoiceButton.backgroundColor = .red
+            answerChoiceButton.setTitle("채택하기", for: .normal)
+            answerChoiceButton.titleLabel!.font = answerChoiceButton.titleLabel!.font.withSize(20)
+            answerChoiceButton.setTitleColor(.white, for: .normal)
+            answerChoiceButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        }
     }
 }
 class QuestionDetailViewController:UIViewController{
@@ -415,7 +443,13 @@ extension QuestionDetailViewController:UITableViewDelegate,UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: AnswerTableCell.ID, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: AnswerTableCell.ID, for: indexPath) as! AnswerTableCell
+        if(indexPath.row == 0){
+            cell.setIsChosen(isChosen: true)
+        }
+        else{
+            cell.setIsChosen(isChosen: false)
+        }
         return cell
     }
     
