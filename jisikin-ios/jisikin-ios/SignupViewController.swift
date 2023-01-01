@@ -195,6 +195,10 @@ class SignupViewController: UIViewController {
             showAlert(message:"비밀번호가 일치하지 않습니다", popVC: false)
         }
         
+        else if(nameTextfield.text == ""){
+            showAlert(message:"이름을 입력하세요", popVC: false)
+        }
+        
         else if(genderButton.title(for: .normal) == "성별"){
             showAlert(message:"성별을 선택하세요", popVC: false)
         }
