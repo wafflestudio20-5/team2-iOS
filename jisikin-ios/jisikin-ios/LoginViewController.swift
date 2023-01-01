@@ -101,7 +101,16 @@ class LoginViewController: UIViewController {
     }
     
     @objc func tapLoginButton() {
-        print("login")
+        UserDefaults.standard.set(1, forKey: "Login")
+        
+        let loginAlert = UIAlertController(title: nil, message: "로그인 성공", preferredStyle: .alert)
+        let loginAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { loginAction in
+                self.navigationController?.popViewController(animated: true)
+        })
+
+        loginAlert.addAction(loginAction)
+        
+        self.present(loginAlert, animated: false)
     }
 
     @objc func tapSignupButton() {
