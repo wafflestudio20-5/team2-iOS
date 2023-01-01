@@ -107,7 +107,7 @@ class SignupViewController: UIViewController {
         
         logoImgView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         logoImgView.bottomAnchor.constraint(equalTo: logoImgView.topAnchor, constant: 70).isActive = true
-        usernameLabel.topAnchor.constraint(equalTo: logoImgView.bottomAnchor, constant: 10).isActive = true
+        usernameLabel.topAnchor.constraint(equalTo: logoImgView.bottomAnchor, constant: 20).isActive = true
         usernameTextfield.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 5).isActive = true
         usernameTextfield.bottomAnchor.constraint(equalTo: usernameTextfield.topAnchor, constant: 50).isActive = true
         usernameCriteriaLabel.topAnchor.constraint(equalTo: usernameTextfield.bottomAnchor, constant:  5).isActive = true
