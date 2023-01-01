@@ -43,6 +43,13 @@ import UIKit
 //    }
 //}
 
+//UserDefaults.standard.setValue(try? PropertyListEncoder().encode(todos), forKey: "ToDos") //save code
+/*if let data = UserDefaults.standard.data(forKey: "ToDos") {
+todos = try! PropertyListDecoder().decode([ToDo].self, from: data)
+}*///load code
+
+//UserDefaults.standard.set(1, forKey: "isLogin")
+
 class MyViewController: UIViewController {
     
     let profilePhotoView = UIImageView()
@@ -51,10 +58,14 @@ class MyViewController: UIViewController {
     
     let QABtn = UIButton()
     let heartedQBtn = UIButton()
-    let logOutBtn = UIButton()
+    let logInOutBtn = UIButton()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    
+    
+    override func loadView(){
+        super.loadView()
+        let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
+        
         self.view.backgroundColor = .white
         
         let profilePhotoSize = CGFloat(45)
@@ -64,17 +75,35 @@ class MyViewController: UIViewController {
         profilePhotoView.layer.borderWidth = 3.0
         profilePhotoView.layer.borderColor = UIColor.black.cgColor
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifyProfileBtn))
+        let tapGesture: UITapGestureRecognizer
+        if isLogin{
+            tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifyProfileBtn))
+        }else{
+            tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapLogInBtn))
+        }
         profilePhotoView.addGestureRecognizer(tapGesture)
         profilePhotoView.isUserInteractionEnabled = true
         
+        if isLogin{
+            let smallConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .regular, scale: .large)
+            
+            modifyProfileBtn.setImage(UIImage(systemName:"pencil.circle.fill", withConfiguration: smallConfig)!.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
+            modifyProfileBtn.addTarget(self, action: #selector(onTapModifyProfileBtn), for: .touchUpInside)
+            modifyProfileBtn.isHidden = false
+            modifyProfileBtn.isEnabled = true
+        }else{
+            modifyProfileBtn.removeTarget(nil, action: nil, for: .allEvents)
+            modifyProfileBtn.isHidden = true
+            modifyProfileBtn.isEnabled = false
+        }
         
-        let smallConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .regular, scale: .large)
         
-        modifyProfileBtn.setImage(UIImage(systemName:"pencil.circle.fill", withConfiguration: smallConfig)!.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
-        modifyProfileBtn.addTarget(self, action: #selector(onTapModifyProfileBtn), for: .touchUpInside)
+        if isLogin{
+            nickName.text = "닉네임"
+        }else{
+            nickName.text = "로그인해주세요"
+        }
         
-        nickName.text = "닉네임"
         nickName.font = .systemFont(ofSize: 30)
         nickName.textColor = .black
         
@@ -88,7 +117,14 @@ class MyViewController: UIViewController {
         QABtn.setTitle("나의 Q&A", for: .normal)
         QABtn.setTitleColor(.black, for: .normal)
         QABtn.setTitleColor(.black, for: .highlighted)
-        QABtn.addTarget(self, action: #selector(onTapQABtn), for: .touchUpInside)
+        if isLogin{
+            QABtn.removeTarget(nil, action: nil, for: .allEvents)
+            QABtn.addTarget(self, action: #selector(onTapQABtn), for: .touchUpInside)
+        }else{
+            QABtn.removeTarget(nil, action: nil, for: .allEvents)
+            QABtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
+        }
+        
         
         
         heartedQBtn.configuration = .plain()
@@ -99,18 +135,33 @@ class MyViewController: UIViewController {
         heartedQBtn.setTitle("좋아요 누른 질문", for: .normal)
         heartedQBtn.setTitleColor(.black, for: .normal)
         heartedQBtn.setTitleColor(.black, for: .highlighted)
-        heartedQBtn.addTarget(self, action: #selector(onTapHeartedQBtn), for: .touchUpInside)
+        if isLogin{
+            heartedQBtn.removeTarget(nil, action: nil, for: .allEvents)
+            heartedQBtn.addTarget(self, action: #selector(onTapHeartedQBtn), for: .touchUpInside)
+        }else{
+            heartedQBtn.removeTarget(nil, action: nil, for: .allEvents)
+            heartedQBtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
+        }
         
         
-        logOutBtn.configuration = .plain()
-        logOutBtn.configuration?.imagePlacement = .top
-        logOutBtn.configuration?.imagePadding = 10
         
-        logOutBtn.setImage(UIImage(systemName:"rectangle.portrait.and.arrow.right", withConfiguration: largeConfig)!.withTintColor(.darkText, renderingMode: .alwaysOriginal), for: .normal)
-        logOutBtn.setTitle("로그아웃", for: .normal)
-        logOutBtn.setTitleColor(.black, for: .normal)
-        logOutBtn.setTitleColor(.black, for: .highlighted)
-        logOutBtn.addTarget(self, action: #selector(onTapLogOutBtn), for: .touchUpInside)
+        logInOutBtn.configuration = .plain()
+        logInOutBtn.configuration?.imagePlacement = .top
+        logInOutBtn.configuration?.imagePadding = 10
+        
+        logInOutBtn.setTitleColor(.black, for: .normal)
+        logInOutBtn.setTitleColor(.black, for: .highlighted)
+        if isLogin{
+            logInOutBtn.setImage(UIImage(systemName:"rectangle.portrait.and.arrow.right", withConfiguration: largeConfig)!.withTintColor(.darkText, renderingMode: .alwaysOriginal), for: .normal)
+            logInOutBtn.setTitle("로그아웃", for: .normal)
+            logInOutBtn.removeTarget(nil, action: nil, for: .allEvents)
+            logInOutBtn.addTarget(self, action: #selector(onTapLogOutBtn), for: .touchUpInside)
+        }else{
+            logInOutBtn.setImage(UIImage(systemName:"rectangle.portrait.and.arrow.right", withConfiguration: largeConfig)!.withTintColor(.darkText, renderingMode: .alwaysOriginal), for: .normal)
+            logInOutBtn.setTitle("로그인", for: .normal)
+            logInOutBtn.removeTarget(nil, action: nil, for: .allEvents)
+            logInOutBtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
+        }
         
 //        profileBtn.configuration = .plain()
 //        profileBtn.configuration?.imagePlacement = .top
@@ -175,14 +226,14 @@ class MyViewController: UIViewController {
         view.addSubview(QABtn)
 //        view.addSubview(profileBtn)
         view.addSubview(heartedQBtn)
-        view.addSubview(logOutBtn)
+        view.addSubview(logInOutBtn)
 //        view.addSubview(leftButton)
         profilePhotoView.translatesAutoresizingMaskIntoConstraints = false
         modifyProfileBtn.translatesAutoresizingMaskIntoConstraints = false
         nickName.translatesAutoresizingMaskIntoConstraints = false
         QABtn.translatesAutoresizingMaskIntoConstraints = false
         heartedQBtn.translatesAutoresizingMaskIntoConstraints = false
-        logOutBtn.translatesAutoresizingMaskIntoConstraints = false
+        logInOutBtn.translatesAutoresizingMaskIntoConstraints = false
 //        leftButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             profilePhotoView.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor),
@@ -198,9 +249,21 @@ class MyViewController: UIViewController {
             QABtn.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 180),//180
             heartedQBtn.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor),
             heartedQBtn.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 180),//180
-            logOutBtn.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor, constant: 120),
-            logOutBtn.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 180),//180
+            logInOutBtn.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor, constant: 120),
+            logInOutBtn.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 180),//180
         ])
+    }
+
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        loadView()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
         // Do any additional setup after loading the view.
     }
     @objc
@@ -221,7 +284,13 @@ class MyViewController: UIViewController {
     }
     @objc
     func onTapLogOutBtn() {
-        
+        UserDefaults.standard.set(false, forKey: "isLogin")
+        loadView()
+    }
+    @objc
+    func onTapLogInBtn() {
+        let vc = LoginViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
 
