@@ -101,7 +101,7 @@ class LoginViewController: UIViewController {
     }
     
     @objc func tapLoginButton() {
-        UserDefaults.standard.set(1, forKey: "Login")
+        UserDefaults.standard.set(true, forKey: "isLogin")
         
         let loginAlert = UIAlertController(title: nil, message: "로그인 성공", preferredStyle: .alert)
         let loginAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { loginAction in
