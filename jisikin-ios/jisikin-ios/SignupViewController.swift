@@ -117,6 +117,7 @@ class SignupViewController: UIViewController {
         usernameTextfield.borderStyle = .line
         usernameTextfield.layer.borderColor = UIColor.lightGray.cgColor
         usernameTextfield.layer.borderWidth = 1.0
+        usernameTextfield.addTarget(self, action: #selector(textfieldDidChange(_:)), for: .editingChanged)
         
         passwordLabel.text = "비밀번호"
         passwordLabel.font = UIFont.boldSystemFont(ofSize: 15)
@@ -171,6 +172,10 @@ class SignupViewController: UIViewController {
         signupButton.backgroundColor = UIColor(named: "MainColor")
         signupButton.addTarget(self, action: #selector(tapSignupButton), for: .touchUpInside)
 
+    }
+    
+    @objc func textfieldDidChange(_ textfield: UITextField) {
+        print(textfield.text ?? "")
     }
     
     @objc func tapGenderButton() {
