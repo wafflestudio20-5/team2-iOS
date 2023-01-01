@@ -322,7 +322,7 @@ class AnswerTableCell:UITableViewCell{
             lineAtTop.heightAnchor.constraint(equalToConstant: 2.0)
         ])
         NSLayoutConstraint.activate([
-            profile.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 5.0),
+            profile.topAnchor.constraint(equalTo: lineAtTop.bottomAnchor,constant: 5.0),
             profile.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:20.0),
             //profile.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -20.0)
         ])
@@ -359,7 +359,7 @@ class AnswerTableCell:UITableViewCell{
         NSLayoutConstraint.activate([
             answerChoiceButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             answerChoiceButton.topAnchor.constraint(equalTo: answerTimeView.bottomAnchor,constant: 5.0),
-            answerChoiceButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -5.0),
+            answerChoiceButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10.0),
            
         ])
         NSLayoutConstraint.activate([
@@ -376,12 +376,14 @@ class AnswerTableCell:UITableViewCell{
     func setIsChosen(isChosen:Bool){
         let redColor = UIColor(red: 253/255, green: 95/255, blue: 86/255, alpha: 1)
         if(isChosen){
+            let checkImage = UIImage(systemName: "checkmark.circle")?.withTintColor(redColor,renderingMode: .alwaysOriginal)
+            
             answerChoiceButton.isEnabled = false
             answerChoiceButton.backgroundColor = .white
             answerChoiceButton.setTitle("질문자 채택", for: .normal)
             answerChoiceButton.setTitleColor(redColor, for: .normal)
             answerChoiceButton.titleLabel!.font = answerChoiceButton.titleLabel!.font.withSize(20)
-            answerChoiceButton.setImage(UIImage(systemName: "checkmark.circle"),for: .normal)
+            answerChoiceButton.setImage(checkImage, for: .normal)
             answerChoiceButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
         }
         else{
