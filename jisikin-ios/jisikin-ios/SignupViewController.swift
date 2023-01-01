@@ -107,28 +107,28 @@ class SignupViewController: UIViewController {
         
         logoImgView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         logoImgView.bottomAnchor.constraint(equalTo: logoImgView.topAnchor, constant: 70).isActive = true
-        usernameLabel.topAnchor.constraint(equalTo: logoImgView.bottomAnchor, constant: 25).isActive = true
+        usernameLabel.topAnchor.constraint(equalTo: logoImgView.bottomAnchor, constant: 10).isActive = true
         usernameTextfield.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 5).isActive = true
         usernameTextfield.bottomAnchor.constraint(equalTo: usernameTextfield.topAnchor, constant: 50).isActive = true
         usernameCriteriaLabel.topAnchor.constraint(equalTo: usernameTextfield.bottomAnchor, constant:  5).isActive = true
-        passwordLabel.topAnchor.constraint(equalTo: usernameCriteriaLabel.bottomAnchor, constant: 20).isActive = true
+        passwordLabel.topAnchor.constraint(equalTo: usernameCriteriaLabel.bottomAnchor, constant: 10).isActive = true
         passwordTextfield.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 5).isActive = true
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfield.topAnchor, constant: 50).isActive = true
         passwordCriteriaLabel.topAnchor.constraint(equalTo: passwordTextfield.bottomAnchor, constant: 5).isActive = true
-        passwordRetypeLabel.topAnchor.constraint(equalTo: passwordCriteriaLabel.bottomAnchor, constant: 20).isActive = true
+        passwordRetypeLabel.topAnchor.constraint(equalTo: passwordCriteriaLabel.bottomAnchor, constant: 10).isActive = true
         passwordRetypeTextfield.topAnchor.constraint(equalTo: passwordRetypeLabel.bottomAnchor, constant: 5).isActive = true
         passwordRetypeTextfield.bottomAnchor.constraint(equalTo: passwordRetypeTextfield.topAnchor, constant: 50).isActive = true
         passwordRetypeCriteriaLabel.topAnchor.constraint(equalTo: passwordRetypeTextfield.bottomAnchor, constant: 5).isActive = true
-        nameLabel.topAnchor.constraint(equalTo: passwordRetypeCriteriaLabel.bottomAnchor, constant: 20).isActive = true
+        nameLabel.topAnchor.constraint(equalTo: passwordRetypeCriteriaLabel.bottomAnchor, constant: 10).isActive = true
         nameTextfield.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5).isActive = true
         nameTextfield.bottomAnchor.constraint(equalTo: nameTextfield.topAnchor, constant:50).isActive = true
         nameCriteriaLabel.topAnchor.constraint(equalTo: nameTextfield.bottomAnchor, constant: 5).isActive = true
-        genderLabel.topAnchor.constraint(equalTo: nameCriteriaLabel.bottomAnchor, constant: 20).isActive = true
+        genderLabel.topAnchor.constraint(equalTo: nameCriteriaLabel.bottomAnchor, constant: 10).isActive = true
         genderButton.topAnchor.constraint(equalTo: genderLabel.bottomAnchor, constant: 5).isActive = true
         genderButton.bottomAnchor.constraint(equalTo: genderButton.topAnchor, constant:50).isActive = true
         genderCriteriaLabel.topAnchor.constraint(equalTo: genderButton.bottomAnchor, constant: 5).isActive = true
-        signupButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -80).isActive = true
-        signupButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30).isActive = true
+        signupButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -70).isActive = true
+        signupButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
 
     }
     
