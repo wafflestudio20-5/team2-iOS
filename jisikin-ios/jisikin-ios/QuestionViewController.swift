@@ -28,7 +28,34 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     lazy var plusImageButton: UIButton = {
         let btn = UIButton()
-    // 키보드 위에 태그 다는 텍스트필드랑 이미지 추가 버튼 다는 거부터 작업하면 됨
+        btn.addTarget(self, action: #selector(plusImage(_:)), for: .touchUpInside)
+        btn.setTitle("📷", for: .normal)
+        btn.backgroundColor = BLUE_COLOR
+        btn.layer.cornerRadius = 10
+        return btn
+    }()
+    
+    lazy var keyboardDownButton: UIButton = {
+        let btn = UIButton()
+        btn.addTarget(self, action: #selector(hideKeyboard(_:)), for: .touchUpInside)
+        btn.setTitle("↓", for: .normal)
+        btn.backgroundColor = BLUE_COLOR
+        btn.layer.cornerRadius = 10
+        return btn
+    }()
+    
+    lazy var addTagButton: UIButton = {
+        let btn = UIButton()
+        btn.addTarget(self, action: #selector(addTag(_:)), for: .touchUpInside)
+        btn.setTitle(" + 태그 입력", for: .normal)
+        btn.backgroundColor = UIColor.white
+        btn.setTitleColor(.lightGray, for: .normal)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 23)
+        btn.contentHorizontalAlignment = .left
+        
+        btn.layer.borderColor = UIColor.lightGray.cgColor
+        btn.layer.borderWidth = 1
+        btn.layer.cornerRadius = 10
         return btn
     }()
     
@@ -48,7 +75,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     let textViewPlaceHolder = "무엇이 궁금한가요?"
     
     lazy var accessoryView: UIView = {
-        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 72))
+        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
     }()
     
     lazy var contentView: UITextView = {
@@ -62,13 +89,8 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         return view
     }()
     
-    override func viewWillAppear(_ animated: Bool) {
-        self.titleField.becomeFirstResponder()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setNavigationBar()
         setLayout()
     }
@@ -85,9 +107,17 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     private func setLayout() {
         view.addSubview(titleField)
         view.addSubview(contentView)
+        accessoryView.addSubview(plusImageButton)
+        accessoryView.addSubview(keyboardDownButton)
+        accessoryView.addSubview(addTagButton)
+        
+        guard let plusImageButtonSuperView = plusImageButton.superview else { return }
         
         titleField.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
+        plusImageButton.translatesAutoresizingMaskIntoConstraints = false
+        keyboardDownButton.translatesAutoresizingMaskIntoConstraints = false
+        addTagButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10.0),
@@ -97,19 +127,36 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
             contentView.leadingAnchor.constraint(equalTo: titleField.leadingAnchor),
             contentView.rightAnchor.constraint(equalTo: titleField.rightAnchor),
             contentView.topAnchor.constraint(equalTo: titleField.bottomAnchor, constant: 20),
-            contentView.heightAnchor.constraint(equalToConstant: 300)
+            contentView.heightAnchor.constraint(equalToConstant: 300),
+            plusImageButton.heightAnchor.constraint(equalToConstant: 48),
+            plusImageButton.widthAnchor.constraint(equalToConstant: 48),
+            plusImageButton.leftAnchor.constraint(equalTo: plusImageButtonSuperView.leftAnchor, constant: 1),
+            plusImageButton.topAnchor.constraint(equalTo: plusImageButtonSuperView.topAnchor, constant: 1),
+            keyboardDownButton.heightAnchor.constraint(equalToConstant: 48),
+            keyboardDownButton.widthAnchor.constraint(equalToConstant: 48),
+            keyboardDownButton.rightAnchor.constraint(equalTo: plusImageButtonSuperView.rightAnchor, constant: -1),
+            keyboardDownButton.topAnchor.constraint(equalTo: plusImageButtonSuperView.topAnchor, constant: 1),
+            addTagButton.heightAnchor.constraint(equalToConstant: 48),
+            addTagButton.leftAnchor.constraint(equalTo: plusImageButton.rightAnchor, constant: 1),
+            addTagButton.rightAnchor.constraint(equalTo: keyboardDownButton.leftAnchor, constant: -1),
+            addTagButton.topAnchor.constraint(equalTo: plusImageButtonSuperView.topAnchor, constant: 1)
         ])
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapContentView(_:)))
-        view.addGestureRecognizer(tapGesture)
-    }
-    
-    @objc private func didTapContentView(_ sender: Any) {
-        view.endEditing(true)
     }
     
     @objc private func doneQuestion(_ sender: Any) {
             
+    }
+    
+    @objc private func plusImage(_ sender: Any) {
+        
+    }
+    
+    @objc private func hideKeyboard(_ sender: Any) {
+        view.endEditing(true)
+    }
+    
+    @objc private func addTag(_ sender: Any) {
+        
     }
 }
 
