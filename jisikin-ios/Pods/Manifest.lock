@@ -1,20 +1,24 @@
 PODS:
   - Alamofire (5.6.2)
   - DropDown (2.3.13)
+  - SwiftyJSON (4.3.0)
 
 DEPENDENCIES:
   - Alamofire
   - DropDown
+  - SwiftyJSON (~> 4.0)
 
 SPEC REPOS:
   trunk:
     - Alamofire
     - DropDown
+    - SwiftyJSON
 
 SPEC CHECKSUMS:
   Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
   DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
+  SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
 
-PODFILE CHECKSUM: e55b7adafb963d7ee11e2fadcc2635b847cbb195
+PODFILE CHECKSUM: 94862d64021762a2698bbf3178cd0120c56ceef6
 
 COCOAPODS: 1.11.3

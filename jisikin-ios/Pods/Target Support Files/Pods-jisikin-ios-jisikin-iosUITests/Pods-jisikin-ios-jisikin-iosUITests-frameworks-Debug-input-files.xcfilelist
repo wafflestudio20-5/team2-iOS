@@ -1,3 +1,4 @@
 ${PODS_ROOT}/Target Support Files/Pods-jisikin-ios-jisikin-iosUITests/Pods-jisikin-ios-jisikin-iosUITests-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
 ${BUILT_PRODUCTS_DIR}/DropDown/DropDown.framework
+${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework

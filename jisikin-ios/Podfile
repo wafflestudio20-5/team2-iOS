@@ -5,6 +5,8 @@ target 'jisikin-ios' do
 
   pod 'DropDown'
   pod 'Alamofire'
+  pod 'SwiftyJSON', '~> 4.0'
+
 
   target 'jisikin-iosTests' do
     inherit! :search_paths

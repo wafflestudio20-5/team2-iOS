@@ -291,29 +291,6 @@ class SignupViewController: UIViewController {
         passwordRetypeTextfieldDidChange(passwordRetypeTextfield)
         nameTextfieldDidChange(nameTextfield)
         
-        /*if(usernameTextfield.text == "") {
-         showAlert(message:"아이디를 입력하세요", popVC: false)
-         }
-         
-         else if(passwordTextfield.text == ""){
-         showAlert(message:"비밀번호를 입력하세요", popVC: false)
-         }
-         
-         else if(passwordRetypeTextfield.text == ""){
-         showAlert(message:"비밀번호를 다시 입력하세요", popVC: false)
-         }
-         
-         else if(passwordTextfield.text != passwordRetypeTextfield.text){
-         showAlert(message:"비밀번호가 일치하지 않습니다", popVC: false)
-         }
-         
-         else if(nameTextfield.text == ""){
-         showAlert(message:"이름을 입력하세요", popVC: false)
-         }
-         
-         else if(genderButton.title(for: .normal) == "성별"){
-         showAlert(message:"성별을 선택하세요", popVC: false)
-         }*/
         if(genderButton.title(for: .normal) == "성별") {
             genderCriteriaLabel.text = "필수 정보입니다."
         }
