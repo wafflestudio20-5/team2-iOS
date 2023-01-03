@@ -9,6 +9,7 @@ import UIKit
 import DropDown
 
 class SignupViewController: UIViewController {
+    let repo = LoginRepository()
     
     let logoImgView = UIImageView()
     let usernameLabel = UILabel()
@@ -28,6 +29,8 @@ class SignupViewController: UIViewController {
     let genderCriteriaLabel = UILabel()
     let dropDown = DropDown()
     let signupButton = UIButton()
+    
+    var isMale = false
     
     override func viewDidLoad() {
         viewInit()
@@ -174,7 +177,7 @@ class SignupViewController: UIViewController {
         passwordRetypeCriteriaLabel.textColor = .red
         passwordRetypeCriteriaLabel.font = UIFont.systemFont(ofSize: 12)
 
-        nameLabel.text = "이름"
+        nameLabel.text = "닉네임"
         nameLabel.font = UIFont.boldSystemFont(ofSize: 15)
         
         nameTextfield.backgroundColor = .white
@@ -296,7 +299,26 @@ class SignupViewController: UIViewController {
         }
         
         else if(usernameCriteriaLabel.text == "" && passwordCriteriaLabel.text == "" && passwordRetypeCriteriaLabel.text == "" && nameCriteriaLabel.text == "") {
-                showAlert(message: "회원가입 성공", popVC: true)
+            
+            if(genderButton.title(for: .normal) == "남자") {
+                isMale = true
+            }
+            
+            let account = SignUp(isMale: isMale, password: passwordTextfield.text!, uid: usernameTextfield.text!, username: nameTextfield.text!)
+            repo.signUp(account: account, completionHandler: { _ in
+                
+                if(self.repo.error.uidExists == true) {
+                    self.usernameCriteriaLabel.text = self.repo.errorMessage
+                }
+                
+                else if(self.repo.error.usernameExists == true) {
+                    self.nameCriteriaLabel.text = self.repo.errorMessage
+                }
+                
+                else{
+                    self.showAlert(message: "회원가입 성공", popVC: true)
+                }
+            })
         }
     }
     

@@ -138,7 +138,7 @@ class LoginViewController: UIViewController {
             
             LoginRepo.login(param: Login(ID: usernameTextfield.text!, password: passwordTextfield.text!), completionHandler: { _ in
                 
-                if(self.LoginRepo.error.usernameWrong == true) {
+                if(self.LoginRepo.error.uidWrong == true) {
                     self.usernameCriteriaLabel.text = self.LoginRepo.errorMessage
                 }
                 
@@ -170,7 +170,7 @@ class LoginViewController: UIViewController {
     }
     
     @objc func tapKakaoLoginButton() {
-        print("kakao login")
+        LoginRepo.kakaoLogin()
     }
 }
 
