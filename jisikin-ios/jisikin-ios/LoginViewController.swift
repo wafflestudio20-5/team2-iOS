@@ -11,10 +11,14 @@ class LoginViewController: UIViewController {
     
     let logoImgView = UIImageView()
     let usernameTextfield = TextFieldWithPadding()
+    let usernameCriteriaLabel = UILabel()
     let passwordTextfield = TextFieldWithPadding()
+    let passwordCriteriaLabel = UILabel()
     let loginButton = UIButton()
     let signupButton = UIButton()
     let kakaoLoginButton = UIButton()
+    
+    let LoginRepo = LoginRepository()
     
     override func viewDidLoad() {
         viewInit()
@@ -29,14 +33,18 @@ class LoginViewController: UIViewController {
     func setLayout() {
         logoImgView.translatesAutoresizingMaskIntoConstraints = false
         usernameTextfield.translatesAutoresizingMaskIntoConstraints = false
+        usernameCriteriaLabel.translatesAutoresizingMaskIntoConstraints = false
         passwordTextfield.translatesAutoresizingMaskIntoConstraints = false
+        passwordCriteriaLabel.translatesAutoresizingMaskIntoConstraints = false
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         signupButton.translatesAutoresizingMaskIntoConstraints = false
         kakaoLoginButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(logoImgView)
         view.addSubview(usernameTextfield)
+        view.addSubview(usernameCriteriaLabel)
         view.addSubview(passwordTextfield)
+        view.addSubview(passwordCriteriaLabel)
         view.addSubview(loginButton)
         view.addSubview(signupButton)
         view.addSubview(kakaoLoginButton)
@@ -45,8 +53,10 @@ class LoginViewController: UIViewController {
         logoImgView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -50).isActive = true
         usernameTextfield.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         usernameTextfield.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
+        usernameCriteriaLabel.leadingAnchor.constraint(equalTo: usernameTextfield.leadingAnchor).isActive = true
         passwordTextfield.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         passwordTextfield.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
+        passwordCriteriaLabel.leadingAnchor.constraint(equalTo: passwordTextfield.leadingAnchor).isActive = true
         loginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         loginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         signupButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
@@ -58,9 +68,11 @@ class LoginViewController: UIViewController {
         logoImgView.bottomAnchor.constraint(equalTo: logoImgView.topAnchor, constant: 70).isActive = true
         usernameTextfield.topAnchor.constraint(equalTo: logoImgView.bottomAnchor, constant: 30).isActive = true
         usernameTextfield.bottomAnchor.constraint(equalTo: usernameTextfield.topAnchor, constant: 40).isActive = true
-        passwordTextfield.topAnchor.constraint(equalTo: usernameTextfield.bottomAnchor, constant: 20).isActive = true
+        usernameCriteriaLabel.topAnchor.constraint(equalTo: usernameTextfield.bottomAnchor, constant: 5).isActive = true
+        passwordTextfield.topAnchor.constraint(equalTo: usernameCriteriaLabel.bottomAnchor, constant: 20).isActive = true
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfield.topAnchor, constant: 40).isActive = true
-        loginButton.topAnchor.constraint(equalTo: passwordTextfield.bottomAnchor, constant: 20).isActive = true
+        passwordCriteriaLabel.topAnchor.constraint(equalTo: passwordTextfield.bottomAnchor, constant: 5).isActive = true
+        loginButton.topAnchor.constraint(equalTo: passwordCriteriaLabel.bottomAnchor, constant: 20).isActive = true
         loginButton.bottomAnchor.constraint(equalTo: loginButton.topAnchor, constant: 60).isActive = true
         signupButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 20).isActive = true
         kakaoLoginButton.topAnchor.constraint(equalTo: signupButton.bottomAnchor, constant: 60).isActive = true
@@ -79,11 +91,17 @@ class LoginViewController: UIViewController {
         usernameTextfield.layer.borderColor = UIColor.lightGray.cgColor
         usernameTextfield.layer.borderWidth = 1.0
         
+        usernameCriteriaLabel.textColor = .red
+        usernameCriteriaLabel.font = UIFont.systemFont(ofSize: 12)
+        
         passwordTextfield.backgroundColor = .white
         passwordTextfield.borderStyle = .line
         passwordTextfield.layer.borderColor = UIColor.lightGray.cgColor
         passwordTextfield.layer.borderWidth = 1.0
         passwordTextfield.isSecureTextEntry = true
+        
+        passwordCriteriaLabel.textColor = .red
+        passwordCriteriaLabel.font = UIFont.systemFont(ofSize: 12)
         
         loginButton.setTitle("로그인", for: .normal)
         loginButton.setTitleColor(.white, for: .normal)
@@ -102,16 +120,48 @@ class LoginViewController: UIViewController {
     }
     
     @objc func tapLoginButton() {
-        UserDefaults.standard.set(true, forKey: "isLogin")
         
-        let loginAlert = UIAlertController(title: nil, message: "로그인 성공", preferredStyle: .alert)
-        let loginAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { loginAction in
-                self.navigationController?.popViewController(animated: true)
-        })
-
-        loginAlert.addAction(loginAction)
+        if(usernameTextfield.text == "") {
+            passwordTextfield.text = ""
+            usernameCriteriaLabel.text = "아이디를 입력해주세요!"
+        }
         
-        self.present(loginAlert, animated: false)
+        else if(passwordTextfield.text == "") {
+            usernameCriteriaLabel.text = ""
+            passwordCriteriaLabel.text = "비밀번호를 입력해주세요!"
+        }
+        
+        else {
+            usernameCriteriaLabel.text = ""
+            passwordCriteriaLabel.text = ""
+            
+            
+            LoginRepo.login(param: Login(ID: usernameTextfield.text!, password: passwordTextfield.text!), completionHandler: { _ in
+                
+                if(self.LoginRepo.error.uidWrong == true) {
+                    self.usernameCriteriaLabel.text = self.LoginRepo.errorMessage
+                }
+                
+                else if(self.LoginRepo.error.passwordWrong == true) {
+                    self.passwordCriteriaLabel.text = self.LoginRepo.errorMessage
+                }
+                
+                else {
+                    UserDefaults.standard.set(true, forKey: "isLogin")
+                    
+                    self.usernameCriteriaLabel.text = ""
+                    self.passwordCriteriaLabel.text = ""
+                    let loginAlert = UIAlertController(title: nil, message: "로그인 성공", preferredStyle: .alert)
+                    let loginAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { loginAction in
+                        self.navigationController?.popViewController(animated: true)
+                    })
+                    
+                    loginAlert.addAction(loginAction)
+                    
+                    self.present(loginAlert, animated: false)
+                }
+            })
+        }
     }
 
     @objc func tapSignupButton() {
@@ -120,7 +170,7 @@ class LoginViewController: UIViewController {
     }
     
     @objc func tapKakaoLoginButton() {
-        print("kakao login")
+        LoginRepo.kakaoLogin()
     }
 }
 

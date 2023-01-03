@@ -10,9 +10,9 @@ struct Login {
     var password: String
 }
 
-struct SignUp {
-    var ID: String
-    var password: String
-    var name: String
+struct SignUp: Encodable {
     var isMale: Bool
+    var password: String
+    var uid: String
+    var username: String
 }
