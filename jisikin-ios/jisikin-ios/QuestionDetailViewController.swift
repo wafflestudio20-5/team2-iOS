@@ -19,7 +19,7 @@ class QuestionView:UIView{
     var answerButton:UIButton!
     var imageStackView:UIStackView!
     var questionImages:[UIImage] = []
-    
+    var onAnswerButtonClicked:(()->())?
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -152,9 +152,11 @@ class QuestionView:UIView{
           answerButton.widthAnchor.constraint(equalToConstant: 100)
         ])
     }
-    
+    func setOnAnswerButtonClicked(onAnswerButtonClicked:@escaping()->()){
+        self.onAnswerButtonClicked = onAnswerButtonClicked
+    }
     @objc private func answerButtonClicked(_ sender: Any) {
-        navigationController?.pushViewController(WritingAnswerViewController(), animated: false)
+        onAnswerButtonClicked?()
     }
 }
 class AnswerProfileView:UIView{
@@ -448,6 +450,9 @@ class QuestionDetailViewController:UIViewController{
 extension QuestionDetailViewController:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let questionView = QuestionView()
+        questionView.setOnAnswerButtonClicked(){[weak self] in
+            self?.navigationController?.pushViewController(WritingAnswerViewController(), animated: true)
+        }
         questionView.translatesAutoresizingMaskIntoConstraints = false
         let headerView = UITableViewHeaderFooterView()
         headerView.contentView.addSubview(questionView)
