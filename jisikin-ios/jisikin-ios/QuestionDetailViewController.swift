@@ -66,6 +66,7 @@ class QuestionView:UIView{
         answerButton = UIButton()
         answerButton.backgroundColor = BLUE_COLOR
         answerButton.setTitle("답변하기", for: .normal)
+        answerButton.addTarget(self, action: #selector(answerButtonClicked(_:)), for: .touchUpInside)
         
         questionImages = [UIColor.yellow.image(CGSize(width: 100, height: 100)),UIColor.orange.image(CGSize(width: 100, height: 100)),UIColor.blue.image(CGSize(width: 1200, height: 800))]
         
@@ -105,6 +106,7 @@ class QuestionView:UIView{
         addSubview(answerButton)
         
     }
+    
     func setConstraint(){
         NSLayoutConstraint.activate([
             questionTitleView.topAnchor.constraint(equalTo: self.topAnchor,constant: 0),
@@ -149,6 +151,10 @@ class QuestionView:UIView{
           answerButton.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant:-20.0),
           answerButton.widthAnchor.constraint(equalToConstant: 100)
         ])
+    }
+    
+    @objc private func answerButtonClicked(_ sender: Any) {
+        navigationController?.pushViewController(WritingAnswerViewController(), animated: false)
     }
 }
 class AnswerProfileView:UIView{
