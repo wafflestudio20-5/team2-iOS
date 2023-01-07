@@ -9,24 +9,27 @@ import UIKit
 
 class WritingAnswerViewController: UIViewController {
     lazy var rightButton: UIBarButtonItem = {
-        let btn = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAnswer(_:)))
+        let btn = UIBarButtonItem(title: "답변등록", style: .plain, target: self, action: #selector(doneAnswer(_:)))
+        btn.tintColor = BLUE_COLOR
+        return btn
+    }()
+    
+    lazy var viewQuestion: UIBarButtonItem = {
+        let btn = UIBarButtonItem(title: "질문보기", style: .plain, target: self, action: #selector(viewQuestion(_:)))
+        btn.tintColor = .black
+        return btn
+    }()
+    
+    lazy var leftButton: UIBarButtonItem = {
+        let btn = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(leftButton(_:)))
+        btn.tintColor = .black
         return btn
     }()
     
     lazy var plusImageButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(plusImage(_:)), for: .touchUpInside)
-        btn.setTitle("📷", for: .normal)
-        btn.backgroundColor = BLUE_COLOR
-        btn.layer.cornerRadius = 10
-        return btn
-    }()
-    
-    lazy var keyboardDownButton: UIButton = {
-        let btn = UIButton()
-        btn.addTarget(self, action: #selector(hideKeyboard(_:)), for: .touchUpInside)
-        btn.setTitle("↓", for: .normal)
-        btn.backgroundColor = BLUE_COLOR
+        btn.setImage(UIImage(systemName: "camera")?.withTintColor(.lightGray, renderingMode: .alwaysOriginal), for: .normal)
         btn.layer.cornerRadius = 10
         return btn
     }()
@@ -44,10 +47,11 @@ class WritingAnswerViewController: UIViewController {
     lazy var contentView: UITextView = {
         let view = UITextView()
         view.inputAccessoryView = accessoryView
-        view.font = .systemFont(ofSize: 20)
+        view.font = .systemFont(ofSize: 18)
         view.text = textViewPlaceHolder
         view.textColor = UIColor.lightGray
         view.delegate = self
+        view.becomeFirstResponder()
         
         return view
     }()
@@ -63,20 +67,18 @@ class WritingAnswerViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         self.navigationController?.isNavigationBarHidden = false
-        self.title = "답변하기"
-        self.navigationItem.rightBarButtonItem = rightButton
+        self.navigationItem.rightBarButtonItems = [rightButton, viewQuestion]
+        self.navigationItem.leftBarButtonItem = leftButton
     }
     
     private func setLayout() {
         view.addSubview(contentView)
         accessoryView.addSubview(plusImageButton)
-        accessoryView.addSubview(keyboardDownButton)
         
         guard let plusImageButtonSuperView = plusImageButton.superview else { return }
         
         contentView.translatesAutoresizingMaskIntoConstraints = false
         plusImageButton.translatesAutoresizingMaskIntoConstraints = false
-        keyboardDownButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10.0),
@@ -86,12 +88,12 @@ class WritingAnswerViewController: UIViewController {
             plusImageButton.heightAnchor.constraint(equalToConstant: 48),
             plusImageButton.widthAnchor.constraint(equalToConstant: 48),
             plusImageButton.leftAnchor.constraint(equalTo: plusImageButtonSuperView.leftAnchor, constant: 1),
-            plusImageButton.topAnchor.constraint(equalTo: plusImageButtonSuperView.topAnchor, constant: 1),
-            keyboardDownButton.heightAnchor.constraint(equalToConstant: 48),
-            keyboardDownButton.widthAnchor.constraint(equalToConstant: 48),
-            keyboardDownButton.rightAnchor.constraint(equalTo: plusImageButtonSuperView.rightAnchor, constant: -1),
-            keyboardDownButton.topAnchor.constraint(equalTo: plusImageButtonSuperView.topAnchor, constant: 1)
+            plusImageButton.topAnchor.constraint(equalTo: plusImageButtonSuperView.topAnchor, constant: 1)
         ])
+    }
+    
+    @objc private func leftButton(_ sender: Any) {
+        navigationController?.popViewController(animated: true)
     }
     
     @objc private func doneAnswer(_ sender: Any) {
@@ -102,8 +104,8 @@ class WritingAnswerViewController: UIViewController {
         
     }
     
-    @objc private func hideKeyboard(_ sender: Any) {
-        view.endEditing(true)
+    @objc private func viewQuestion(_ sender: Any) {
+        
     }
 }
 
