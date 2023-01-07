@@ -28,6 +28,7 @@ class AnswerViewController: UIViewController {
         // Do any additional setup after loading the view.
         viewModel.onQuestionListChanged  = {[weak self]
             questions in
+            self?.questionTable.refreshControl?.endRefreshing()
             self?.questionTable.reloadData()
         }
         viewModel.getRecentQuestions()
@@ -63,7 +64,8 @@ class AnswerViewController: UIViewController {
         questionTable.dataSource = self
         questionTable.separatorStyle = UITableViewCell.SeparatorStyle.none
         questionTable.register(QuestionTableViewCell.self,forCellReuseIdentifier: QuestionTableViewCell.ID)
-        
+        questionTable.refreshControl = UIRefreshControl()
+        questionTable.refreshControl?.addTarget(self, action: #selector(onQuestionRefresh), for: .valueChanged)
         
         
         
@@ -96,6 +98,14 @@ class AnswerViewController: UIViewController {
     }
     @objc func onSegmentValueChanged(segment:UISegmentedControl){
         if segment.selectedSegmentIndex == 0{
+            viewModel.getRecentQuestions()
+        }
+        else{
+            viewModel.getRecentQuestions()
+        }
+    }
+    @objc func onQuestionRefresh(){
+        if sortMethodSegment.selectedSegmentIndex == 0{
             viewModel.getRecentQuestions()
         }
         else{
