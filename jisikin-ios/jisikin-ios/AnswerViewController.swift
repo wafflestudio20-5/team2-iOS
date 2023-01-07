@@ -30,6 +30,7 @@ class AnswerViewController: UIViewController {
             questions in
             self?.questionTable.reloadData()
         }
+        viewModel.getRecentQuestions()
     }
     func setLayout(){
         navigationController?.isNavigationBarHidden = false
