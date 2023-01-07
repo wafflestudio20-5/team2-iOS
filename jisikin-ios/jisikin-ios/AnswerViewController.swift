@@ -18,7 +18,7 @@ class AnswerViewController: UIViewController {
     var searchButton:UIButton!
     var sortMethodSegment:PlainSegmentedControl!
     var questionTable:UITableView!
-    
+    var viewModel = QuestionListViewModel()
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,7 +26,10 @@ class AnswerViewController: UIViewController {
         setLayout()
         setConstraint()
         // Do any additional setup after loading the view.
-        
+        viewModel.onQuestionListChanged  = {[weak self]
+            questions in
+            self?.questionTable.reloadData()
+        }
     }
     func setLayout(){
         navigationController?.isNavigationBarHidden = false
@@ -52,6 +55,7 @@ class AnswerViewController: UIViewController {
             for: .selected
           )
         sortMethodSegment.backgroundColor = .systemGray6
+        sortMethodSegment.addTarget(self, action: #selector(onSegmentValueChanged(segment:)), for: .valueChanged)
         sortMethodSegment.selectedSegmentIndex = 0
         questionTable = UITableView()
         questionTable.delegate = self
@@ -68,6 +72,7 @@ class AnswerViewController: UIViewController {
        
         view.addSubview(sortMethodSegment)
         view.addSubview(questionTable)
+        
         
     }
     func setConstraint(){
@@ -88,6 +93,14 @@ class AnswerViewController: UIViewController {
     @objc func onSearchButtonPressed(){
         navigationController?.pushViewController(SearchViewController(), animated: false)
     }
+    @objc func onSegmentValueChanged(segment:UISegmentedControl){
+        if segment.selectedSegmentIndex == 0{
+            viewModel.getRecentQuestions()
+        }
+        else{
+            viewModel.getRecentQuestions()
+        }
+    }
     
 
     /*
@@ -104,12 +117,12 @@ class AnswerViewController: UIViewController {
 
 extension AnswerViewController:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dummy.count
+        return viewModel.questionListVMList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: QuestionTableViewCell.ID) as! QuestionTableViewCell
-        cell.configure(question:dummy[indexPath.row])
+        cell.configure(question:viewModel.questionListVMList[indexPath.row])
         return cell
         
     }

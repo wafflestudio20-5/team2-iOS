@@ -154,6 +154,13 @@ class QuestionTableViewCell:UITableViewCell{
         answerNumberView.text = "답변 \(question.answerNumber)"
         likeNumberView.text = "공감 \(question.likeNumber)"
     }
+    func configure(question:QuestionListVM){
+        questionTitleView.text = question.title
+        questionContentView.text = question.content
+        postedTimeView.text = question.createdAt
+        answerNumberView.text = question.answerNumber != nil ? "답변 \(question.answerNumber!)" : "답변"
+        likeNumberView.text = "공감"
+    }
     
 }
 
