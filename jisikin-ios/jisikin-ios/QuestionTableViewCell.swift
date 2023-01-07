@@ -154,7 +154,7 @@ class QuestionTableViewCell:UITableViewCell{
         answerNumberView.text = "답변 \(question.answerNumber)"
         likeNumberView.text = "공감 \(question.likeNumber)"
     }
-    func configure(question:QuestionListVM){
+    func configure(question:QuestionListModel){
         questionTitleView.text = question.title
         questionContentView.text = question.content
         postedTimeView.text = question.createdAt

@@ -6,13 +6,13 @@
 //
 
 import Foundation
-struct QuestionListVM{
+struct QuestionListModel{
     var title:String
     var content:String
     var answerNumber:Int?
     var createdAt:String
-    static func fromQuestionAPI(questionAPI:QuestionAPI)->QuestionListVM{
-        return QuestionListVM(title:questionAPI.title,content:questionAPI.content,answerNumber:nil, createdAt: convertTimeFormat(time: questionAPI.createdAt))
+    static func fromQuestionAPI(questionAPI:QuestionAPI)->QuestionListModel{
+        return QuestionListModel(title:questionAPI.title,content:questionAPI.content,answerNumber:nil, createdAt: convertTimeFormat(time: questionAPI.createdAt))
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
@@ -25,12 +25,12 @@ struct QuestionListVM{
     }
 }
 class QuestionListViewModel{
-    var onQuestionListChanged:(([QuestionListVM])->())?
+    var onQuestionListChanged:(([QuestionListModel])->())?
     var questionAPIList:[QuestionAPI] = []
     
-    var questionListVMList:[QuestionListVM] = []{
+    var questionListModelList:[QuestionListModel] = []{
         didSet(oldVal){
-            onQuestionListChanged?(questionListVMList)
+            onQuestionListChanged?(questionListModelList)
         }
     }
     
@@ -46,8 +46,8 @@ class QuestionListViewModel{
                 return
             }
             self!.questionAPIList = questions
-            self!.questionListVMList = self!.questionAPIList.map{
-                QuestionListVM.fromQuestionAPI(questionAPI: $0)
+            self!.questionListModelList = self!.questionAPIList.map{
+                QuestionListModel.fromQuestionAPI(questionAPI: $0)
             }
             for (i,question) in self!.questionAPIList.enumerated(){
                 self!.answerRepository.getAnswersByQuestionID(id: question.id){
@@ -55,7 +55,7 @@ class QuestionListViewModel{
                     if self!.answerRepository.isError{
                         return
                     }
-                    self!.questionListVMList[i].answerNumber = answers.count
+                    self!.questionListModelList[i].answerNumber = answers.count
                     
                 }
             }

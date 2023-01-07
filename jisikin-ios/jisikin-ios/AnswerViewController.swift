@@ -117,12 +117,12 @@ class AnswerViewController: UIViewController {
 
 extension AnswerViewController:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.questionListVMList.count
+        return viewModel.questionListModelList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: QuestionTableViewCell.ID) as! QuestionTableViewCell
-        cell.configure(question:viewModel.questionListVMList[indexPath.row])
+        cell.configure(question:viewModel.questionListModelList[indexPath.row])
         return cell
         
     }
