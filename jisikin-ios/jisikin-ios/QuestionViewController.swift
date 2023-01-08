@@ -23,13 +23,13 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     lazy var rightButton: UIBarButtonItem = {
         let btn = UIBarButtonItem(image: UIImage(systemName: "checkmark"), style: .plain, target: self, action: #selector(doneQuestion(_:)))
-        btn.tintColor = .black
+        btn.tintColor = .white
         return btn
     }()
     
     lazy var leftButton: UIBarButtonItem = {
         let btn = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(leftButton(_:)))
-        btn.tintColor = .black
+        btn.tintColor = .white
         return btn
     }()
     
@@ -91,6 +91,13 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     private func setNavigationBar() {
         self.view.backgroundColor = .white
         // Do any additional setup after loading the view.
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = BLUE_COLOR
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         
         navigationController?.isNavigationBarHidden = false
         navigationController?.navigationBar.topItem?.title = "질문하기"
