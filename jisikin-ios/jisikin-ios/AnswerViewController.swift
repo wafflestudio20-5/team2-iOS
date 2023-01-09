@@ -6,19 +6,19 @@
 //
 
 import UIKit
-
+import RxSwift
 let BLUE_COLOR = UIColor(red: 111/255.0, green:200/255.0, blue: 240/255.0, alpha: 1.0)
 
            
 class AnswerViewController: UIViewController {
     
    
-    
+    var bag = DisposeBag()
     var titleView:UILabel!
     var searchButton:UIButton!
     var sortMethodSegment:PlainSegmentedControl!
     var questionTable:UITableView!
-    var viewModel = QuestionListViewModel()
+    var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,12 +26,11 @@ class AnswerViewController: UIViewController {
         setLayout()
         setConstraint()
         // Do any additional setup after loading the view.
-        viewModel.onQuestionListChanged  = {[weak self]
-            questions in
-            self?.questionTable.refreshControl?.endRefreshing()
-            self?.questionTable.reloadData()
-        }
-        viewModel.getRecentQuestions()
+        viewModel.questions.asObservable().bind(to:questionTable.rx.items(cellIdentifier: QuestionTableViewCell.ID)){index,model,cell in
+            (cell as! QuestionTableViewCell).configure(question:model)
+        }.disposed(by: bag)
+        viewModel.getQuestions()
+        
     }
     func setLayout(){
         navigationController?.isNavigationBarHidden = false
@@ -61,7 +60,7 @@ class AnswerViewController: UIViewController {
         sortMethodSegment.selectedSegmentIndex = 0
         questionTable = UITableView()
         questionTable.delegate = self
-        questionTable.dataSource = self
+        
         questionTable.separatorStyle = UITableViewCell.SeparatorStyle.none
         questionTable.register(QuestionTableViewCell.self,forCellReuseIdentifier: QuestionTableViewCell.ID)
         questionTable.refreshControl = UIRefreshControl()
@@ -98,18 +97,18 @@ class AnswerViewController: UIViewController {
     }
     @objc func onSegmentValueChanged(segment:UISegmentedControl){
         if segment.selectedSegmentIndex == 0{
-            viewModel.getRecentQuestions()
+            viewModel.getQuestions()
         }
         else{
-            viewModel.getRecentQuestions()
+            viewModel.getQuestions()
         }
     }
     @objc func onQuestionRefresh(){
         if sortMethodSegment.selectedSegmentIndex == 0{
-            viewModel.getRecentQuestions()
+            viewModel.getQuestions()
         }
         else{
-            viewModel.getRecentQuestions()
+            viewModel.getQuestions()
         }
     }
     
@@ -126,19 +125,10 @@ class AnswerViewController: UIViewController {
 
 }
 
-extension AnswerViewController:UITableViewDelegate,UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.questionListModelList.count
-    }
+extension AnswerViewController:UITableViewDelegate{
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: QuestionTableViewCell.ID) as! QuestionTableViewCell
-        cell.configure(question:viewModel.questionListModelList[indexPath.row])
-        return cell
-        
-    }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        navigationController?.pushViewController(QuestionDetailViewController(), animated: true)
+        navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: viewModel.questions.value[indexPath.row].id)), animated: true)
     }
     
     

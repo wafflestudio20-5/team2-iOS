@@ -7,7 +7,8 @@
 
 import Foundation
 import UIKit
-
+import RxSwift
+import RxCocoa
 class QuestionView:UIView{
     var questionTitleView:UILabel!
     var questionUserInfo:UILabel!
@@ -158,6 +159,13 @@ class QuestionView:UIView{
     @objc private func answerButtonClicked(_ sender: Any) {
         onAnswerButtonClicked?()
     }
+    func configure(question:QuestionDetailModel){
+        questionTitleView.text = question.title
+        questionTimeView.text = question.createdAt
+        questionContentView.text = question.content
+        
+    
+    }
 }
 class AnswerProfileView:UIView{
 
@@ -218,6 +226,11 @@ class AnswerProfileView:UIView{
             profilePicture.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: -5.0),
             
         ])
+    }
+    func configure(answer:AnswerDetailModel){
+        answerUserView.text = answer.username
+        recentAnswerTime.text = answer.userRecentAnswerDate
+        
     }
 }
 class AnswerTableCell:UITableViewCell{
@@ -400,16 +413,32 @@ class AnswerTableCell:UITableViewCell{
             answerChoiceButton.setTitle("채택하기", for: .normal)
             answerChoiceButton.titleLabel!.font = answerChoiceButton.titleLabel!.font.withSize(20)
             answerChoiceButton.setTitleColor(.white, for: .normal)
+            answerChoiceButton.setImage(nil, for: .normal)
             answerChoiceButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
         }
     }
+    func configure(answer:AnswerDetailModel){
+        answerTimeView.text = answer.createdAt
+        answerContentView.text = answer.content
+        profile.configure(answer:answer)
+        setIsChosen(isChosen: answer.selected)
+    }
 }
 class QuestionDetailViewController:UIViewController{
-    
+    var bag = DisposeBag()
     var answerTableView:UITableView!
-    var questionView:QuestionView!
+    var questionView = QuestionView()
     var headerView : UITableViewHeaderFooterView!
+    var viewModel:QuestionDetailViewModel
+    init(viewModel:QuestionDetailViewModel){
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+        
+    }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -418,6 +447,15 @@ class QuestionDetailViewController:UIViewController{
         setLayout()
         setConstraint()
         // Do any additional setup after loading the view.
+        viewModel.question.subscribe(onNext: {[weak self]
+            question in
+            if let question{
+                self?.questionView.configure(question:question)
+            }
+        }).disposed(by: bag)
+        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
+            (cell as! AnswerTableCell).configure(answer:model)
+        }.disposed(by: bag)
         
     }
     func setLayout(){
@@ -427,7 +465,7 @@ class QuestionDetailViewController:UIViewController{
         
         answerTableView = UITableView(frame: .zero, style: .grouped)
         answerTableView.delegate = self
-        answerTableView.dataSource = self
+     
         answerTableView.register(AnswerTableCell.self, forCellReuseIdentifier: AnswerTableCell.ID)
         answerTableView.backgroundColor = .white
         answerTableView.sectionHeaderHeight = UITableView.automaticDimension
@@ -447,9 +485,9 @@ class QuestionDetailViewController:UIViewController{
         ])
     }
 }
-extension QuestionDetailViewController:UITableViewDelegate,UITableViewDataSource{
+extension QuestionDetailViewController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let questionView = QuestionView()
+       
         questionView.setOnAnswerButtonClicked(){[weak self] in
             self?.navigationController?.pushViewController(WritingAnswerViewController(), animated: true)
         }
@@ -465,21 +503,7 @@ extension QuestionDetailViewController:UITableViewDelegate,UITableViewDataSource
         ])
         return headerView
     }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: AnswerTableCell.ID, for: indexPath) as! AnswerTableCell
-        if(indexPath.row == 0){
-            cell.setIsChosen(isChosen: true)
-        }
-        else{
-            cell.setIsChosen(isChosen: false)
-        }
-        return cell
-    }
-    
+ 
     
 }
 extension UIColor {//for single color image

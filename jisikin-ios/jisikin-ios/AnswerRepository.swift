@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import RxSwift
 struct AnswerAPI:Codable{
     var content:String
     var photos:[String]
@@ -35,6 +36,23 @@ class AnswerRepository{
                 onCompleted([])
                 
             }
+        }
+    }
+    func getAnswersByQuestionID(id:Int)->Single<[AnswerAPI]>{
+        let fullURL = URL(string: baseURL + "/api/answer/\(id)")
+        return Single<[AnswerAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get).responseDecodable(of:[AnswerAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+                
+            }
+            return Disposables.create()
         }
     }
 }

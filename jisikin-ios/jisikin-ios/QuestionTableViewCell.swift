@@ -1,12 +1,4 @@
 import UIKit
-let dummy = [
-    Question(title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet convallis purus. Praesent auctor, justo eu feugiat consequat, lorem lacus vestibulum velit, eget luctus mi tellus a lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Duis at nibh enim. Ut aliquet porta elit sit amet fringilla. Nullam tincidunt orci ut neque porta, ut semper diam posuere. Sed commodo nisl quis dolor hendrerit eleifend. Nullam ornare odio eget elit tincidunt, a faucibus dui porta. Integer molestie in nisl sit amet facilisis. Ut nunc nisi, malesuada ac iaculis nec, accumsan eu nisi. Cras ut ultrices eros, ut dictum nisl. Nulla lobortis consequat ipsum at interdum.", content:"Maecenas at viverra magna. Suspendisse iaculis, mi ut sagittis convallis, odio est mattis eros, sed ultrices dolor arcu id nibh. Morbi in est placerat, dapibus justo eget, finibus erat. Pellentesque feugiat suscipit finibus. Proin venenatis nisi quam, et molestie velit convallis finibus. Praesent blandit, ligula sit amet ultrices dignissim, odio nisi rhoncus massa, vel ullamcorper mi nisl at diam. Pellentesque tellus eros, lacinia non pretium ac, placerat a felis. Donec vitae pretium metus. Vestibulum lectus est, lobortis sed ex sit amet, sollicitudin elementum libero. Praesent at vulputate ex. Donec ultrices magna a dui finibus porttitor non eget enim. Quisque auctor malesuada ex, sed luctus leo blandit et.", time: "1일 전", likeNumber: 1, answerNumber: 2),
-    Question(title: "title2", content:"content2", time: "1일 전", likeNumber: 1, answerNumber: 2),
-    Question(title: "title3", content:"content3", time: "1일 전", likeNumber: 1, answerNumber: 2),
-    Question(title: "title4", content:"content4", time: "1일 전", likeNumber: 1, answerNumber: 2),
-    Question(title: "title5", content:"content5", time: "1일 전", likeNumber: 1, answerNumber: 2),
-
-]
 
 class QuestionTableViewCell:UITableViewCell{
     
@@ -147,13 +139,7 @@ class QuestionTableViewCell:UITableViewCell{
             lineAtBottom.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
-    func configure(question:Question){
-        questionTitleView.text = question.title
-        questionContentView.text = question.content
-        postedTimeView.text = question.time
-        answerNumberView.text = "답변 \(question.answerNumber)"
-        likeNumberView.text = "공감 \(question.likeNumber)"
-    }
+   
     func configure(question:QuestionListModel){
         questionTitleView.text = question.title
         questionContentView.text = question.content

@@ -6,13 +6,16 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 struct QuestionListModel{
     var title:String
     var content:String
     var answerNumber:Int?
     var createdAt:String
+    var id:Int
     static func fromQuestionAPI(questionAPI:QuestionAPI)->QuestionListModel{
-        return QuestionListModel(title:questionAPI.title,content:questionAPI.content,answerNumber:nil, createdAt: convertTimeFormat(time: questionAPI.createdAt))
+        return QuestionListModel(title:questionAPI.title,content:questionAPI.content,answerNumber:nil, createdAt: convertTimeFormat(time: questionAPI.createdAt),id:questionAPI.id)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
@@ -25,40 +28,38 @@ struct QuestionListModel{
     }
 }
 class QuestionListViewModel{
-    var onQuestionListChanged:(([QuestionListModel])->())?
-    var questionAPIList:[QuestionAPI] = []
-    
-    var questionListModelList:[QuestionListModel] = []{
-        didSet(oldVal){
-            onQuestionListChanged?(questionListModelList)
-        }
-    }
-    
-    let questionRepository = QuestionRepository()
-    let answerRepository = AnswerRepository()
-    
-    func getRecentQuestions(){
-        questionRepository.getRecentQuestions{ [weak self]questions in
-            if self == nil{
+    var bag = DisposeBag()
+    var usecase:QuestionAnswerUsecase
+    var questions = BehaviorRelay<[QuestionListModel]>(value:[])
+    init(usecase:QuestionAnswerUsecase){
+        self.usecase = usecase
+        usecase.questions.asObservable().subscribe(onNext: {[weak self]
+            data in
+            if self == nil{return}
+            self!.questions.accept(data.map{ questionAPI in
+                var question = QuestionListModel.fromQuestionAPI(questionAPI: questionAPI)
+                question.answerNumber = usecase.answersByQuestionID.value[question.id]?.count
+                return question
+                
+            })
+        }).disposed(by: bag)
+        usecase.answersByQuestionID.asObservable().subscribe(onNext:{[weak self]
+            data in
+            if self == nil{return}
+            var value = self!.questions.value
+            if value.count == 0{
                 return
             }
-            if self!.questionRepository.isError{
-                return
+            for i in 0...value.count-1{
+                value[i].answerNumber = data[value[i].id]?.count
             }
-            self!.questionAPIList = questions
-            self!.questionListModelList = self!.questionAPIList.map{
-                QuestionListModel.fromQuestionAPI(questionAPI: $0)
-            }
-            for (i,question) in self!.questionAPIList.enumerated(){
-                self!.answerRepository.getAnswersByQuestionID(id: question.id){
-                    answers in
-                    if self!.answerRepository.isError{
-                        return
-                    }
-                    self!.questionListModelList[i].answerNumber = answers.count
-                    
-                }
-            }
+            self!.questions.accept(value)
+            
+        })
         }
+    func getQuestions(){
+        usecase.getQuestionsAndAnswers()
     }
 }
+ 
+
