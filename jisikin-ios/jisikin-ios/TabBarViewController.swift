@@ -74,25 +74,7 @@ extension TabBarViewController:UITabBarControllerDelegate{
         }
         return true
     }
-    func showAlert(message: String, popVC: Bool){
-        let setAlert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        
-        var setAction: UIAlertAction
-        
-        if(popVC == true){
-            setAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { setAction in
-                self.navigationController?.popViewController(animated: true)
-            })
-        }
-        
-        else {
-            setAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default)
-        }
-        
-        setAlert.addAction(setAction)
-        
-        self.present(setAlert, animated: false)
-    }
+   
     func showLoginAlert(nav:UINavigationController){
         let loginAction = UIAlertAction(title:"로그인",style: .default,handler: {
             setAction in
