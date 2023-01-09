@@ -75,7 +75,7 @@ class LoginViewController: UIViewController {
         loginButton.topAnchor.constraint(equalTo: passwordCriteriaLabel.bottomAnchor, constant: 20).isActive = true
         loginButton.bottomAnchor.constraint(equalTo: loginButton.topAnchor, constant: 60).isActive = true
         signupButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 20).isActive = true
-        kakaoLoginButton.topAnchor.constraint(equalTo: signupButton.bottomAnchor, constant: 60).isActive = true
+        kakaoLoginButton.topAnchor.constraint(equalTo: signupButton.bottomAnchor, constant: 30).isActive = true
         kakaoLoginButton.bottomAnchor.constraint(equalTo: kakaoLoginButton.topAnchor, constant: 50).isActive = true
     }
     
@@ -166,7 +166,10 @@ class LoginViewController: UIViewController {
 
     @objc func tapSignupButton() {
         let vc = SignupViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
+        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = UIColor(named: "MainColor")
+        self.navigationItem.backBarButtonItem = backBarButtonItem
+        self.navigationController?.present(vc, animated: true)
     }
     
     @objc func tapKakaoLoginButton() {
@@ -175,9 +178,15 @@ class LoginViewController: UIViewController {
 }
 
 
-
+protocol MyCustomTextFieldDelegate: AnyObject {
+    func doneButtonPressed()
+    func arrowDownPressed()
+    func arrowUpPressed()
+}
 
 class TextFieldWithPadding: UITextField {
+    weak var customTextFieldDelegate: MyCustomTextFieldDelegate?
+    
     var textPadding = UIEdgeInsets(
         top: 10,
         left: 10,
@@ -193,5 +202,41 @@ class TextFieldWithPadding: UITextField {
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         let rect = super.editingRect(forBounds: bounds)
         return rect.inset(by: textPadding)
+    }
+
+    func enableInputAccessoryView() {
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        toolBar.barStyle = UIBarStyle.default
+        toolBar.isTranslucent = true
+        let space = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+
+        let doneButton = UIBarButtonItem(title: "완료", style: .done, target: self,
+                                         action: #selector(textFieldDonePressed))
+        doneButton.tintColor = UIColor(named: "MainColor")
+
+        let arrowUp = UIBarButtonItem(image: UIImage(systemName: "chevron.up"), style: .plain, target: nil, action: #selector(arrowUpPressed))
+        arrowUp.tintColor = UIColor(named: "MainColor")
+
+        let arrowDown = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .plain, target: nil, action: #selector(arrowDownPressed))
+        arrowDown.tintColor = UIColor(named: "MainColor")
+
+        toolBar.setItems([arrowUp, arrowDown, space, doneButton], animated: false)
+        toolBar.isUserInteractionEnabled = true
+        toolBar.sizeToFit()
+
+        inputAccessoryView = toolBar
+    }
+
+    @objc private func textFieldDonePressed() {
+        endEditing(true)
+        customTextFieldDelegate?.doneButtonPressed()
+    }
+
+    @objc private func arrowDownPressed() {
+        customTextFieldDelegate?.arrowDownPressed()
+    }
+
+    @objc private func arrowUpPressed() {
+        customTextFieldDelegate?.arrowUpPressed()
     }
 }
