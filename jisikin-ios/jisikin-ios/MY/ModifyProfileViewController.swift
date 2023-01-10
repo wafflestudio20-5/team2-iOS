@@ -40,12 +40,13 @@ class ModifyProfileViewController: UIViewController {
         profilePhotoLabel.text = "프로필 사진"
         
         let profilePhotoSize = CGFloat(45)
-        profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
-        profilePhotoView.backgroundColor = BLUE_COLOR
+//        profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
+        profilePhotoView.image = UIImage(named:"프로필사진jpg")
+        profilePhotoView.backgroundColor = .systemGray
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
         profilePhotoView.layer.borderWidth = 3.0
-        profilePhotoView.layer.borderColor = UIColor.systemGray.cgColor
+        profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifyProfilePhotoBtn))
         profilePhotoView.addGestureRecognizer(tapGesture)
