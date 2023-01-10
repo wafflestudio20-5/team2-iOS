@@ -43,6 +43,10 @@ class SignupViewController: UIViewController {
         viewInit()
         setLayout()
         setDesign()
+    }
+    
+    func viewInit() {
+        self.view.backgroundColor = UIColor(named: "BackgroundColor")
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         
@@ -73,10 +77,7 @@ class SignupViewController: UIViewController {
             selector: #selector(keyboardWillHide),
             name: UIResponder.keyboardWillHideNotification,
             object: nil)
-    }
-    
-    func viewInit() {
-        self.view.backgroundColor = UIColor(named: "BackgroundColor")
+
         let buttonConfig = UIButton.Configuration.plain()
         genderButton.configuration = buttonConfig
     }
