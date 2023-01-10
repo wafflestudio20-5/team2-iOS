@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "JISIK2N 색반전 3.png",
+      "filename" : "JISIK2N_Inverted 1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "JISIK2N 색반전 1.png",
+      "filename" : "JISIK2N_Inverted 2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "JISIK2N 색반전.png",
+      "filename" : "JISIK2N_Inverted 3.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

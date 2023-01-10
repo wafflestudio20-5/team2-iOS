@@ -41,7 +41,7 @@ class ModifyProfileViewController: UIViewController {
         
         let profilePhotoSize = CGFloat(45)
 //        profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
-        profilePhotoView.image = UIImage(named:"프로필사진jpg")
+        profilePhotoView.image = UIImage(named:"ProfilePictureJPG")
         profilePhotoView.backgroundColor = .systemGray
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
