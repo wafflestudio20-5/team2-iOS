@@ -18,7 +18,6 @@
 		4E8BAE2729559F63001CE4BD /* jisikin_iosUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8BAE2629559F63001CE4BD /* jisikin_iosUITests.swift */; };
 		4E8BAE2929559F63001CE4BD /* jisikin_iosUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8BAE2829559F63001CE4BD /* jisikin_iosUITestsLaunchTests.swift */; };
 		4E9CAE792960001800D92F30 /* plainSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CAE752960001800D92F30 /* plainSegmentedControl.swift */; };
-		4E9CAE7A2960001800D92F30 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CAE762960001800D92F30 /* Question.swift */; };
 		4E9CAE7B2960001800D92F30 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CAE772960001800D92F30 /* SearchViewController.swift */; };
 		4E9CAE7C2960001800D92F30 /* QuestionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CAE782960001800D92F30 /* QuestionDetailViewController.swift */; };
 		4E9CAE7E296066F300D92F30 /* QuestionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CAE7D296066F300D92F30 /* QuestionTableViewCell.swift */; };
@@ -26,6 +25,8 @@
 		4ECD064E296933BE00E848BF /* QuestionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD064D296933BE00E848BF /* QuestionListViewModel.swift */; };
 		4ECD06522969567900E848BF /* AnswerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD06512969567900E848BF /* AnswerRepository.swift */; };
 		4ECD065429697EC400E848BF /* WritingAnswerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD065329697EC400E848BF /* WritingAnswerViewController.swift */; };
+		4ECD0658296BE7B100E848BF /* QuestionAnswerUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD0657296BE7B100E848BF /* QuestionAnswerUsecase.swift */; };
+		4ECD065A296BFB2700E848BF /* QuestionDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD0659296BFB2700E848BF /* QuestionDetailViewModel.swift */; };
 		4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */; };
 		4ED26AC8295F0D670034F1A7 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */; };
 		4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */; };
@@ -74,7 +75,6 @@
 		4E8BAE2629559F63001CE4BD /* jisikin_iosUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jisikin_iosUITests.swift; sourceTree = "<group>"; };
 		4E8BAE2829559F63001CE4BD /* jisikin_iosUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jisikin_iosUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4E9CAE752960001800D92F30 /* plainSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = plainSegmentedControl.swift; sourceTree = "<group>"; };
-		4E9CAE762960001800D92F30 /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		4E9CAE772960001800D92F30 /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		4E9CAE782960001800D92F30 /* QuestionDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionDetailViewController.swift; sourceTree = "<group>"; };
 		4E9CAE7D296066F300D92F30 /* QuestionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionTableViewCell.swift; sourceTree = "<group>"; };
@@ -82,6 +82,8 @@
 		4ECD064D296933BE00E848BF /* QuestionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionListViewModel.swift; sourceTree = "<group>"; };
 		4ECD06512969567900E848BF /* AnswerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerRepository.swift; sourceTree = "<group>"; };
 		4ECD065329697EC400E848BF /* WritingAnswerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WritingAnswerViewController.swift; sourceTree = "<group>"; };
+		4ECD0657296BE7B100E848BF /* QuestionAnswerUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionAnswerUsecase.swift; sourceTree = "<group>"; };
+		4ECD0659296BFB2700E848BF /* QuestionDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionDetailViewModel.swift; sourceTree = "<group>"; };
 		4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
@@ -163,7 +165,6 @@
 				4ECD065329697EC400E848BF /* WritingAnswerViewController.swift */,
 				C002B11F295AE21B003303B7 /* AnswerViewController.swift */,
 				4E9CAE752960001800D92F30 /* plainSegmentedControl.swift */,
-				4E9CAE762960001800D92F30 /* Question.swift */,
 				4E9CAE782960001800D92F30 /* QuestionDetailViewController.swift */,
 				4E9CAE772960001800D92F30 /* SearchViewController.swift */,
 				C0E4FC66296C2E3800842C6E /* MY */,
@@ -180,6 +181,8 @@
 				4ECD06512969567900E848BF /* AnswerRepository.swift */,
 				4E010325296009860060F342 /* TestViewcontroller.swift */,
 				4E152C17296007A5000E9D9A /* TestRepository.swift */,
+				4ECD0657296BE7B100E848BF /* QuestionAnswerUsecase.swift */,
+				4ECD0659296BFB2700E848BF /* QuestionDetailViewModel.swift */,
 			);
 			path = "jisikin-ios";
 			sourceTree = "<group>";
@@ -476,7 +479,7 @@
 				4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */,
 				4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */,
 				C002B11E295AE1DA003303B7 /* TabBarViewController.swift in Sources */,
-				4E9CAE7A2960001800D92F30 /* Question.swift in Sources */,
+				4ECD0658296BE7B100E848BF /* QuestionAnswerUsecase.swift in Sources */,
 				4ED26AC8295F0D670034F1A7 /* SignupViewController.swift in Sources */,
 				C002B122295AE228003303B7 /* QuestionViewController.swift in Sources */,
 				4ECD064E296933BE00E848BF /* QuestionListViewModel.swift in Sources */,
@@ -486,6 +489,7 @@
 				C0D6FC1B295F5F2300FF0A0C /* ModifyProfileViewController.swift in Sources */,
 				4ECD064C29692C1900E848BF /* QuestionRepository.swift in Sources */,
 				C0D6FC15295F319A00FF0A0C /* MyQAViewController.swift in Sources */,
+				4ECD065A296BFB2700E848BF /* QuestionDetailViewModel.swift in Sources */,
 				4E9CAE7C2960001800D92F30 /* QuestionDetailViewController.swift in Sources */,
 				C002B120295AE21B003303B7 /* AnswerViewController.swift in Sources */,
 				4E010326296009860060F342 /* TestViewcontroller.swift in Sources */,
@@ -664,6 +668,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -696,6 +701,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

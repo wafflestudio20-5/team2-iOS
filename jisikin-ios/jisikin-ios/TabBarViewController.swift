@@ -49,6 +49,7 @@ class TabBarViewController: UITabBarController {
             selectedIndex = previousTabIndex
         }
         
+        self.delegate = self
         // Do any additional setup after loading the view.
     }
 
@@ -79,4 +80,33 @@ class TabBarViewController: UITabBarController {
     }
     */
 
+}
+extension TabBarViewController:UITabBarControllerDelegate{
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        let nav = viewController as! UINavigationController
+        if let  vc = ((nav.topViewController) as? QuestionViewController){
+            
+            if UserDefaults.standard.bool(forKey: "isLogin"){
+                return true
+            }
+            else{
+                showLoginAlert(nav: selectedViewController as! UINavigationController)
+                
+                return false
+            }
+        }
+        return true
+    }
+   
+    func showLoginAlert(nav:UINavigationController){
+        let loginAction = UIAlertAction(title:"로그인",style: .default,handler: {
+            setAction in
+            nav.pushViewController(LoginViewController(), animated: true)
+        })
+        let cancelAction = UIAlertAction(title:"취소",style:.default)
+        let alert = UIAlertController(title:nil,message: "로그인이 필요합니다",preferredStyle: .alert)
+        alert.addAction(loginAction)
+        alert.addAction(cancelAction)
+        self.present(alert,animated: false)
+    }
 }

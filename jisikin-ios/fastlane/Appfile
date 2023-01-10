@@ -1,0 +1,2 @@
+apple_id "apple@wafflestudio.com"
+team_id ENV['TEAM_ID']
