@@ -8,11 +8,14 @@
 import UIKit
 
 class TabBarViewController: UITabBarController {
+    private var previousTabIndex: Int = 0
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        if selectedIndex == 1{
+            selectedIndex = previousTabIndex
+        }
     }
 
     override func viewDidLoad() {
@@ -26,7 +29,7 @@ class TabBarViewController: UITabBarController {
         let questionNav = UINavigationController(rootViewController: questionVC)
         let myNav = UINavigationController(rootViewController: myVC)
         
-        setViewControllers([answerNav, questionNav, myNav], animated: false)
+        setViewControllers([answerNav, UIViewController(), myNav], animated: false)
         
         tabBar.items![0].title = "답변하기"
         tabBar.items![0].selectedImage = UIImage (systemName: "a.square.fill")
@@ -42,8 +45,28 @@ class TabBarViewController: UITabBarController {
         
         tabBar.backgroundColor = UIColor(red: 240, green: 240, blue: 240, alpha: 1.0)
         tabBar.isTranslucent = false
+        if selectedIndex == 1{
+            selectedIndex = previousTabIndex
+        }
+        
         self.delegate = self
         // Do any additional setup after loading the view.
+    }
+
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        guard let items = tabBar.items else { return }
+        for (index, tabBarItem) in items.enumerated() where tabBarItem == item {
+            //index는 1은 질문하기 탭
+            if index == 1 {
+            // 이전 인덱스로 화면 전환!
+                // self.tabBarController?.selectedIndex = previousTabIndex
+                let baseNavigationController: UINavigationController = self.view.window?.rootViewController as! UINavigationController
+                baseNavigationController.pushViewController(QuestionViewController(), animated: false)
+            } else {
+            // 그 외의 화면들은 인덱스 업데이트!
+                previousTabIndex = index
+            }
+        }
     }
     
 

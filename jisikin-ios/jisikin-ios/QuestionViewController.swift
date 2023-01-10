@@ -148,7 +148,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     @objc private func leftButton(_ sender: Any) {
         view.endEditing(true)
-        //navigationController?.popViewController(animated: true)
+        navigationController?.popViewController(animated: false)
     }
     
     @objc private func addTag(_ sender: Any) {

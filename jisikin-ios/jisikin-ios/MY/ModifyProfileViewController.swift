@@ -9,6 +9,12 @@ import UIKit
 
 class ModifyProfileViewController: UIViewController {
     
+    lazy var backBtn: UIBarButtonItem = {
+        let btn = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(onTapModifyCancelBtn))
+        btn.tintColor = .black
+        return btn
+    }()
+    
     let profilePhotoLabel = UILabel()
     let profilePhotoView = UIImageView()
     let modifyProfilePhotoBtn = UIButton()
@@ -23,17 +29,24 @@ class ModifyProfileViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
+        // navigationController?.navigationBar.isHidden = false
+        //navigationItem.leftItemsSupplementBackButton = false
         navigationItem.title = "프로필 수정"
-        
+        navigationItem.rightBarButtonItem = backBtn
+        //navigationController?.navigationBar.leftBarButtonItem = nil
+        //navigationController?.navigationBar.rightBarButtonItem = backBtn
+        navigationItem.hidesBackButton = true
         
         profilePhotoLabel.text = "프로필 사진"
         
         let profilePhotoSize = CGFloat(45)
-        profilePhotoView.image = UIImage(systemName: "person.fill")
+//        profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
+        profilePhotoView.image = UIImage(named:"ProfilePictureJPG")
+        profilePhotoView.backgroundColor = .systemGray
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
         profilePhotoView.layer.borderWidth = 3.0
-        profilePhotoView.layer.borderColor = UIColor.black.cgColor
+        profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifyProfilePhotoBtn))
         profilePhotoView.addGestureRecognizer(tapGesture)
@@ -63,9 +76,10 @@ class ModifyProfileViewController: UIViewController {
         
         modifySaveBtn.text = "저장하기"
         modifySaveBtn.textAlignment = .center
-        modifySaveBtn.backgroundColor = .systemGreen
-        modifySaveBtn.layer.borderWidth = 2.0
-        modifySaveBtn.layer.borderColor = UIColor.systemGray.cgColor
+        modifySaveBtn.backgroundColor = BLUE_COLOR
+        modifySaveBtn.textColor = .white
+        //modifySaveBtn.layer.borderWidth = 2.0
+        //modifySaveBtn.layer.borderColor = UIColor.systemGray.cgColor
         //modifySaveBtn.layer.cornerRadius = 8
         let tapModifySaveGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifySaveBtn))
         modifySaveBtn.addGestureRecognizer(tapModifySaveGesture)

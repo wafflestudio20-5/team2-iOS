@@ -158,32 +158,29 @@
 		4E8BAE0429559F62001CE4BD /* jisikin-ios */ = {
 			isa = PBXGroup;
 			children = (
-				4ECD065329697EC400E848BF /* WritingAnswerViewController.swift */,
 				4E8BAE0529559F62001CE4BD /* AppDelegate.swift */,
 				4E8BAE0729559F62001CE4BD /* SceneDelegate.swift */,
 				C002B11D295AE1DA003303B7 /* TabBarViewController.swift */,
+				C002B121295AE228003303B7 /* QuestionViewController.swift */,
+				4ECD065329697EC400E848BF /* WritingAnswerViewController.swift */,
 				C002B11F295AE21B003303B7 /* AnswerViewController.swift */,
 				4E9CAE752960001800D92F30 /* plainSegmentedControl.swift */,
 				4E9CAE782960001800D92F30 /* QuestionDetailViewController.swift */,
 				4E9CAE772960001800D92F30 /* SearchViewController.swift */,
-				C002B121295AE228003303B7 /* QuestionViewController.swift */,
-				C002B123295AE236003303B7 /* MyViewController.swift */,
-				C0D6FC1A295F5F2300FF0A0C /* ModifyProfileViewController.swift */,
-				C0D6FC14295F319A00FF0A0C /* MyQAViewController.swift */,
-				C0D6FC18295F32BD00FF0A0C /* HeartedQViewController.swift */,
+				C0E4FC66296C2E3800842C6E /* MY */,
 				4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */,
 				4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */,
 				4E8BAE0E29559F63001CE4BD /* Assets.xcassets */,
 				4E8BAE1329559F63001CE4BD /* Info.plist */,
 				C0D6FC10295E12F100FF0A0C /* Launch Screen.storyboard */,
-				4E152C17296007A5000E9D9A /* TestRepository.swift */,
-				4E010325296009860060F342 /* TestViewcontroller.swift */,
 				4E9CAE7D296066F300D92F30 /* QuestionTableViewCell.swift */,
 				4E44C25C2963ED5D001165AD /* LoginRepository.swift */,
 				4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */,
-				4ECD064B29692C1900E848BF /* QuestionRepository.swift */,
 				4ECD064D296933BE00E848BF /* QuestionListViewModel.swift */,
+				4ECD064B29692C1900E848BF /* QuestionRepository.swift */,
 				4ECD06512969567900E848BF /* AnswerRepository.swift */,
+				4E010325296009860060F342 /* TestViewcontroller.swift */,
+				4E152C17296007A5000E9D9A /* TestRepository.swift */,
 				4ECD0657296BE7B100E848BF /* QuestionAnswerUsecase.swift */,
 				4ECD0659296BFB2700E848BF /* QuestionDetailViewModel.swift */,
 			);
@@ -218,6 +215,17 @@
 				5541333EDBCB937116F222C7 /* Pods-jisikin-iosTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		C0E4FC66296C2E3800842C6E /* MY */ = {
+			isa = PBXGroup;
+			children = (
+				C002B123295AE236003303B7 /* MyViewController.swift */,
+				C0D6FC1A295F5F2300FF0A0C /* ModifyProfileViewController.swift */,
+				C0D6FC14295F319A00FF0A0C /* MyQAViewController.swift */,
+				C0D6FC18295F32BD00FF0A0C /* HeartedQViewController.swift */,
+			);
+			path = MY;
 			sourceTree = "<group>";
 		};
 		F05F4EB45688D3F7A3A8E1AB /* Frameworks */ = {
