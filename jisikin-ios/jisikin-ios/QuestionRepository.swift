@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import RxSwift
 struct QuestionAPI:Codable{
     var id:Int
     var title:String
@@ -32,6 +33,23 @@ final class QuestionRepository{
                 self.isError = true
                 onCompleted([])
             }
+        }
+    }
+    func getQuestionsByLikes()->Single<[QuestionAPI]>{
+        let fullURL = URL(string: baseURL + "/api/question/search")
+        return Single<[QuestionAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get).responseDecodable(of:[QuestionAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
         }
     }
 }

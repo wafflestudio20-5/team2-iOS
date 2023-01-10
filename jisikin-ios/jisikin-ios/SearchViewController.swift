@@ -44,7 +44,7 @@ extension SearchViewController:UITableViewDelegate,UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: QuestionTableViewCell.ID, for: indexPath) as! QuestionTableViewCell
-        cell.configure(question:dummy[indexPath.row])
+       
         return cell
     }
     
