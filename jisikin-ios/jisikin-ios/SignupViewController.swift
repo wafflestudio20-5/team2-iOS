@@ -11,18 +11,25 @@ import DropDown
 class SignupViewController: UIViewController {
     let repo = LoginRepository()
     
+    let scrollView : UIScrollView! = UIScrollView()
+    let contentView : UIStackView! = UIStackView()
+    
+    var keyHeight: CGFloat!
+    
+    var activeTextField = UITextField()
+    
     let logoImgView = UIImageView()
     let usernameLabel = UILabel()
-    let usernameTextfield = TextFieldWithPadding()
+    let usernameTextfield = TextFieldWithPaddingForSignup()
     let usernameCriteriaLabel = UILabel()
     let passwordLabel = UILabel()
-    let passwordTextfield = TextFieldWithPadding()
+    let passwordTextfield = TextFieldWithPaddingForSignup()
     let passwordCriteriaLabel = UILabel()
     let passwordRetypeLabel = UILabel()
-    let passwordRetypeTextfield = TextFieldWithPadding()
+    let passwordRetypeTextfield = TextFieldWithPaddingForSignup()
     let passwordRetypeCriteriaLabel = UILabel()
     let nameLabel = UILabel()
-    let nameTextfield = TextFieldWithPadding()
+    let nameTextfield = TextFieldWithPaddingForSignup()
     let nameCriteriaLabel = UILabel()
     let genderLabel = UILabel()
     let genderButton = UIButton()
@@ -36,6 +43,36 @@ class SignupViewController: UIViewController {
         viewInit()
         setLayout()
         setDesign()
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        
+        view.addGestureRecognizer(tap)
+        
+        usernameTextfield.delegate = self
+        passwordTextfield.delegate = self
+        passwordRetypeTextfield.delegate = self
+        nameTextfield.delegate = self
+        
+        usernameTextfield.enableInputAccessoryView()
+        passwordTextfield.enableInputAccessoryView()
+        passwordRetypeTextfield.enableInputAccessoryView()
+        nameTextfield.enableInputAccessoryView()
+        
+        usernameTextfield.customTextFieldDelegate = self
+        passwordTextfield.customTextFieldDelegate = self
+        passwordRetypeTextfield.customTextFieldDelegate = self
+        nameTextfield.customTextFieldDelegate = self
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
     }
     
     func viewInit() {
@@ -45,6 +82,11 @@ class SignupViewController: UIViewController {
     }
     
     func setLayout() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
 
         logoImgView.translatesAutoresizingMaskIntoConstraints = false
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -64,74 +106,101 @@ class SignupViewController: UIViewController {
         genderCriteriaLabel.translatesAutoresizingMaskIntoConstraints = false
         signupButton.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(logoImgView)
-        view.addSubview(usernameLabel)
-        view.addSubview(usernameTextfield)
-        view.addSubview(usernameCriteriaLabel)
-        view.addSubview(passwordLabel)
-        view.addSubview(passwordTextfield)
-        view.addSubview(passwordCriteriaLabel)
-        view.addSubview(passwordRetypeLabel)
-        view.addSubview(passwordRetypeTextfield)
-        view.addSubview(passwordRetypeCriteriaLabel)
-        view.addSubview(nameLabel)
-        view.addSubview(nameTextfield)
-        view.addSubview(nameCriteriaLabel)
-        view.addSubview(genderLabel)
-        view.addSubview(genderButton)
-        view.addSubview(genderCriteriaLabel)
-        view.addSubview(signupButton)
-
-        logoImgView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 50).isActive = true
-        logoImgView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -50).isActive = true
-        usernameLabel.leadingAnchor.constraint(equalTo: usernameTextfield.leadingAnchor).isActive = true
-        usernameTextfield.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        usernameTextfield.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        usernameCriteriaLabel.leadingAnchor.constraint(equalTo: usernameTextfield.leadingAnchor).isActive = true
-        passwordLabel.leadingAnchor.constraint(equalTo: passwordTextfield.leadingAnchor).isActive = true
-        passwordTextfield.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        passwordTextfield.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        passwordCriteriaLabel.leadingAnchor.constraint(equalTo: passwordTextfield.leadingAnchor).isActive = true
-        passwordRetypeLabel.leadingAnchor.constraint(equalTo: passwordRetypeTextfield.leadingAnchor).isActive = true
-        passwordRetypeTextfield.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        passwordRetypeTextfield.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        passwordRetypeCriteriaLabel.leadingAnchor.constraint(equalTo: passwordRetypeTextfield.leadingAnchor).isActive = true
-        nameLabel.leadingAnchor.constraint(equalTo: nameTextfield.leadingAnchor).isActive = true
-        nameTextfield.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        nameTextfield.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        nameCriteriaLabel.leadingAnchor.constraint(equalTo: nameTextfield.leadingAnchor).isActive = true
-        genderLabel.leadingAnchor.constraint(equalTo: genderButton.leadingAnchor).isActive = true
-        genderButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        genderButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        genderCriteriaLabel.leadingAnchor.constraint(equalTo: genderButton.leadingAnchor).isActive = true
-        signupButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        signupButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
         
-        logoImgView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        logoImgView.bottomAnchor.constraint(equalTo: logoImgView.topAnchor, constant: 70).isActive = true
-        usernameLabel.topAnchor.constraint(equalTo: logoImgView.bottomAnchor, constant: 20).isActive = true
-        usernameTextfield.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 5).isActive = true
-        usernameTextfield.bottomAnchor.constraint(equalTo: usernameTextfield.topAnchor, constant: 50).isActive = true
-        usernameCriteriaLabel.topAnchor.constraint(equalTo: usernameTextfield.bottomAnchor, constant:  5).isActive = true
-        passwordLabel.topAnchor.constraint(equalTo: usernameCriteriaLabel.bottomAnchor, constant: 10).isActive = true
-        passwordTextfield.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 5).isActive = true
-        passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfield.topAnchor, constant: 50).isActive = true
-        passwordCriteriaLabel.topAnchor.constraint(equalTo: passwordTextfield.bottomAnchor, constant: 5).isActive = true
-        passwordRetypeLabel.topAnchor.constraint(equalTo: passwordCriteriaLabel.bottomAnchor, constant: 10).isActive = true
-        passwordRetypeTextfield.topAnchor.constraint(equalTo: passwordRetypeLabel.bottomAnchor, constant: 5).isActive = true
-        passwordRetypeTextfield.bottomAnchor.constraint(equalTo: passwordRetypeTextfield.topAnchor, constant: 50).isActive = true
-        passwordRetypeCriteriaLabel.topAnchor.constraint(equalTo: passwordRetypeTextfield.bottomAnchor, constant: 5).isActive = true
-        nameLabel.topAnchor.constraint(equalTo: passwordRetypeCriteriaLabel.bottomAnchor, constant: 10).isActive = true
-        nameTextfield.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5).isActive = true
-        nameTextfield.bottomAnchor.constraint(equalTo: nameTextfield.topAnchor, constant:50).isActive = true
-        nameCriteriaLabel.topAnchor.constraint(equalTo: nameTextfield.bottomAnchor, constant: 5).isActive = true
-        genderLabel.topAnchor.constraint(equalTo: nameCriteriaLabel.bottomAnchor, constant: 10).isActive = true
-        genderButton.topAnchor.constraint(equalTo: genderLabel.bottomAnchor, constant: 5).isActive = true
-        genderButton.bottomAnchor.constraint(equalTo: genderButton.topAnchor, constant:50).isActive = true
-        genderCriteriaLabel.topAnchor.constraint(equalTo: genderButton.bottomAnchor, constant: 5).isActive = true
-        signupButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -70).isActive = true
-        signupButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+        NSLayoutConstraint.activate([
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
+        ])
+
+        contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+
+        let contentViewHeight = contentView.heightAnchor.constraint(greaterThanOrEqualTo: view.heightAnchor)
+        contentViewHeight.priority = .defaultLow
+        contentViewHeight.isActive = true
+        
+        contentView.addSubview(logoImgView)
+        contentView.addSubview(usernameLabel)
+        contentView.addSubview(usernameTextfield)
+        contentView.addSubview(usernameCriteriaLabel)
+        contentView.addSubview(passwordLabel)
+        contentView.addSubview(passwordTextfield)
+        contentView.addSubview(passwordCriteriaLabel)
+        contentView.addSubview(passwordRetypeLabel)
+        contentView.addSubview(passwordRetypeTextfield)
+        contentView.addSubview(passwordRetypeCriteriaLabel)
+        contentView.addSubview(nameLabel)
+        contentView.addSubview(nameTextfield)
+        contentView.addSubview(nameCriteriaLabel)
+        contentView.addSubview(genderLabel)
+        contentView.addSubview(genderButton)
+        contentView.addSubview(genderCriteriaLabel)
+        contentView.addSubview(signupButton)
+        
+        NSLayoutConstraint.activate([
+            logoImgView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 50),
+            logoImgView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -50),
+            usernameLabel.leadingAnchor.constraint(equalTo: usernameTextfield.leadingAnchor),
+            usernameTextfield.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            usernameTextfield.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            usernameCriteriaLabel.leadingAnchor.constraint(equalTo: usernameTextfield.leadingAnchor),
+            passwordLabel.leadingAnchor.constraint(equalTo: passwordTextfield.leadingAnchor),
+            passwordTextfield.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            passwordTextfield.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            passwordCriteriaLabel.leadingAnchor.constraint(equalTo: passwordTextfield.leadingAnchor),
+            passwordRetypeLabel.leadingAnchor.constraint(equalTo: passwordRetypeTextfield.leadingAnchor),
+            passwordRetypeTextfield.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            passwordRetypeTextfield.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            passwordRetypeCriteriaLabel.leadingAnchor.constraint(equalTo: passwordRetypeTextfield.leadingAnchor),
+            nameLabel.leadingAnchor.constraint(equalTo: nameTextfield.leadingAnchor),
+            nameTextfield.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            nameTextfield.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            nameCriteriaLabel.leadingAnchor.constraint(equalTo: nameTextfield.leadingAnchor),
+            genderLabel.leadingAnchor.constraint(equalTo: genderButton.leadingAnchor),
+            genderButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            genderButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            genderCriteriaLabel.leadingAnchor.constraint(equalTo: genderButton.leadingAnchor),
+            signupButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            signupButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+        ])
+       
+
+        NSLayoutConstraint.activate([
+            logoImgView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 50),
+            logoImgView.bottomAnchor.constraint(equalTo: logoImgView.topAnchor, constant: 70),
+            usernameLabel.topAnchor.constraint(equalTo: logoImgView.bottomAnchor, constant: 20),
+            usernameTextfield.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 5),
+            usernameTextfield.bottomAnchor.constraint(equalTo: usernameTextfield.topAnchor, constant: 50),
+            usernameCriteriaLabel.topAnchor.constraint(equalTo: usernameTextfield.bottomAnchor, constant:  5),
+            passwordLabel.topAnchor.constraint(equalTo: usernameCriteriaLabel.bottomAnchor, constant: 10),
+            passwordTextfield.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 5),
+            passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfield.topAnchor, constant: 50),
+            passwordCriteriaLabel.topAnchor.constraint(equalTo: passwordTextfield.bottomAnchor, constant: 5),
+            passwordRetypeLabel.topAnchor.constraint(equalTo: passwordCriteriaLabel.bottomAnchor, constant: 10),
+            passwordRetypeTextfield.topAnchor.constraint(equalTo: passwordRetypeLabel.bottomAnchor, constant: 5),
+            passwordRetypeTextfield.bottomAnchor.constraint(equalTo: passwordRetypeTextfield.topAnchor, constant: 50),
+            passwordRetypeCriteriaLabel.topAnchor.constraint(equalTo: passwordRetypeTextfield.bottomAnchor, constant: 5),
+            nameLabel.topAnchor.constraint(equalTo: passwordRetypeCriteriaLabel.bottomAnchor, constant: 10),
+            nameTextfield.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5),
+            nameTextfield.bottomAnchor.constraint(equalTo: nameTextfield.topAnchor, constant:50),
+            nameCriteriaLabel.topAnchor.constraint(equalTo: nameTextfield.bottomAnchor, constant: 5),
+            genderLabel.topAnchor.constraint(equalTo: nameCriteriaLabel.bottomAnchor, constant: 10),
+            genderButton.topAnchor.constraint(equalTo: genderLabel.bottomAnchor, constant: 5),
+            genderButton.bottomAnchor.constraint(equalTo: genderButton.topAnchor, constant:50),
+            genderCriteriaLabel.topAnchor.constraint(equalTo: genderButton.bottomAnchor, constant: 5),
+            signupButton.topAnchor.constraint(equalTo: genderButton.bottomAnchor, constant: 50),
+            signupButton.bottomAnchor.constraint(equalTo: signupButton.topAnchor, constant: 50),
+        ])
+        
+
+        scrollView.updateContentSize()
 
     }
     
@@ -213,6 +282,7 @@ class SignupViewController: UIViewController {
         genderButton.setTitle("성별", for: .normal)
         genderButton.setTitleColor(.black, for: .normal)
         genderButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        genderButton.tintColor = UIColor(named: "MainColor")
         genderButton.contentHorizontalAlignment = .fill
         genderButton.configuration?.imagePlacement = .trailing
         genderButton.backgroundColor = .white
@@ -227,18 +297,25 @@ class SignupViewController: UIViewController {
         signupButton.addTarget(self, action: #selector(tapSignupButton), for: .touchUpInside)
     }
     
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
     @objc func usernameTextfieldDidChange(_ textfield: UITextField) {
         
         if(textfield.text=="") {
             usernameCriteriaLabel.text = "필수 정보입니다."
+            scrollView.updateContentSize()
         }
         
-        else if (textfield.text!.count<5||textfield.text!.count>20||textfield.text!.range(of: "^[a-z0-9_\\-]*$", options: .regularExpression) == nil) {
-            usernameCriteriaLabel.text = "5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다."
+        else if (textfield.text!.count<5||textfield.text!.count>20||textfield.text!.range(of: "^[a-z0-9_]*$", options: .regularExpression) == nil) {
+            usernameCriteriaLabel.text = "5~20자의 영문 소문자, 숫자와 특수기호(_)만 사용 가능합니다."
+            scrollView.updateContentSize()
         }
         
         else {
             usernameCriteriaLabel.text = ""
+            scrollView.updateContentSize()
         }
     }
     
@@ -246,14 +323,17 @@ class SignupViewController: UIViewController {
         
         if(textfield.text=="") {
             passwordCriteriaLabel.text = "필수 정보입니다."
+            scrollView.updateContentSize()
         }
         
         else if (textfield.text!.count<8||textfield.text!.count>16||textfield.text!.range(of: "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!\"#$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~])", options: .regularExpression) == nil) {
             passwordCriteriaLabel.text = "8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요."
+            scrollView.updateContentSize()
         }
         
         else {
             passwordCriteriaLabel.text = ""
+            scrollView.updateContentSize()
         }
     }
     
@@ -261,14 +341,17 @@ class SignupViewController: UIViewController {
         
         if(textfield.text=="") {
             passwordRetypeCriteriaLabel.text = "필수 정보입니다."
+            scrollView.updateContentSize()
         }
         
         else if (passwordTextfield.text != textfield.text) {
             passwordRetypeCriteriaLabel.text = "비밀번호가 일치하지 않습니다."
+            scrollView.updateContentSize()
         }
         
         else {
             passwordRetypeCriteriaLabel.text = ""
+            scrollView.updateContentSize()
         }
     }
     
@@ -276,10 +359,12 @@ class SignupViewController: UIViewController {
         
         if(textfield.text=="") {
             nameCriteriaLabel.text = "필수 정보입니다."
+            scrollView.updateContentSize()
         }
         
         else {
             nameCriteriaLabel.text = ""
+            scrollView.updateContentSize()
         }
     }
     
@@ -296,6 +381,7 @@ class SignupViewController: UIViewController {
         
         if(genderButton.title(for: .normal) == "성별") {
             genderCriteriaLabel.text = "필수 정보입니다."
+            scrollView.updateContentSize()
         }
         
         else if(usernameCriteriaLabel.text == "" && passwordCriteriaLabel.text == "" && passwordRetypeCriteriaLabel.text == "" && nameCriteriaLabel.text == "") {
@@ -340,5 +426,154 @@ class SignupViewController: UIViewController {
         setAlert.addAction(setAction)
         
         self.present(setAlert, animated: false)
+    }
+    
+    @objc func keyboardWillShow(_ sender: Notification) {
+        self.keyboardWillHide(sender)
+        let userInfo: NSDictionary = sender.userInfo! as NSDictionary
+        let keyboardFrame: NSValue = userInfo.value(forKey: UIResponder.keyboardFrameEndUserInfoKey) as! NSValue
+        let keyboardRectangle = keyboardFrame.cgRectValue
+        let keyboardHeight = keyboardRectangle.height
+        keyHeight = keyboardHeight
+        
+        let insets = UIEdgeInsets(top: 0, left: 0, bottom: keyHeight+50, right: 0)
+    
+        scrollView.contentInset = insets
+        scrollView.scrollIndicatorInsets = insets
+    }
+
+    @objc func keyboardWillHide(_ sender: Notification) {
+        let insets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        scrollView.contentInset = insets
+        scrollView.scrollIndicatorInsets = insets
+    }
+}
+
+
+extension SignupViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.activeTextField = textField
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
+
+extension UIScrollView {
+    func updateContentSize() {
+        let unionCalculatedTotalRect = recursiveUnionInDepthFor(view: self)
+        
+        self.contentSize = CGSize(width: self.frame.width, height: unionCalculatedTotalRect.height-50)
+    }
+    
+    private func recursiveUnionInDepthFor(view: UIView) -> CGRect {
+        var totalRect: CGRect = .zero
+        
+        for subView in view.subviews {
+            totalRect = totalRect.union(recursiveUnionInDepthFor(view: subView))
+        }
+        
+        return totalRect.union(view.frame)
+    }
+}
+
+extension SignupViewController: MyCustomTextFieldDelegate {
+    func doneButtonPressed() {
+        //
+    }
+    
+    func arrowDownPressed() {
+        switch activeTextField{
+        case usernameTextfield:
+            passwordTextfield.becomeFirstResponder()
+        case passwordTextfield:
+            passwordRetypeTextfield.becomeFirstResponder()
+        case passwordRetypeTextfield:
+            nameTextfield.becomeFirstResponder()
+        default:
+            break
+        }
+    }
+    
+    func arrowUpPressed() {
+        switch activeTextField{
+        case passwordTextfield:
+            usernameTextfield.becomeFirstResponder()
+        case passwordRetypeTextfield:
+            passwordTextfield.becomeFirstResponder()
+        case nameTextfield:
+            passwordRetypeTextfield.becomeFirstResponder()
+        default:
+            break
+        }
+    }
+}
+
+protocol MyCustomTextFieldDelegate: AnyObject {
+    func doneButtonPressed()
+    func arrowDownPressed()
+    func arrowUpPressed()
+}
+
+class TextFieldWithPaddingForSignup: UITextField {
+    weak var customTextFieldDelegate: MyCustomTextFieldDelegate?
+    
+    var textPadding = UIEdgeInsets(
+        top: 10,
+        left: 10,
+        bottom: 10,
+        right: 10
+    )
+    
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        let rect = super.textRect(forBounds: bounds)
+        return rect.inset(by: textPadding)
+    }
+
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        let rect = super.editingRect(forBounds: bounds)
+        return rect.inset(by: textPadding)
+    }
+
+    func enableInputAccessoryView() {
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        toolBar.barStyle = UIBarStyle.default
+        toolBar.isTranslucent = true
+        let space = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+
+        let doneButton = UIBarButtonItem(title: "완료", style: .done, target: self,
+                                         action: #selector(textFieldDonePressed))
+        doneButton.tintColor = UIColor(named: "MainColor")
+
+        let arrowUp = UIBarButtonItem(image: UIImage(systemName: "chevron.up"), style: .plain, target: nil, action: #selector(arrowUpPressed))
+        arrowUp.tintColor = UIColor(named: "MainColor")
+
+        let arrowDown = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .plain, target: nil, action: #selector(arrowDownPressed))
+        arrowDown.tintColor = UIColor(named: "MainColor")
+
+        toolBar.setItems([arrowUp, arrowDown, space, doneButton], animated: false)
+        toolBar.isUserInteractionEnabled = true
+        toolBar.sizeToFit()
+
+        inputAccessoryView = toolBar
+    }
+
+    @objc private func textFieldDonePressed() {
+        endEditing(true)
+        customTextFieldDelegate?.doneButtonPressed()
+    }
+
+    @objc private func arrowDownPressed() {
+        customTextFieldDelegate?.arrowDownPressed()
+    }
+
+    @objc private func arrowUpPressed() {
+        customTextFieldDelegate?.arrowUpPressed()
     }
 }
