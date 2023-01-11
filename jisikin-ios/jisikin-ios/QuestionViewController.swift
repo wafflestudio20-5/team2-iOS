@@ -45,7 +45,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         collectionView.backgroundColor = .white
         collectionView.register(tagViewCell.self, forCellWithReuseIdentifier: "tagViewCell")
         collectionView.isScrollEnabled = true
-        collectionView.showsHorizontalScrollIndicator = true
+        collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInset = .zero
         
         
