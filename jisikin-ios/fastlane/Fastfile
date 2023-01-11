@@ -1,0 +1,59 @@
+default_platform(:ios)
+
+# From Github Secrets
+SCHEME_NAME = ENV['SCHEME_NAME']
+XCODEPROJ_NAME = ENV['XCODEPROJ_NAME']
+XCWORKSPACE_NAME = ENV['XCWORKSPACE_NAME']
+BUNDLE_IDENTIFIER = ENV['BUNDLE_IDENTIFIER']
+APP_STORE_CONNECT_KEY_ID = ENV['APP_STORE_CONNECT_KEY_ID']
+APP_STORE_CONNECT_KEY_ISSUER = ENV['APP_STORE_CONNECT_KEY_ISSUER']
+APP_STORE_CONNECT_KEY_CONTENT = ENV['APP_STORE_CONNECT_KEY_CONTENT']
+TEAM_ID = ENV['TEAM_ID']
+
+BUILD_CONFIGURATION = ENV['BUILD_CONFIGURATION']
+VERSION_NUMBER = ENV['VERSION_NUMBER']
+BUILD_NUMBER = ENV['BUILD_NUMBER']
+
+platform :ios do
+  desc "🧪 Upload app to Testflight"
+  lane :beta do
+      setup_ci
+      certificates_distribution
+      increment_version_number_in_xcodeproj(version_number: VERSION_NUMBER)
+      increment_build_number_in_xcodeproj(build_number: BUILD_NUMBER)
+      build_app(
+      workspace: XCWORKSPACE_NAME,
+      scheme: SCHEME_NAME,
+      configuration: BUILD_CONFIGURATION,
+      output_directory: "./archive",
+      silent: true,
+      clean: true)
+      app_store_connect_api_key(
+        key_id: APP_STORE_CONNECT_KEY_ID,
+        issuer_id: APP_STORE_CONNECT_KEY_ISSUER,
+        key_content: APP_STORE_CONNECT_KEY_CONTENT,
+        )
+      upload_to_testflight(app_version: VERSION_NUMBER)
+  end
+
+  desc "🛠️ Update xcodeproj file"
+  private_lane :update_xcodeproj do |options|
+    code_sign_identity = options[:type] == 'appstore' ? 'iPhone Distribution' : 'iPhone Developer'
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: XCODEPROJ_NAME,
+      team_id: TEAM_ID,
+      targets: SCHEME_NAME,
+      bundle_identifier: BUNDLE_IDENTIFIER,
+      code_sign_identity:  code_sign_identity,
+      profile_name: ENV["sigh_#{BUNDLE_IDENTIFIER}_#{options[:type]}_profile-name"],
+      )
+  end
+
+  desc "🔐 Configure certificates and provisioning profiles for distribution"
+  lane :certificates_distribution do
+    match(type: "appstore", app_identifier: [BUNDLE_IDENTIFIER], readonly: true)
+    update_xcodeproj(type: "appstore")
+  end
+
+end

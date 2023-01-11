@@ -290,6 +290,9 @@ class MyViewController: UIViewController {
     @objc
     func onTapLogInBtn() {
         let vc = LoginViewController()
+        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = UIColor(named: "MainColor")
+        self.navigationItem.backBarButtonItem = backBarButtonItem
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
