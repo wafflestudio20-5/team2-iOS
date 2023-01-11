@@ -402,20 +402,20 @@ class SignupViewController: UIViewController {
                 }
                 
                 else{
-                    self.showAlert(message: "회원가입 성공", popVC: true)
+                    self.showAlert(message: "회원가입 성공", dismissVC: true)
                 }
             })
         }
     }
     
-    func showAlert(message: String, popVC: Bool){
+    func showAlert(message: String, dismissVC: Bool){
         let setAlert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         
         var setAction: UIAlertAction
         
-        if(popVC == true){
+        if(dismissVC == true){
             setAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { setAction in
-                self.navigationController?.popViewController(animated: true)
+                self.dismiss(animated: true)
             })
         }
         
