@@ -9,7 +9,9 @@ target 'jisikin-ios' do
   pod 'KakaoSDKCommon'  # 필수 요소를 담은 공통 모듈
   pod 'KakaoSDKAuth'  # 사용자 인증
   pod 'KakaoSDKUser'  # 카카오 로그인, 사용자 관리
-
+  pod 'RxSwift', '6.5.0'
+  pod 'RxCocoa', '6.5.0'
+  pod 'RxDataSources', '~> 5.0'
 
   target 'jisikin-iosTests' do
     inherit! :search_paths
