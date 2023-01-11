@@ -109,8 +109,12 @@ extension TabBarViewController{
          let loginAction = UIAlertAction(title:"로그인",style: .default,handler: {[weak self]
              setAction in
              let appearance = UINavigationBarAppearance()
-             appearance.configureWithTransparentBackground()
-             UINavigationBar.appearance().standardAppearance = appearance
+             appearance.configureWithOpaqueBackground()
+             appearance.backgroundColor = UIColor(named:"BackgroundColor")
+             appearance.shadowColor = .clear
+             nav.navigationBar.standardAppearance = appearance
+             nav.navigationBar.scrollEdgeAppearance = appearance
+           
              let vc = LoginViewController()
              vc.questionRedirect = true
              let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
