@@ -48,7 +48,6 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInset = .zero
         
-        
         return collectionView
     }()
     
@@ -117,6 +116,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         view.text = textViewPlaceHolder
         view.textColor = UIColor.lightGray
         view.delegate = self
+        view.backgroundColor = .white
         
         return view
     }()
@@ -248,11 +248,19 @@ extension QuestionViewController: UICollectionViewDelegate, UICollectionViewData
             return UICollectionViewCell()
         }
         cell.tagLabel.text = "#" + self.tags[indexPath.row]
+        cell.xButton.tag = indexPath.row
+        cell.xButton.addTarget(self, action: #selector(xButtonPressed(sender:)), for: .touchUpInside)
+        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.tags.count
+    }
+    
+    @objc private func xButtonPressed(sender: UIButton) {
+        collectionView.deleteItems(at: [IndexPath.init(row: sender.tag, section: 0)])
+        tags.remove(at: sender.tag)
     }
 }
 
