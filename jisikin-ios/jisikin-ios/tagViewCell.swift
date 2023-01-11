@@ -26,7 +26,6 @@ class tagViewCell: UICollectionViewCell {
     lazy var xButton: UIButton = {
         var button = UIButton()
         button.setImage(systemName: "x.circle", color: UIColor.lightGray)
-        button.addTarget(self, action: #selector(xButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -60,9 +59,5 @@ class tagViewCell: UICollectionViewCell {
             xButton.widthAnchor.constraint(equalToConstant: cellHeight),
             xButton.centerYAnchor.constraint(equalTo: tagLabel.centerYAnchor)
         ])
-    }
-    
-    @objc private func xButtonPressed(_ sender: Any) {
-        
     }
 }
