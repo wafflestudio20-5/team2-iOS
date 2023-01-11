@@ -61,7 +61,6 @@ class MyViewController: UIViewController {
     let logInOutBtn = UIButton()
     
     
-    
     override func loadView(){
         super.loadView()
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
@@ -69,11 +68,13 @@ class MyViewController: UIViewController {
         self.view.backgroundColor = .white
         
         let profilePhotoSize = CGFloat(45)
-        profilePhotoView.image = UIImage(systemName: "person.fill")
+        //profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
+        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+        profilePhotoView.backgroundColor = .black
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
         profilePhotoView.layer.borderWidth = 3.0
-        profilePhotoView.layer.borderColor = UIColor.black.cgColor
+        profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
         
         let tapGesture: UITapGestureRecognizer
         if isLogin{
@@ -112,8 +113,7 @@ class MyViewController: UIViewController {
         QABtn.configuration = .plain()
         QABtn.configuration?.imagePlacement = .top
         QABtn.configuration?.imagePadding = 10
-        
-        QABtn.setImage(UIImage(systemName:"checkmark.circle", withConfiguration: largeConfig)!.withTintColor(.systemGreen, renderingMode: .alwaysOriginal), for: .normal)
+        QABtn.setImage(UIImage(systemName:"checkmark.circle", withConfiguration: largeConfig)!.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
         QABtn.setTitle("나의 Q&A", for: .normal)
         QABtn.setTitleColor(.black, for: .normal)
         QABtn.setTitleColor(.black, for: .highlighted)
@@ -131,7 +131,7 @@ class MyViewController: UIViewController {
         heartedQBtn.configuration?.imagePlacement = .top
         heartedQBtn.configuration?.imagePadding = 10
         
-        heartedQBtn.setImage(UIImage(systemName:"heart.text.square", withConfiguration: largeConfig)!.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        heartedQBtn.setImage(UIImage(systemName:"heart.text.square", withConfiguration: largeConfig)!.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
         heartedQBtn.setTitle("좋아요 누른 질문", for: .normal)
         heartedQBtn.setTitleColor(.black, for: .normal)
         heartedQBtn.setTitleColor(.black, for: .highlighted)
