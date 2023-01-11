@@ -65,15 +65,19 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
             if index == 2 {
             // 이전 인덱스로 화면 전환!
                 // self.tabBarController?.selectedIndex = previousTabIndex
-                let baseNavigationController: UINavigationController = self.view.window?.rootViewController as! UINavigationController
-                baseNavigationController.pushViewController(QuestionViewController(), animated: false)
+                if(UserDefaults.standard.bool(forKey: "isLogin")){
+                    let baseNavigationController: UINavigationController = self.view.window?.rootViewController as! UINavigationController
+                    baseNavigationController.pushViewController(QuestionViewController(), animated: false)
+                }
+             
+                
             } else {
             // 그 외의 화면들은 인덱스 업데이트!
                 previousTabIndex = index
             }
         }
     }
-
+     
     /*
     // MARK: - Navigation
 
@@ -85,32 +89,41 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
     */
 
 }
-//extension TabBarViewController:UITabBarControllerDelegate{
-//    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-//        let nav = viewController as! UINavigationController
-//        if let  vc = ((nav.topViewController) as? QuestionViewController){
-//
-//            if UserDefaults.standard.bool(forKey: "isLogin"){
-//                return true
-//            }
-//            else{
-//                showLoginAlert(nav: selectedViewController as! UINavigationController)
-//
-//                return false
-//            }
-//        }
-//        return true
-//    }
-//
-//    func showLoginAlert(nav:UINavigationController){
-//        let loginAction = UIAlertAction(title:"로그인",style: .default,handler: {
-//            setAction in
-//            nav.pushViewController(LoginViewController(), animated: true)
-//        })
-//        let cancelAction = UIAlertAction(title:"취소",style:.default)
-//        let alert = UIAlertController(title:nil,message: "로그인이 필요합니다",preferredStyle: .alert)
-//        alert.addAction(loginAction)
-//        alert.addAction(cancelAction)
-//        self.present(alert,animated: false)
-//    }
-//}
+extension TabBarViewController{
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        let nav = viewController as? UINavigationController
+        if nav == nil{
+            
+            if UserDefaults.standard.bool(forKey: "isLogin"){
+                return true
+            }
+            else{
+                showLoginAlert(nav: navigationController!)
+                
+                return false
+            }
+        }
+        return true
+    }
+    func showLoginAlert(nav:UINavigationController){
+         let loginAction = UIAlertAction(title:"로그인",style: .default,handler: {[weak self]
+             setAction in
+             let appearance = UINavigationBarAppearance()
+             appearance.configureWithTransparentBackground()
+             UINavigationBar.appearance().standardAppearance = appearance
+             let vc = LoginViewController()
+             vc.questionRedirect = true
+             let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+             backBarButtonItem.tintColor = UIColor(named: "MainColor")
+             self!.navigationItem.backBarButtonItem = backBarButtonItem
+             nav.pushViewController(vc, animated: true)
+             nav.setNavigationBarHidden(false, animated: false)
+             
+         })
+         let cancelAction = UIAlertAction(title:"취소",style:.default)
+         let alert = UIAlertController(title:nil,message: "로그인이 필요합니다",preferredStyle: .alert)
+      alert.addAction(loginAction)
+          alert.addAction(cancelAction)
+          self.present(alert,animated: false)
+      }
+}

@@ -20,6 +20,8 @@ class LoginViewController: UIViewController {
     
     let LoginRepo = LoginRepository()
     
+    var questionRedirect = false
+    
     override func viewDidLoad() {
         viewInit()
         setLayout()
@@ -153,7 +155,15 @@ class LoginViewController: UIViewController {
                     self.passwordCriteriaLabel.text = ""
                     let loginAlert = UIAlertController(title: nil, message: "로그인 성공", preferredStyle: .alert)
                     let loginAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { loginAction in
-                        self.navigationController?.popViewController(animated: true)
+                        
+                        if self.questionRedirect{
+                            let nav = self.navigationController!
+                            nav.popViewController(animated: false)
+                            nav.pushViewController(QuestionViewController(), animated: true)
+                        }
+                        else{
+                            self.navigationController?.popViewController(animated: true)
+                        }
                     })
                     
                     loginAlert.addAction(loginAction)
