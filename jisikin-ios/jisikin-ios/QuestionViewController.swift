@@ -35,6 +35,8 @@ extension UITextField {
 
 class QuestionViewController: UIViewController, UITextFieldDelegate {
     
+    var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
+    
     var tags: [String] = []
     
     var collectionView: UICollectionView = {
@@ -204,6 +206,23 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc private func doneQuestion(_ sender: Any) {
+        if (titleField.text ?? "").count < 1 {
+            let alert = UIAlertController(title: "주의", message: "제목을 입력하세요.", preferredStyle: .alert)
+            let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(action)
+            
+            self.present(alert, animated: true, completion: nil)
+        } else if (contentView.text ?? "").count < 1 {
+            let alert = UIAlertController(title: "주의", message: "내용을 입력하세요.", preferredStyle: .alert)
+            let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(action)
+            
+            self.present(alert, animated: true, completion: nil)
+        } else {
+            guard let titleText = titleField.text else { return }
+            guard let contentText = contentView.text else { return }
+            viewModel.postNewQuestion(titleText: titleText, contentText: contentText)
+        }
         
     }
     

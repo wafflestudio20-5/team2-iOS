@@ -60,6 +60,10 @@ class QuestionListViewModel{
     func getQuestions(){
         usecase.getQuestionsAndAnswers()
     }
+    
+    func postNewQuestion(titleText: String, contentText: String) {
+        usecase.postNewQuestion(titleText: titleText, contentText: contentText)
+    }
 }
  
 
