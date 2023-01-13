@@ -22,7 +22,6 @@ final class LoginRepository {
     }
     var error = Error()
     var errorMessage: String?
-    var kakaoError: Bool = false
     
     func login(param: Login, completionHandler:@escaping (String)->Void) {
         
@@ -79,96 +78,37 @@ final class LoginRepository {
         }
     }
     
-    func kakaoLogin(completionHandler:@escaping (String)->Void){
+    func kakaoLogin(){
         if (UserApi.isKakaoTalkLoginAvailable()) {
             
             //카톡 설치되어있으면 -> 카톡으로 로그인
             UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
                 if let error = error {
                     print(error)
-                    self.kakaoError = true
-                    completionHandler("error")
                 } else {
-                    let kakaoAccessToken = oauthToken?.accessToken
-                    self.sendKakaoToken(token: kakaoAccessToken!, completionHandler: { completion in
-                        
-                        if(completion == "success"){
-                            completionHandler("success")
-                        }
-                        
-                        else{
-                            completionHandler("failure")
-                        }
-                    })
+                    print("카카오 톡으로 로그인 성공")
+                    
+                    let authToken = oauthToken
+                    print(authToken)
                 }
             }
         }
         
         else {
+
             // 카톡 없으면 -> 계정으로 로그인
             UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
                 if let error = error {
                     print(error)
-                    self.kakaoError = true
-                    completionHandler("error")
                 } else {
-                    print(oauthToken)
-                    let kakaoAccessToken = oauthToken?.accessToken
-                    print("hihihihi")
-                    print(kakaoAccessToken)
-                    self.sendKakaoToken(token: kakaoAccessToken!, completionHandler: { completion in
-                        
-                        if(completion == "success"){
-                            completionHandler("success")
-                        }
-                        
-                        else{
-                            completionHandler("failure")
-                        }
-                    })
+                    print("카카오 계정으로 로그인 성공")
+                    
+                    let authToken = oauthToken
+                    print(authToken)
                 }
             }
         }
     }
-    
-    func sendKakaoToken(token: String, completionHandler:@escaping (String)->Void){
-        fullURL = URL(string: baseURL + "/api/user/kakaoLogin?accessToken=" + token)
-        
-        AF.request(fullURL!,
-                   method: .get
-        )
-        .responseData(){
-            response in
-            
-            switch response.result {
-            case .success(let data):
-                do {
-                    let asJSON = try JSONSerialization.jsonObject(with: data)
-                    
-                    let JSON = JSON(data)
-                    
-                    UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
-                    UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
-                    
-                    completionHandler("success")
-                    } catch {
-                        self.errorMessage = String(data: data, encoding: .utf8)
-                        
-                        print(self.errorMessage)
-                        
-                        self.kakaoError = true
-                        
-                        completionHandler("error")
-                    }
-                
-            case .failure(let error):
-                print(error)
-                
-                completionHandler("error")
-            }
-        }
-    }
-    
     
     func signUp(account: SignUp, completionHandler:@escaping (String)->Void){
         fullURL = URL(string: baseURL + "/api/user/signup")

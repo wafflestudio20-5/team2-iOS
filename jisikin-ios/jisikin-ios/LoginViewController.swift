@@ -173,31 +173,7 @@ class LoginViewController: UIViewController {
     }
     
     @objc func tapKakaoLoginButton() {
-        LoginRepo.kakaoLogin(completionHandler: { completionHandler in
-            
-            if(completionHandler == "success"){
-                UserDefaults.standard.set(true, forKey: "isLogin")
-                
-                let loginAlert = UIAlertController(title: nil, message: "로그인 성공", preferredStyle: .alert)
-                let loginAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { loginAction in
-                    self.navigationController?.popViewController(animated: true)
-                })
-                
-                loginAlert.addAction(loginAction)
-                
-                self.present(loginAlert, animated: false)
-            }
-            
-            else {
-                let errorAlert = UIAlertController(title: nil, message: "로그인 실패", preferredStyle: .alert)
-                let errorAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default)
-                
-                errorAlert.addAction(errorAction)
-                
-                self.present(errorAlert, animated: false)
-                
-            }
-        })
+        LoginRepo.kakaoLogin()
     }
 }
 
