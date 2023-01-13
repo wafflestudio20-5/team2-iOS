@@ -224,6 +224,8 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
             viewModel.postNewQuestion(titleText: titleText, contentText: contentText)
         }
         
+        view.endEditing(true)
+        navigationController?.popViewController(animated: false)
     }
     
     @objc private func plusImage(_ sender: Any) {

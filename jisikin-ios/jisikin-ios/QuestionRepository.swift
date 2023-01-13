@@ -36,7 +36,7 @@ final class QuestionRepository{
             "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
         ]
         
-        AF.request(fullURL!, method: .post, parameters: queryString, encoding: URLEncoding.queryString, headers: header).responseData {
+        AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, headers: header).responseData {
             response in
             switch(response.result) {
             case .success(let data):
