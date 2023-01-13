@@ -37,5 +37,8 @@ class QuestionAnswerUsecase{
         }).disposed(by: bag)
     }
     
+    func postNewQuestion(titleText: String, contentText: String) {
+        questionRepo.postNewQuestion(titleText: titleText, contentText: contentText)
+    }
     
 }
