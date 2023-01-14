@@ -19,6 +19,7 @@ class AnswerViewController: UIViewController {
     var sortMethodSegment:PlainSegmentedControl!
     var questionTable:UITableView!
     var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

@@ -8,6 +8,9 @@
 import UIKit
 
 class WritingAnswerViewController: UIViewController {
+    
+    var questionID: Int = -1
+    
     lazy var rightButton: UIBarButtonItem = {
         let btn = UIBarButtonItem(title: "답변등록", style: .plain, target: self, action: #selector(doneAnswer(_:)))
         btn.tintColor = BLUE_COLOR

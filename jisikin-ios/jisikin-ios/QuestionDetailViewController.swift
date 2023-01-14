@@ -490,7 +490,9 @@ extension QuestionDetailViewController:UITableViewDelegate{
        
         questionView.setOnAnswerButtonClicked(){[weak self] in
             if UserDefaults.standard.bool(forKey: "isLogin"){
-                self?.navigationController?.pushViewController(WritingAnswerViewController(), animated: true)
+                var vc = WritingAnswerViewController()
+                vc.questionID = (self?.viewModel.questionID)!
+                self?.navigationController?.pushViewController(vc, animated: true)
             }
             else{
                 self?.showLoginAlert()
@@ -522,7 +524,9 @@ extension QuestionDetailViewController:UITableViewDelegate{
            
              vc.onLogin = {
                  self?.tabBarController?.navigationController?.popViewController(animated: false){
-                     self?.navigationController?.pushViewController(WritingAnswerViewController(), animated: true)
+                     var vc = WritingAnswerViewController()
+                     vc.questionID = (self?.viewModel.questionID)!
+                     self?.navigationController?.pushViewController(vc, animated: true)
                  }
                  
                 
