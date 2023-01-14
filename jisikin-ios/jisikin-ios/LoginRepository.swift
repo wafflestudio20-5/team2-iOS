@@ -79,6 +79,38 @@ final class LoginRepository {
         }
     }
     
+    func logout(completionHandler:@escaping (String)->Void) {
+        
+        fullURL = URL(string: baseURL + "/api/user/logout")
+        
+        let accessToken = UserDefaults.standard.value(forKey: "accessToken") as? String
+        let refreshToken = UserDefaults.standard.value(forKey: "accessToken") as? String
+        
+        let parameters = [
+            "accessToken": accessToken,
+            "refreshToken": refreshToken
+        ]
+        
+        AF.request(fullURL!,
+                   method: .post,
+                   parameters: parameters,
+                   encoder: JSONParameterEncoder.default
+        )
+        .responseData(){
+            response in
+            
+            switch response.result {
+            case .success(_):
+                UserDefaults.standard.removeObject(forKey: "accessToken")
+                UserDefaults.standard.removeObject(forKey: "refreshToken")
+                completionHandler("success")
+            case .failure(let error):
+                print(error)
+                completionHandler("failure")
+            }
+        }
+    }
+    
     func kakaoLogin(completionHandler:@escaping (String)->Void){
         if (UserApi.isKakaoTalkLoginAvailable()) {
             
