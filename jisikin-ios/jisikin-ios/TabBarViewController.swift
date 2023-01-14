@@ -44,7 +44,7 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         tabBar.items![1].title = "답변하기"
         tabBar.items![1].selectedImage = UIImage (named: "AnswerTabFill")
-        tabBar.items![1].image = UIImage (systemName: "a.square")
+        tabBar.items![1].image = UIImage (named: "AnswerTab")
         
         tabBar.items![2].title = "질문하기"
         tabBar.items![2].selectedImage = UIImage (named: "QuestionTabFill")
