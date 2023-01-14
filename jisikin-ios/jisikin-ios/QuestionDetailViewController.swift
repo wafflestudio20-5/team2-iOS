@@ -163,7 +163,7 @@ class QuestionView:UIView{
         questionTitleView.text = question.title
         questionTimeView.text = question.createdAt
         questionContentView.text = question.content
-        
+        questionUserInfo.text = question.username
     
     }
 }

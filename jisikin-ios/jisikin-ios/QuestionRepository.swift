@@ -15,7 +15,7 @@ struct QuestionAPI:Codable{
     var createdAt:String
     var modifiedAt:String
     var close:Bool
-    
+    var username:String
     
 }
 final class QuestionRepository{

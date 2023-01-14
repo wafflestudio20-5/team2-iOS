@@ -17,6 +17,7 @@ struct AnswerDetailModel{
     var username:String
     var profileImage:UIImage?
     var userRecentAnswerDate:String
+    
     static func fromAnswerAPI(answerAPI:AnswerAPI)->AnswerDetailModel{
         return AnswerDetailModel(content: answerAPI.content, createdAt: answerAPI.createdAt, selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate))
     }
@@ -35,10 +36,11 @@ struct QuestionDetailModel{
     var content:String
     var photos:[UIImage] = []
     var createdAt:String
+    var username:String
     static func fromQuestionAPI(questionAPI:QuestionAPI?)->QuestionDetailModel?{
        
         if let questionAPI = questionAPI{
-            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content, createdAt:convertTimeFormat(time: questionAPI.createdAt))
+            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username)
         }
         else{
             return nil
