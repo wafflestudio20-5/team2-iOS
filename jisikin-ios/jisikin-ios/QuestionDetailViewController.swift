@@ -489,7 +489,12 @@ extension QuestionDetailViewController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
        
         questionView.setOnAnswerButtonClicked(){[weak self] in
-            self?.navigationController?.pushViewController(WritingAnswerViewController(), animated: true)
+            if UserDefaults.standard.bool(forKey: "isLogin"){
+                self?.navigationController?.pushViewController(WritingAnswerViewController(), animated: true)
+            }
+            else{
+                self?.showLoginAlert()
+            }
         }
         questionView.translatesAutoresizingMaskIntoConstraints = false
         let headerView = UITableViewHeaderFooterView()
@@ -503,6 +508,38 @@ extension QuestionDetailViewController:UITableViewDelegate{
         ])
         return headerView
     }
+    func showLoginAlert(){
+         let loginAction = UIAlertAction(title:"로그인",style: .default,handler: {[weak self]
+             setAction in
+             let appearance = UINavigationBarAppearance()
+             appearance.configureWithOpaqueBackground()
+             appearance.backgroundColor = UIColor(named:"BackgroundColor")
+             appearance.shadowColor = .clear
+             self?.tabBarController?.navigationController?.navigationBar.standardAppearance = appearance
+             self?.tabBarController?.navigationController?.navigationBar.scrollEdgeAppearance = appearance
+           
+             let vc = LoginViewController()
+           
+             vc.onLogin = {
+                 self?.tabBarController?.navigationController?.popViewController(animated: false){
+                     self?.navigationController?.pushViewController(WritingAnswerViewController(), animated: true)
+                 }
+                 
+                
+             }
+             let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+             backBarButtonItem.tintColor = UIColor(named: "MainColor")
+             self?.tabBarController?.navigationItem.backBarButtonItem = backBarButtonItem
+             self?.tabBarController?.navigationController?.pushViewController(vc, animated: true)
+             self?.tabBarController?.navigationController?.setNavigationBarHidden(false, animated: false)
+             
+         })
+         let cancelAction = UIAlertAction(title:"취소",style:.default)
+         let alert = UIAlertController(title:nil,message: "로그인이 필요합니다",preferredStyle: .alert)
+      alert.addAction(loginAction)
+          alert.addAction(cancelAction)
+          self.present(alert,animated: false)
+      }
  
     
 }
@@ -512,5 +549,20 @@ extension UIColor {//for single color image
             self.setFill()
             rendererContext.fill(CGRect(origin: .zero, size: size))
         }
+    }
+}
+extension UINavigationController {
+    func popViewController(
+        animated: Bool,
+        completion: @escaping () -> Void)
+    {
+        popViewController(animated: animated)
+
+        guard animated, let coordinator = transitionCoordinator else {
+            DispatchQueue.main.async { completion() }
+            return
+        }
+
+        coordinator.animate(alongsideTransition: nil) { _ in completion() }
     }
 }
