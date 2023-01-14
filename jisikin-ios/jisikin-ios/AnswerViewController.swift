@@ -28,9 +28,16 @@ class AnswerViewController: UIViewController {
         // Do any additional setup after loading the view.
         viewModel.questions.asObservable().bind(to:questionTable.rx.items(cellIdentifier: QuestionTableViewCell.ID)){index,model,cell in
             (cell as! QuestionTableViewCell).configure(question:model)
+            self.questionTable?.refreshControl?.endRefreshing()
         }.disposed(by: bag)
         viewModel.getQuestions()
         
+    }
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+
+        self.questionTable.deselectSelectedRow(animated: false)
     }
     func setLayout(){
         navigationController?.isNavigationBarHidden = false
@@ -132,4 +139,14 @@ extension AnswerViewController:UITableViewDelegate{
     }
     
     
+}
+extension UITableView {
+
+    func deselectSelectedRow(animated: Bool)
+    {
+        if let indexPathForSelectedRow = self.indexPathForSelectedRow {
+            self.deselectRow(at: indexPathForSelectedRow, animated: animated)
+        }
+    }
+
 }
