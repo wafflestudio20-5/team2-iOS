@@ -34,6 +34,8 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         let questionNav = UINavigationController(rootViewController: questionVC)
         let myNav = UINavigationController(rootViewController: myVC)
         
+        self.tabBar.tintColor = UIColor(named: "MainColor")
+        
         setViewControllers([homeNav, answerNav, UIViewController(), myNav], animated: false)
         
         tabBar.items![0].title = "지식2n 홈"
