@@ -60,6 +60,7 @@ class MyViewController: UIViewController {
     let heartedQBtn = UIButton()
     let logInOutBtn = UIButton()
     
+    let LoginRepo = LoginRepository()
     
     override func loadView(){
         super.loadView()
@@ -284,8 +285,23 @@ class MyViewController: UIViewController {
     }
     @objc
     func onTapLogOutBtn() {
-        UserDefaults.standard.set(false, forKey: "isLogin")
-        loadView()
+        
+        LoginRepo.logout(completionHandler: { completionHandler in
+            if(completionHandler == "success"){
+                UserDefaults.standard.set(false, forKey: "isLogin")
+            }
+            
+            else {
+                let errorAlert = UIAlertController(title: nil, message: "로그아웃 실패", preferredStyle: .alert)
+                let errorAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default)
+                
+                errorAlert.addAction(errorAction)
+                
+                self.present(errorAlert, animated: false)
+            }
+            
+            self.loadView()
+        })
     }
     @objc
     func onTapLogInBtn() {
