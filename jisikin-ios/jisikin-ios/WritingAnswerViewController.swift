@@ -8,6 +8,11 @@
 import UIKit
 
 class WritingAnswerViewController: UIViewController {
+    
+    var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
+    
+    var questionID: Int = -1
+    
     lazy var rightButton: UIBarButtonItem = {
         let btn = UIBarButtonItem(title: "답변등록", style: .plain, target: self, action: #selector(doneAnswer(_:)))
         btn.tintColor = BLUE_COLOR
@@ -29,9 +34,14 @@ class WritingAnswerViewController: UIViewController {
     lazy var plusImageButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(plusImage(_:)), for: .touchUpInside)
-        btn.setImage(UIImage(systemName: "camera")?.withTintColor(.lightGray, renderingMode: .alwaysOriginal), for: .normal)
-        btn.layer.cornerRadius = 10
+        btn.setImage(systemName: "camera", color: UIColor.lightGray)
         return btn
+    }()
+    
+    lazy var lineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .lightGray
+        return view
     }()
   
     let textViewPlaceHolder = """
@@ -51,7 +61,7 @@ class WritingAnswerViewController: UIViewController {
         view.text = textViewPlaceHolder
         view.textColor = UIColor.lightGray
         view.delegate = self
-        view.becomeFirstResponder()
+        // view.becomeFirstResponder()
         
         return view
     }()
@@ -74,21 +84,29 @@ class WritingAnswerViewController: UIViewController {
     private func setLayout() {
         view.addSubview(contentView)
         accessoryView.addSubview(plusImageButton)
+        accessoryView.addSubview(lineView)
         
-        guard let plusImageButtonSuperView = plusImageButton.superview else { return }
+        guard let lineSuperView = plusImageButton.superview else { return }
         
         contentView.translatesAutoresizingMaskIntoConstraints = false
         plusImageButton.translatesAutoresizingMaskIntoConstraints = false
+        lineView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10.0),
             contentView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -10.0),
             contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.0),
             contentView.heightAnchor.constraint(equalToConstant: 300),
-            plusImageButton.heightAnchor.constraint(equalToConstant: 48),
-            plusImageButton.widthAnchor.constraint(equalToConstant: 48),
-            plusImageButton.leftAnchor.constraint(equalTo: plusImageButtonSuperView.leftAnchor, constant: 1),
-            plusImageButton.topAnchor.constraint(equalTo: plusImageButtonSuperView.topAnchor, constant: 1)
+            
+            plusImageButton.heightAnchor.constraint(equalToConstant: 38),
+            plusImageButton.widthAnchor.constraint(equalToConstant: 38),
+            plusImageButton.leftAnchor.constraint(equalTo: lineSuperView.leftAnchor, constant: 5),
+            plusImageButton.bottomAnchor.constraint(equalTo: lineSuperView.bottomAnchor, constant: -1),
+            
+            lineView.bottomAnchor.constraint(equalTo: plusImageButton.topAnchor, constant: -1),
+            lineView.widthAnchor.constraint(equalTo: lineSuperView.widthAnchor),
+            lineView.heightAnchor.constraint(equalToConstant: 1),
+            lineView.centerXAnchor.constraint(equalTo: lineSuperView.centerXAnchor),
         ])
     }
     
@@ -97,7 +115,17 @@ class WritingAnswerViewController: UIViewController {
     }
     
     @objc private func doneAnswer(_ sender: Any) {
+        if contentView.text == textViewPlaceHolder {
+            let alert = UIAlertController(title: "주의", message: "내용을 입력하세요.", preferredStyle: .alert)
+            let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(action)
             
+            self.present(alert, animated: true, completion: nil)
+        } else {
+            guard let contentText = contentView.text else { return }
+            viewModel.postNewAnswer(id: questionID, contentText: contentText)
+        }
+        navigationController?.popViewController(animated: true)
     }
     
     @objc private func plusImage(_ sender: Any) {

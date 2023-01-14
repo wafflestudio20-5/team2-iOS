@@ -60,7 +60,7 @@ class MyViewController: UIViewController {
     let heartedQBtn = UIButton()
     let logInOutBtn = UIButton()
     
-    
+    let LoginRepo = LoginRepository()
     
     override func loadView(){
         super.loadView()
@@ -69,11 +69,13 @@ class MyViewController: UIViewController {
         self.view.backgroundColor = .white
         
         let profilePhotoSize = CGFloat(45)
-        profilePhotoView.image = UIImage(systemName: "person.fill")
+        //profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
+        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+        profilePhotoView.backgroundColor = .black
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
         profilePhotoView.layer.borderWidth = 3.0
-        profilePhotoView.layer.borderColor = UIColor.black.cgColor
+        profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
         
         let tapGesture: UITapGestureRecognizer
         if isLogin{
@@ -112,8 +114,7 @@ class MyViewController: UIViewController {
         QABtn.configuration = .plain()
         QABtn.configuration?.imagePlacement = .top
         QABtn.configuration?.imagePadding = 10
-        
-        QABtn.setImage(UIImage(systemName:"checkmark.circle", withConfiguration: largeConfig)!.withTintColor(.systemGreen, renderingMode: .alwaysOriginal), for: .normal)
+        QABtn.setImage(UIImage(systemName:"checkmark.circle", withConfiguration: largeConfig)!.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
         QABtn.setTitle("나의 Q&A", for: .normal)
         QABtn.setTitleColor(.black, for: .normal)
         QABtn.setTitleColor(.black, for: .highlighted)
@@ -131,7 +132,7 @@ class MyViewController: UIViewController {
         heartedQBtn.configuration?.imagePlacement = .top
         heartedQBtn.configuration?.imagePadding = 10
         
-        heartedQBtn.setImage(UIImage(systemName:"heart.text.square", withConfiguration: largeConfig)!.withTintColor(.systemRed, renderingMode: .alwaysOriginal), for: .normal)
+        heartedQBtn.setImage(UIImage(systemName:"heart.text.square", withConfiguration: largeConfig)!.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
         heartedQBtn.setTitle("좋아요 누른 질문", for: .normal)
         heartedQBtn.setTitleColor(.black, for: .normal)
         heartedQBtn.setTitleColor(.black, for: .highlighted)
@@ -284,8 +285,23 @@ class MyViewController: UIViewController {
     }
     @objc
     func onTapLogOutBtn() {
-        UserDefaults.standard.set(false, forKey: "isLogin")
-        loadView()
+        
+        LoginRepo.logout(completionHandler: { completionHandler in
+            if(completionHandler == "success"){
+                UserDefaults.standard.set(false, forKey: "isLogin")
+            }
+            
+            else {
+                let errorAlert = UIAlertController(title: nil, message: "로그아웃 실패", preferredStyle: .alert)
+                let errorAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default)
+                
+                errorAlert.addAction(errorAction)
+                
+                self.present(errorAlert, animated: false)
+            }
+            
+            self.loadView()
+        })
     }
     @objc
     func onTapLogInBtn() {

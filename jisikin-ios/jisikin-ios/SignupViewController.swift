@@ -43,6 +43,10 @@ class SignupViewController: UIViewController {
         viewInit()
         setLayout()
         setDesign()
+    }
+    
+    func viewInit() {
+        self.view.backgroundColor = UIColor(named: "BackgroundColor")
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         
@@ -73,10 +77,7 @@ class SignupViewController: UIViewController {
             selector: #selector(keyboardWillHide),
             name: UIResponder.keyboardWillHideNotification,
             object: nil)
-    }
-    
-    func viewInit() {
-        self.view.backgroundColor = UIColor(named: "BackgroundColor")
+
         let buttonConfig = UIButton.Configuration.plain()
         genderButton.configuration = buttonConfig
     }
@@ -402,20 +403,20 @@ class SignupViewController: UIViewController {
                 }
                 
                 else{
-                    self.showAlert(message: "회원가입 성공", popVC: true)
+                    self.showAlert(message: "회원가입 성공", dismissVC: true)
                 }
             })
         }
     }
     
-    func showAlert(message: String, popVC: Bool){
+    func showAlert(message: String, dismissVC: Bool){
         let setAlert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         
         var setAction: UIAlertAction
         
-        if(popVC == true){
+        if(dismissVC == true){
             setAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { setAction in
-                self.navigationController?.popViewController(animated: true)
+                self.dismiss(animated: true)
             })
         }
         

@@ -9,8 +9,11 @@
 /* Begin PBXBuildFile section */
 		12B383F79502CEE8511EAE7D /* Pods_jisikin_ios_jisikin_iosUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D669D50969F68A07EFBE6C2 /* Pods_jisikin_ios_jisikin_iosUITests.framework */; };
 		4E010326296009860060F342 /* TestViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E010325296009860060F342 /* TestViewcontroller.swift */; };
+		4E01E17E296D23C300B8EFD2 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E01E17D296D23C300B8EFD2 /* HomeViewController.swift */; };
 		4E152C18296007A5000E9D9A /* TestRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E152C17296007A5000E9D9A /* TestRepository.swift */; };
 		4E44C25D2963ED5D001165AD /* LoginRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E44C25C2963ED5D001165AD /* LoginRepository.swift */; };
+		4E682775296E75060001FC35 /* tagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E682773296E75060001FC35 /* tagViewCell.swift */; };
+		4E682776296E75060001FC35 /* WritingAnswerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E682774296E75060001FC35 /* WritingAnswerViewController.swift */; };
 		4E8BAE0629559F62001CE4BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8BAE0529559F62001CE4BD /* AppDelegate.swift */; };
 		4E8BAE0829559F62001CE4BD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8BAE0729559F62001CE4BD /* SceneDelegate.swift */; };
 		4E8BAE0F29559F63001CE4BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E8BAE0E29559F63001CE4BD /* Assets.xcassets */; };
@@ -24,7 +27,6 @@
 		4ECD064C29692C1900E848BF /* QuestionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD064B29692C1900E848BF /* QuestionRepository.swift */; };
 		4ECD064E296933BE00E848BF /* QuestionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD064D296933BE00E848BF /* QuestionListViewModel.swift */; };
 		4ECD06522969567900E848BF /* AnswerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD06512969567900E848BF /* AnswerRepository.swift */; };
-		4ECD065429697EC400E848BF /* WritingAnswerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD065329697EC400E848BF /* WritingAnswerViewController.swift */; };
 		4ECD0658296BE7B100E848BF /* QuestionAnswerUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD0657296BE7B100E848BF /* QuestionAnswerUsecase.swift */; };
 		4ECD065A296BFB2700E848BF /* QuestionDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECD0659296BFB2700E848BF /* QuestionDetailViewModel.swift */; };
 		4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */; };
@@ -62,8 +64,11 @@
 /* Begin PBXFileReference section */
 		489CD149E57C0EA9C5D9B4C4 /* Pods_jisikin_iosTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_jisikin_iosTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E010325296009860060F342 /* TestViewcontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewcontroller.swift; sourceTree = "<group>"; };
+		4E01E17D296D23C300B8EFD2 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		4E152C17296007A5000E9D9A /* TestRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRepository.swift; sourceTree = "<group>"; };
 		4E44C25C2963ED5D001165AD /* LoginRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRepository.swift; sourceTree = "<group>"; };
+		4E682773296E75060001FC35 /* tagViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tagViewCell.swift; sourceTree = "<group>"; };
+		4E682774296E75060001FC35 /* WritingAnswerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WritingAnswerViewController.swift; sourceTree = "<group>"; };
 		4E8BAE0229559F62001CE4BD /* jisikin-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "jisikin-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E8BAE0529559F62001CE4BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4E8BAE0729559F62001CE4BD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -142,6 +147,7 @@
 				4E8BAE0329559F62001CE4BD /* Products */,
 				B1F7C7010FDF1A045E9EDD5F /* Pods */,
 				F05F4EB45688D3F7A3A8E1AB /* Frameworks */,
+				4EF0C104296E7D1500F5CA99 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -158,10 +164,12 @@
 		4E8BAE0429559F62001CE4BD /* jisikin-ios */ = {
 			isa = PBXGroup;
 			children = (
-				4ECD065329697EC400E848BF /* WritingAnswerViewController.swift */,
+				4E682773296E75060001FC35 /* tagViewCell.swift */,
+				4E682774296E75060001FC35 /* WritingAnswerViewController.swift */,
 				4E8BAE0529559F62001CE4BD /* AppDelegate.swift */,
 				4E8BAE0729559F62001CE4BD /* SceneDelegate.swift */,
 				C002B11D295AE1DA003303B7 /* TabBarViewController.swift */,
+				4E01E17D296D23C300B8EFD2 /* HomeViewController.swift */,
 				C002B11F295AE21B003303B7 /* AnswerViewController.swift */,
 				4E9CAE752960001800D92F30 /* plainSegmentedControl.swift */,
 				4E9CAE782960001800D92F30 /* QuestionDetailViewController.swift */,
@@ -205,6 +213,14 @@
 				4E8BAE2829559F63001CE4BD /* jisikin_iosUITestsLaunchTests.swift */,
 			);
 			path = "jisikin-iosUITests";
+			sourceTree = "<group>";
+		};
+		4EF0C104296E7D1500F5CA99 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				4ECD065329697EC400E848BF /* WritingAnswerViewController.swift */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		B1F7C7010FDF1A045E9EDD5F /* Pods */ = {
@@ -470,15 +486,18 @@
 			files = (
 				4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */,
 				4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */,
+				4E682775296E75060001FC35 /* tagViewCell.swift in Sources */,
 				C002B11E295AE1DA003303B7 /* TabBarViewController.swift in Sources */,
 				4ECD0658296BE7B100E848BF /* QuestionAnswerUsecase.swift in Sources */,
 				4ED26AC8295F0D670034F1A7 /* SignupViewController.swift in Sources */,
 				C002B122295AE228003303B7 /* QuestionViewController.swift in Sources */,
+				4E682776296E75060001FC35 /* WritingAnswerViewController.swift in Sources */,
 				4ECD064E296933BE00E848BF /* QuestionListViewModel.swift in Sources */,
 				4E9CAE7B2960001800D92F30 /* SearchViewController.swift in Sources */,
 				4E44C25D2963ED5D001165AD /* LoginRepository.swift in Sources */,
 				C002B124295AE236003303B7 /* MyViewController.swift in Sources */,
 				C0D6FC1B295F5F2300FF0A0C /* ModifyProfileViewController.swift in Sources */,
+				4E01E17E296D23C300B8EFD2 /* HomeViewController.swift in Sources */,
 				4ECD064C29692C1900E848BF /* QuestionRepository.swift in Sources */,
 				C0D6FC15295F319A00FF0A0C /* MyQAViewController.swift in Sources */,
 				4ECD065A296BFB2700E848BF /* QuestionDetailViewModel.swift in Sources */,
@@ -490,7 +509,6 @@
 				4E9CAE792960001800D92F30 /* plainSegmentedControl.swift in Sources */,
 				4E8BAE0629559F62001CE4BD /* AppDelegate.swift in Sources */,
 				4E9CAE7E296066F300D92F30 /* QuestionTableViewCell.swift in Sources */,
-				4ECD065429697EC400E848BF /* WritingAnswerViewController.swift in Sources */,
 				4E8BAE0829559F62001CE4BD /* SceneDelegate.swift in Sources */,
 				C0D6FC19295F32BD00FF0A0C /* HeartedQViewController.swift in Sources */,
 			);

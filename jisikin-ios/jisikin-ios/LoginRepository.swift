@@ -22,6 +22,7 @@ final class LoginRepository {
     }
     var error = Error()
     var errorMessage: String?
+    var kakaoError: Bool = false
     
     func login(param: Login, completionHandler:@escaping (String)->Void) {
         
@@ -78,37 +79,137 @@ final class LoginRepository {
         }
     }
     
-    func kakaoLogin(){
+    func logout(completionHandler:@escaping (String)->Void) {
+        
+        if(UserDefaults.standard.bool(forKey: "kakaoLogin") == true){
+            UserApi.shared.logout {(error) in
+                if let error = error {
+                    print(error)
+                }
+                else {
+                    UserDefaults.standard.set(false, forKey: "kakaoLogin")
+                }
+            }
+        }
+        
+        fullURL = URL(string: baseURL + "/api/user/logout")
+        
+        let accessToken = UserDefaults.standard.value(forKey: "accessToken") as? String
+        let refreshToken = UserDefaults.standard.value(forKey: "accessToken") as? String
+        
+        let parameters = [
+            "accessToken": accessToken,
+            "refreshToken": refreshToken
+        ]
+        
+        AF.request(fullURL!,
+                   method: .post,
+                   parameters: parameters,
+                   encoder: JSONParameterEncoder.default
+        )
+        .responseData(){
+            response in
+            
+            switch response.result {
+            case .success(_):
+                UserDefaults.standard.removeObject(forKey: "accessToken")
+                UserDefaults.standard.removeObject(forKey: "refreshToken")
+                completionHandler("success")
+            case .failure(let error):
+                print(error)
+                completionHandler("failure")
+            }
+        }
+    }
+    
+    func kakaoLogin(completionHandler:@escaping (String)->Void){
         if (UserApi.isKakaoTalkLoginAvailable()) {
             
             //카톡 설치되어있으면 -> 카톡으로 로그인
             UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
                 if let error = error {
                     print(error)
+                    self.kakaoError = true
+                    completionHandler("error")
                 } else {
-                    print("카카오 톡으로 로그인 성공")
-                    
-                    let authToken = oauthToken
-                    print(authToken)
+                    let kakaoAccessToken = oauthToken?.accessToken
+                    self.sendKakaoToken(token: kakaoAccessToken!, completionHandler: { completion in
+                        
+                        if(completion == "success"){
+                            completionHandler("success")
+                        }
+                        
+                        else{
+                            completionHandler("failure")
+                        }
+                    })
                 }
             }
         }
         
         else {
-
             // 카톡 없으면 -> 계정으로 로그인
             UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
                 if let error = error {
                     print(error)
+                    self.kakaoError = true
+                    completionHandler("error")
                 } else {
-                    print("카카오 계정으로 로그인 성공")
-                    
-                    let authToken = oauthToken
-                    print(authToken)
+                    let kakaoAccessToken = oauthToken?.accessToken
+                    self.sendKakaoToken(token: kakaoAccessToken!, completionHandler: { completion in
+                        
+                        if(completion == "success"){
+                            UserDefaults.standard.set(true, forKey: "kakaoLogin")
+                            completionHandler("success")
+                        }
+                        
+                        else{
+                            completionHandler("failure")
+                        }
+                    })
                 }
             }
         }
     }
+    
+    func sendKakaoToken(token: String, completionHandler:@escaping (String)->Void){
+        fullURL = URL(string: baseURL + "/api/user/kakaoLogin?accessToken=" + token)
+        
+        AF.request(fullURL!,
+                   method: .get
+        )
+        .responseData(){
+            response in
+            
+            switch response.result {
+            case .success(let data):
+                do {
+                    let asJSON = try JSONSerialization.jsonObject(with: data)
+                    
+                    let JSON = JSON(data)
+                    
+                    UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
+                    UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
+                    
+                    completionHandler("success")
+                    } catch {
+                        self.errorMessage = String(data: data, encoding: .utf8)
+                        
+                        print(self.errorMessage!)
+                        
+                        self.kakaoError = true
+                        
+                        completionHandler("error")
+                    }
+                
+            case .failure(let error):
+                print(error)
+                
+                completionHandler("error")
+            }
+        }
+    }
+    
     
     func signUp(account: SignUp, completionHandler:@escaping (String)->Void){
         fullURL = URL(string: baseURL + "/api/user/signup")
