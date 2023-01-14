@@ -116,7 +116,11 @@ extension TabBarViewController{
              nav.navigationBar.scrollEdgeAppearance = appearance
            
              let vc = LoginViewController()
-             vc.questionRedirect = true
+            
+             vc.onLogin = {
+                 nav.popViewController(animated: false)
+                 nav.pushViewController(QuestionViewController(), animated: true)
+             }
              let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
              backBarButtonItem.tintColor = UIColor(named: "MainColor")
              self!.navigationItem.backBarButtonItem = backBarButtonItem
