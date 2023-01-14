@@ -81,6 +81,17 @@ final class LoginRepository {
     
     func logout(completionHandler:@escaping (String)->Void) {
         
+        if(UserDefaults.standard.bool(forKey: "kakaoLogin") == true){
+            UserApi.shared.logout {(error) in
+                if let error = error {
+                    print(error)
+                }
+                else {
+                    UserDefaults.standard.set(false, forKey: "kakaoLogin")
+                }
+            }
+        }
+        
         fullURL = URL(string: baseURL + "/api/user/logout")
         
         let accessToken = UserDefaults.standard.value(forKey: "accessToken") as? String
@@ -144,13 +155,11 @@ final class LoginRepository {
                     self.kakaoError = true
                     completionHandler("error")
                 } else {
-                    print(oauthToken)
                     let kakaoAccessToken = oauthToken?.accessToken
-                    print("hihihihi")
-                    print(kakaoAccessToken)
                     self.sendKakaoToken(token: kakaoAccessToken!, completionHandler: { completion in
                         
                         if(completion == "success"){
+                            UserDefaults.standard.set(true, forKey: "kakaoLogin")
                             completionHandler("success")
                         }
                         
@@ -186,7 +195,7 @@ final class LoginRepository {
                     } catch {
                         self.errorMessage = String(data: data, encoding: .utf8)
                         
-                        print(self.errorMessage)
+                        print(self.errorMessage!)
                         
                         self.kakaoError = true
                         
