@@ -37,23 +37,23 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         setViewControllers([homeNav, answerNav, UIViewController(), myNav], animated: false)
         
         tabBar.items![0].title = "지식2n 홈"
-        tabBar.items![0].selectedImage = UIImage (systemName: "house")
-        tabBar.items![0].image = UIImage (systemName: "house.fill")
+        tabBar.items![0].selectedImage = UIImage(named: "HomeTabFill")// UIImage (systemName: "house")
+        tabBar.items![0].image = UIImage (named: "HomeTab")
         
         tabBar.items![1].title = "답변하기"
-        tabBar.items![1].selectedImage = UIImage (systemName: "a.square.fill")
+        tabBar.items![1].selectedImage = UIImage (named: "AnswerTabFill")
         tabBar.items![1].image = UIImage (systemName: "a.square")
         
         tabBar.items![2].title = "질문하기"
-        tabBar.items![2].selectedImage = UIImage (systemName: "q.square.fill")
-        tabBar.items![2].image = UIImage (systemName: "q.square")
+        tabBar.items![2].selectedImage = UIImage (named: "QuestionTabFill")
+        tabBar.items![2].image = UIImage (named: "QuestionTab")
         
         tabBar.items![3].title = "MY"
         tabBar.items![3].selectedImage = UIImage (systemName: "person.circle.fill")
         tabBar.items![3].image = UIImage (systemName: "person.circle")
         
         tabBar.backgroundColor = UIColor(red: 240, green: 240, blue: 240, alpha: 1.0)
-        tabBar.isTranslucent = false
+        //tabBar.isTranslucent = false
         
         self.delegate = self
         // Do any additional setup after loading the view.
