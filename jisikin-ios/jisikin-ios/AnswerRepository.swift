@@ -55,4 +55,32 @@ class AnswerRepository{
             return Disposables.create()
         }
     }
+    
+    func postNewAnswer(id: Int, contentText: String) {
+        let fullURL = URL(string: baseURL + "/api/answer/\(id)")
+        
+        let queryString: Parameters = [
+            "content": contentText
+        ]
+        
+        let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
+            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
+        ]
+        
+        AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, headers: header).responseData {
+            response in
+            switch(response.result) {
+            case .success(let data):
+                print("성공")
+                print(String(data: data, encoding: .utf8)!)
+                break
+            case .failure(let error):
+                print("실패")
+                print(error.localizedDescription)
+                break
+            }
+        }
+    }
 }
