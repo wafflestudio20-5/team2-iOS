@@ -8,6 +8,11 @@
 import UIKit
 
 class WritingAnswerViewController: UIViewController {
+    
+    var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
+    
+    var questionID: Int = -1
+    
     lazy var rightButton: UIBarButtonItem = {
         let btn = UIBarButtonItem(title: "답변등록", style: .plain, target: self, action: #selector(doneAnswer(_:)))
         btn.tintColor = BLUE_COLOR
@@ -110,7 +115,17 @@ class WritingAnswerViewController: UIViewController {
     }
     
     @objc private func doneAnswer(_ sender: Any) {
+        if contentView.text == textViewPlaceHolder {
+            let alert = UIAlertController(title: "주의", message: "내용을 입력하세요.", preferredStyle: .alert)
+            let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(action)
             
+            self.present(alert, animated: true, completion: nil)
+        } else {
+            guard let contentText = contentView.text else { return }
+            viewModel.postNewAnswer(id: questionID, contentText: contentText)
+        }
+        navigationController?.popViewController(animated: true)
     }
     
     @objc private func plusImage(_ sender: Any) {

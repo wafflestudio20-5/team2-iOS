@@ -212,7 +212,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
             alert.addAction(action)
             
             self.present(alert, animated: true, completion: nil)
-        } else if (contentView.text ?? "").count < 1 {
+        } else if (contentView.text == textViewPlaceHolder) {
             let alert = UIAlertController(title: "주의", message: "내용을 입력하세요.", preferredStyle: .alert)
             let action = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(action)
@@ -245,6 +245,14 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         
         let okAction = UIAlertAction(title: "추가", style: .default) { action in
             if (controller.textFields?.first!.text ?? "").count < 1 {
+                return
+            } // 20자 이상일 때도 alert 띄우기
+            if (controller.textFields?.first!.text ?? "").count > 20 {
+                let alert = UIAlertController(title: "주의", message: "태그는 20자를 넘을 수 없습니다", preferredStyle: .alert)
+                let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(action)
+                
+                self.present(alert, animated: true, completion: nil)
                 return
             }
             

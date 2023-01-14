@@ -41,4 +41,7 @@ class QuestionAnswerUsecase{
         questionRepo.postNewQuestion(titleText: titleText, contentText: contentText)
     }
     
+    func postNewAnswer(id: Int, contentText: String) {
+        answerRepo.postNewAnswer(id: id, contentText: contentText)
+    }
 }
