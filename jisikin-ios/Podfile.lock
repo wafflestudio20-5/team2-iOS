@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (5.6.2)
+  - BSImagePicker (3.3.1)
   - Differentiator (5.0.0)
   - DropDown (2.3.13)
   - KakaoSDKAuth (2.13.1):
@@ -27,6 +28,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - BSImagePicker (~> 3.1)
   - DropDown
   - KakaoSDKAuth
   - KakaoSDKCommon
@@ -39,6 +41,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - BSImagePicker
     - Differentiator
     - DropDown
     - KakaoSDKAuth
@@ -52,6 +55,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
+  BSImagePicker: 0fe04b574d4d6b81093785d2af6c26227efc8428
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
   DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
   KakaoSDKAuth: d9de0cb0c723441ced3616d481952bde34438dcb
@@ -63,6 +67,6 @@ SPEC CHECKSUMS:
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
 
-PODFILE CHECKSUM: d4311ea3d7a443fcda5c57a3f516165317bb4241
+PODFILE CHECKSUM: c79563a665c56ecd2f2b518331b638c596afd3a0
 
 COCOAPODS: 1.11.3
