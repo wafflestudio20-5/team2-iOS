@@ -422,12 +422,17 @@ class AnswerTableCell:UITableViewCell{
             
         }
     }
-    func configure(answer:AnswerDetailModel){
+    func configure(answer:AnswerDetailModel,question:QuestionDetailModel?){
         answerTimeView.text = answer.createdAt
         answerContentView.text = answer.content
         profile.configure(answer:answer)
         setIsChosen(isChosen: answer.selected)
-        
+        if question == nil{
+            answerChoiceButton.isHidden = true
+        }
+        else{
+            answerChoiceButton.isHidden = question!.close && !answer.selected
+        }
     }
     @objc func onSelect(){
         onSelectButtonPressed?()
@@ -471,11 +476,11 @@ class QuestionDetailViewController:UIViewController{
      
        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
             
-            (cell as! AnswerTableCell).configure(answer:model)
+           (cell as! AnswerTableCell).configure(answer:model,question:self.viewModel.question.value)
            self.viewModel.question.subscribe(onNext: {
                  question in
                if let question{
-                   (cell as! AnswerTableCell).answerChoiceButton.isHidden = question.close && !model.selected //질문 마감 + 채택 안된 질문
+                   (cell as! AnswerTableCell).configure(answer:model,question:question)
                }
            })
             (cell as! AnswerTableCell).onSelectButtonPressed = { [self] in
