@@ -17,6 +17,7 @@ struct AnswerAPI:Codable{
     var username:String
     var profileImagePath:String?
     var userRecentAnswerDate:String
+    var id:Int
 }
 class AnswerRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
