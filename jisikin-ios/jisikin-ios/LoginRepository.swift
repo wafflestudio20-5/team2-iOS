@@ -136,6 +136,7 @@ final class LoginRepository {
                     self.sendKakaoToken(token: kakaoAccessToken!, completionHandler: { completion in
                         
                         if(completion == "success"){
+                            UserDefaults.standard.set(true, forKey: "kakaoLogin")
                             completionHandler("success")
                         }
                         
