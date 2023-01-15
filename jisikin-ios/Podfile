@@ -12,7 +12,6 @@ target 'jisikin-ios' do
   pod 'RxSwift', '6.5.0'
   pod 'RxCocoa', '6.5.0'
   pod 'RxDataSources', '~> 5.0'
-  pod 'BSImagePicker', '~> 3.1'
 
   target 'jisikin-iosTests' do
     inherit! :search_paths
