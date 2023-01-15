@@ -83,4 +83,29 @@ class AnswerRepository{
             }
         }
     }
+    
+    func selectAnswer(id:Int)->Single<String>{
+        let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
+            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
+        ]
+        
+        let fullURL = URL(string: baseURL + "/api/answer/\(id)/select/true")
+        return Single<String>.create{
+            single in
+            AF.request(fullURL!,method:.put,headers:header).validate(statusCode:200..<300).responseString{
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+                
+            }
+            return Disposables.create()
+        }
+    }
 }
+    

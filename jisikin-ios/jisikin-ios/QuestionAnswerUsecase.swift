@@ -27,6 +27,20 @@ class QuestionAnswerUsecase{
             }
         }).disposed(by: bag)
     }
+    func getQuestionAndAnswersByID(id:Int){
+        questionRepo.getQuestionByID(id: id).subscribe(onSuccess: {[weak self]
+            data in
+            if(self == nil){return}
+            var value = self!.questions.value
+            if let row = value.firstIndex(where: {$0.id == id}) {
+                value[row] = data
+            }
+            self!.questions.accept(value)
+            
+            self!.getAnswersByQuestionID(id: data.id)
+            
+        }).disposed(by: bag)
+    }
     func getAnswersByQuestionID(id:Int){
         answerRepo.getAnswersByQuestionID(id: id).subscribe(onSuccess: {[weak self]
             data in
@@ -44,4 +58,17 @@ class QuestionAnswerUsecase{
     func postNewAnswer(id: Int, contentText: String) {
         answerRepo.postNewAnswer(id: id, contentText: contentText)
     }
+    /*func selectAnswer(questionID:Int,answerID:Int){
+        return Single<String>.create{single in
+            answerRepo.selectAnswer(id: answerID).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+            
+            }, onError: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }*/
+    
 }

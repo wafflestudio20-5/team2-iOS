@@ -81,4 +81,7 @@ class QuestionDetailViewModel{
             }))!)
         }).disposed(by: bag)
     }
+    func refresh(){
+        usecase.getQuestionAndAnswersByID(id: questionID)
+    }
 }
