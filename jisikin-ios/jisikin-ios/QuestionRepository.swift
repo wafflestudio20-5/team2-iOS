@@ -83,4 +83,22 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
+    func getQuestionByID(id:Int)->Single<QuestionAPI>{
+        let fullURL = URL(string: baseURL + "/api/question/\(id)")
+        return Single<QuestionAPI>.create{
+            single in
+            AF.request(fullURL!,method:.get).responseDecodable(of:QuestionAPI.self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    
 }
