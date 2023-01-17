@@ -300,6 +300,7 @@ final class LoginRepository {
                     completionHandler("success")
                     } catch {
                         self.errorMessage = String(data: data, encoding: .utf8)
+                        print(self.errorMessage)
                         
                         completionHandler("error")
                     }
