@@ -51,6 +51,7 @@ final class LoginRepository {
                     
                     let JSON = JSON(data)
                     
+                    UserDefaults.standard.set(JSON["username"].string!, forKey: "username")
                     UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
                     UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
                     
@@ -189,6 +190,7 @@ final class LoginRepository {
                     
                     let JSON = JSON(data)
                     
+                    UserDefaults.standard.set(JSON["username"].string!, forKey: "username")
                     UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
                     UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
                     
