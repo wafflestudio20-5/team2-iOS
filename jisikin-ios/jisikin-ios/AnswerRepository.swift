@@ -50,9 +50,9 @@ class AnswerRepository{
                     var val = (data as! [AnswerAPI])
                     
                     for (i,v) in val.enumerated(){
-                       val[i].photos.append("https://via.placeholder.com/150")
-                       val[i].photos.append("https://via.placeholder.com/150")
-                       val[i].photos.append("https://via.placeholder.com/150")
+                     //  val[i].photos.append("https://via.placeholder.com/150")
+                     //  val[i].photos.append("https://via.placeholder.com/150")
+                     //  val[i].photos.append("https://via.placeholder.com/1500")
                     }
                     single(.success(val))
                     

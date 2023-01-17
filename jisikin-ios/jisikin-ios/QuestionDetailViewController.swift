@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
+import Kingfisher
 class QuestionView:UIView{
     var questionTitleView:UILabel!
     var questionUserInfo:UILabel!
@@ -163,7 +164,7 @@ class QuestionView:UIView{
             let imageView = UIImageView()
            
             imageStackView.addArrangedSubview(imageView)
-            imageView.load(url: URL(string:image)!){ [self] in
+            imageView.kf.setImage(with:URL(string:image)!){ [self]result in
                 imageView.contentMode = .scaleAspectFit
                
                 NSLayoutConstraint.activate([
@@ -259,7 +260,7 @@ class AnswerTableCell:UITableViewCell{
     var answerDeleteButton:UIButton!
     var answerChoiceButton:UIButton!
     var onSelectButtonPressed:(()->())?
-    var onImageLoaded:(()->())?
+  
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
@@ -272,7 +273,7 @@ class AnswerTableCell:UITableViewCell{
     func setLayout(){
         lineAtTop = UIView()
         lineAtTop.backgroundColor = UIColor(red: 235/255.0, green: 235/255.0, blue: 235/255.0, alpha: 1)
-        
+     
         profile = AnswerProfileView()
         
         answerContentView = UILabel()
@@ -425,6 +426,7 @@ class AnswerTableCell:UITableViewCell{
         }
     }
     func configure(answer:AnswerDetailModel,question:QuestionDetailModel?){
+        print("configure")
         answerTimeView.text = answer.createdAt
         answerContentView.text = answer.content
         profile.configure(answer:answer)
@@ -437,19 +439,21 @@ class AnswerTableCell:UITableViewCell{
         }
         imageStackView.safelyRemoveArrangedSubviews()
       
-        for image in answer.photos{
+       for image in answer.photos{
             let imageView = UIImageView()
            
             imageStackView.addArrangedSubview(imageView)
-            imageView.load(url: URL(string:image)!){ [self] in
+            print("add view")
+            imageView.kf.setImage(with:URL(string:image)!){ [self]result in
+              
                 imageView.contentMode = .scaleAspectFit
-               
+                
                 NSLayoutConstraint.activate([
                     imageView.widthAnchor.constraint(lessThanOrEqualToConstant: imageStackView.frame.width),
                     imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
                 ])
-                onImageLoaded?()
-                layoutIfNeeded()
+           
+                print("image loaded")
             }
         }
     }
@@ -476,7 +480,24 @@ class QuestionDetailViewController:UIViewController{
         super.viewWillAppear(animated)
         viewModel.refresh()
     }
-  
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if let headerView = answerTableView.tableHeaderView {
+
+            let height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+            var headerFrame = headerView.frame
+
+            //Comparison necessary to avoid infinite loop
+            if height != headerFrame.size.height {
+                headerFrame.size.height = height
+                headerView.frame = headerFrame
+                answerTableView.tableHeaderView = headerView
+            }
+            headerView.translatesAutoresizingMaskIntoConstraints = false
+            
+        }
+    }
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -484,6 +505,7 @@ class QuestionDetailViewController:UIViewController{
         self.view.backgroundColor = .white
         setLayout()
         setConstraint()
+      
         // Do any additional setup after loading the view.
         viewModel.question.subscribe(onNext: {[weak self]
             question in
@@ -495,17 +517,17 @@ class QuestionDetailViewController:UIViewController{
     
      
        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
-            
+           print("answer update")
+          
            (cell as! AnswerTableCell).configure(answer:model,question:self.viewModel.question.value)
+          
            self.viewModel.question.subscribe(onNext: {
                  question in
                if let question{
-                   (cell as! AnswerTableCell).onImageLoaded = {
-                       self.answerTableView.reloadData()
-                   }
+                    print("question update")
                    (cell as! AnswerTableCell).configure(answer:model,question:question)
                }
-           })
+           }).disposed(by: self.bag)
             (cell as! AnswerTableCell).onSelectButtonPressed = { [self] in
                 print("pressed")
                 self.viewModel.selectAnswer(index: index).subscribe(onSuccess: {_ in
@@ -549,6 +571,7 @@ class QuestionDetailViewController:UIViewController{
     }
 }
 extension QuestionDetailViewController:UITableViewDelegate{
+  
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         questionView.onImageLoaded = {
             tableView.reloadData()

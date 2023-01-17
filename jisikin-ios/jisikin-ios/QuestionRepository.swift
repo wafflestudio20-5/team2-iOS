@@ -100,10 +100,10 @@ final class QuestionRepository{
                 switch(response.result){
                 case .success(let data):
                     var v = data
-                    v.photos.append("https://via.placeholder.com/150")
-                    v.photos.append("https://via.placeholder.com/150")
-                    v.photos.append("https://via.placeholder.com/1500")
-                  
+                 //   v.photos.append("https://via.placeholder.com/150")
+                 //   v.photos.append("https://via.placeholder.com/150")
+                 //   v.photos.append("https://via.placeholder.com/1500")
+                 
                     single(.success(v))
                 case .failure(let error):
                     single(.failure(error))
