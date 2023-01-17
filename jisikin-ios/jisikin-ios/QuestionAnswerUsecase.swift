@@ -58,9 +58,9 @@ class QuestionAnswerUsecase{
     func postNewAnswer(id: Int, contentText: String) {
         answerRepo.postNewAnswer(id: id, contentText: contentText)
     }
-    /*func selectAnswer(questionID:Int,answerID:Int){
+    func selectAnswer(questionID:Int,answerID:Int)->Single<String>{
         return Single<String>.create{single in
-            answerRepo.selectAnswer(id: answerID).subscribe(onSuccess: {
+            self.answerRepo.selectAnswer(id: answerID).subscribe(onSuccess: {
                 result in
                 single(.success(result))
             
@@ -69,6 +69,6 @@ class QuestionAnswerUsecase{
                 single(.failure(error))
             })
         }
-    }*/
+    }
     
 }
