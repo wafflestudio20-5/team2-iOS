@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 struct AnswerDetailModel{
     var content:String
-    var photos:[UIImage] = []
+    var photos:[String]
     var createdAt:String
     var selected:Bool
     var username:String
@@ -20,7 +20,7 @@ struct AnswerDetailModel{
     var id:Int
     
     static func fromAnswerAPI(answerAPI:AnswerAPI)->AnswerDetailModel{
-        return AnswerDetailModel(content: answerAPI.content, createdAt: answerAPI.createdAt, selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id)
+        return AnswerDetailModel(content: answerAPI.content,photos:answerAPI.photos, createdAt: answerAPI.createdAt, selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
@@ -35,14 +35,14 @@ struct AnswerDetailModel{
 struct QuestionDetailModel{
     var title:String
     var content:String
-    var photos:[UIImage] = []
+    var photos:[String]
     var createdAt:String
     var username:String
     var close:Bool
     static func fromQuestionAPI(questionAPI:QuestionAPI?)->QuestionDetailModel?{
        
         if let questionAPI = questionAPI{
-            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username,close:questionAPI.close)
+            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content,photos:questionAPI.photos, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username,close:questionAPI.close)
         }
         else{
             return nil

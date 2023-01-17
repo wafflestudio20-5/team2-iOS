@@ -16,6 +16,7 @@ struct QuestionAPI:Codable{
     var modifiedAt:String
     var close:Bool
     var username:String
+    var photos:[String]
     
 }
 final class QuestionRepository{
@@ -68,13 +69,20 @@ final class QuestionRepository{
     }
     func getQuestionsByLikes()->Single<[QuestionAPI]>{
         let fullURL = URL(string: baseURL + "/api/question/search")
+        
         return Single<[QuestionAPI]>.create{
             single in
             AF.request(fullURL!,method:.get).responseDecodable(of:[QuestionAPI].self){
                 response in
                 switch(response.result){
                 case .success(let data):
-                    single(.success(data))
+                    var val = data
+                  //  for (i,v) in val.photos.enumerated(){
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   // }
+                    single(.success(val))
                 case .failure(let error):
                     single(.failure(error))
                 }
@@ -91,7 +99,12 @@ final class QuestionRepository{
                 response in
                 switch(response.result){
                 case .success(let data):
-                    single(.success(data))
+                    var v = data
+                    v.photos.append("https://via.placeholder.com/150")
+                    v.photos.append("https://via.placeholder.com/150")
+                    v.photos.append("https://via.placeholder.com/1500")
+                  
+                    single(.success(v))
                 case .failure(let error):
                     single(.failure(error))
                 }

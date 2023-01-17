@@ -47,7 +47,15 @@ class AnswerRepository{
                 response in
                 switch(response.result){
                 case .success(let data):
-                    single(.success(data))
+                    var val = (data as! [AnswerAPI])
+                    
+                    for (i,v) in val.enumerated(){
+                       val[i].photos.append("https://via.placeholder.com/150")
+                       val[i].photos.append("https://via.placeholder.com/150")
+                       val[i].photos.append("https://via.placeholder.com/150")
+                    }
+                    single(.success(val))
+                    
                 case .failure(let error):
                     single(.failure(error))
                 }
