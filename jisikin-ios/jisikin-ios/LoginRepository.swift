@@ -128,7 +128,23 @@ final class LoginRepository {
             //카톡 설치되어있으면 -> 카톡으로 로그인
             UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
                 if let error = error {
-                    print(error)
+                    let file = "kakaologinerror.txt" //this is the file. we will write to and read from it
+
+                    let text = "\(error)"
+
+                    if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+                        
+                        let fileURL = dir.appendingPathComponent(file)
+                        
+                        //writing
+                        do {
+                            try text.write(to: fileURL, atomically: false, encoding: .utf8)
+                        }
+                        catch {
+                            print("write error")
+                        }
+                    }
+                    
                     self.kakaoError = true
                     completionHandler("error")
                 } else {
@@ -196,7 +212,20 @@ final class LoginRepository {
                     } catch {
                         self.errorMessage = String(data: data, encoding: .utf8)
                         
-                        print(self.errorMessage!)
+                        let file = "kakaotokenerror.txt" //this is the file. we will write to and read from it
+
+                        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+                            
+                            let fileURL = dir.appendingPathComponent(file)
+                            
+                            //writing
+                            do {
+                                try self.errorMessage!.write(to: fileURL, atomically: false, encoding: .utf8)
+                            }
+                            catch {
+                                print("write error")
+                            }
+                        }
                         
                         self.kakaoError = true
                         
@@ -205,6 +234,23 @@ final class LoginRepository {
                 
             case .failure(let error):
                 print(error)
+                
+                let file = "kakaotokenerror.txt" //this is the file. we will write to and read from it
+
+                let text = "\(error)"
+
+                if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+                    
+                    let fileURL = dir.appendingPathComponent(file)
+                    
+                    //writing
+                    do {
+                        try text.write(to: fileURL, atomically: false, encoding: .utf8)
+                    }
+                    catch {
+                        print("write error")
+                    }
+                }
                 
                 completionHandler("error")
             }
