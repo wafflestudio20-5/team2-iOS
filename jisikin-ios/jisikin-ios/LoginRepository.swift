@@ -265,4 +265,46 @@ final class LoginRepository {
         }
         
     }
+    
+    func regenerateToken(completionHandler:@escaping (String)->Void) {
+        fullURL = URL(string: baseURL + "/api/user/regenerateToken")
+        
+        let accessToken = UserDefaults.standard.value(forKey: "accessToken") as? String
+        let refreshToken = UserDefaults.standard.value(forKey: "accessToken") as? String
+        
+        let parameters = [
+            "accessToken": accessToken,
+            "refreshToken": refreshToken
+        ]
+        
+        AF.request(fullURL!,
+                   method: .post,
+                   parameters: parameters,
+                   encoder: JSONParameterEncoder.default
+        )
+        .responseData(){
+            response in
+            
+            switch response.result {
+            case .success(let data):
+                do {
+                    let asJSON = try JSONSerialization.jsonObject(with: data)
+                    
+                    let JSON = JSON(data)
+                    
+                    UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
+                    UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
+                    
+                    completionHandler("success")
+                    } catch {
+                        self.errorMessage = String(data: data, encoding: .utf8)
+                        
+                        completionHandler("error")
+                    }
+                
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
 }
