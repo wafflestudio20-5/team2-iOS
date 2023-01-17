@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string>To take a photo and add it to your post, usage of the device camera is required.</string>
+	<string>This app requires usage of the phone camera.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To add a photo from your device to your post, usage of the photo library is required.</string>
+	<string>This app requires access to the photo library.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
