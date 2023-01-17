@@ -24,6 +24,11 @@ final class LoginRepository {
     var errorMessage: String?
     var kakaoError: Bool = false
     
+    let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": ""
+    ]
+    
     func login(param: Login, completionHandler:@escaping (String)->Void) {
         
         fullURL = URL(string: baseURL + "/api/user/login")
@@ -36,7 +41,8 @@ final class LoginRepository {
         AF.request(fullURL!,
                    method: .post,
                    parameters: parameters,
-                   encoder: JSONParameterEncoder.default
+                   encoder: JSONParameterEncoder.default,
+                   headers: header
         )
         .responseData(){
             response in
@@ -106,7 +112,8 @@ final class LoginRepository {
         AF.request(fullURL!,
                    method: .post,
                    parameters: parameters,
-                   encoder: JSONParameterEncoder.default
+                   encoder: JSONParameterEncoder.default,
+                   headers: header
         )
         .responseData(){
             response in
@@ -178,7 +185,8 @@ final class LoginRepository {
         fullURL = URL(string: baseURL + "/api/user/kakaoLogin?accessToken=" + token)
         
         AF.request(fullURL!,
-                   method: .get
+                   method: .get,
+                   headers: header
         )
         .responseData(){
             response in
@@ -222,7 +230,8 @@ final class LoginRepository {
         AF.request(fullURL!,
                    method: .post,
                    parameters: parameters,
-                   encoder: JSONParameterEncoder.default
+                   encoder: JSONParameterEncoder.default,
+                   headers: header
         )
         .responseData(){
             response in
@@ -282,7 +291,8 @@ final class LoginRepository {
         AF.request(fullURL!,
                    method: .post,
                    parameters: parameters,
-                   encoder: JSONParameterEncoder.default
+                   encoder: JSONParameterEncoder.default,
+                   headers: header
         )
         .responseData(){
             response in
