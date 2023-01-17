@@ -101,7 +101,7 @@ class MyViewController: UIViewController {
         
         
         if isLogin{
-            nickName.text = "닉네임"
+            nickName.text = UserDefaults.standard.string(forKey: "username")
         }else{
             nickName.text = "로그인해주세요"
         }

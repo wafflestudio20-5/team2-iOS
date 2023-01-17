@@ -61,6 +61,7 @@ class ModifyProfileViewController: UIViewController {
         nickNameLabel.text = "닉네임"
         modifyNickNameField.backgroundColor = .lightGray
         modifyNickNameField.textColor = .white
+        modifyNickNameField.text = UserDefaults.standard.string(forKey: "username")
         
         genderLabel.text = "성별"
         
