@@ -23,7 +23,7 @@ final class QuestionRepository{
     var isError = false
     
     func postNewQuestion(titleText: String, contentText: String) {
-        let fullURL = URL(string: baseURL + "/api/question")
+        let fullURL = URL(string: baseURL + "/api/question/")
         
         let queryString: Parameters = [
             "title": titleText,

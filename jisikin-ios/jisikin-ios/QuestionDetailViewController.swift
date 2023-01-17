@@ -164,7 +164,8 @@ class QuestionView:UIView{
         questionTimeView.text = question.createdAt
         questionContentView.text = question.content
         questionUserInfo.text = question.username
-    
+        answerButton.isHidden = question.close
+        
     }
 }
 class AnswerProfileView:UIView{
@@ -248,6 +249,7 @@ class AnswerTableCell:UITableViewCell{
     var answerEditButton:UIButton!
     var answerDeleteButton:UIButton!
     var answerChoiceButton:UIButton!
+    var onSelectButtonPressed:(()->())?
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
@@ -324,6 +326,8 @@ class AnswerTableCell:UITableViewCell{
         answerChoiceButton.translatesAutoresizingMaskIntoConstraints = false
         lineAtTop.translatesAutoresizingMaskIntoConstraints = false
         
+        answerChoiceButton.addTarget(self, action: #selector(onSelect), for: .touchDown)
+        
         contentView.addSubview(lineAtTop)
         contentView.addSubview(profile)
         contentView.addSubview(answerContentView)
@@ -381,6 +385,7 @@ class AnswerTableCell:UITableViewCell{
             answerChoiceButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             answerChoiceButton.topAnchor.constraint(equalTo: answerTimeView.bottomAnchor,constant: 5.0),
             answerChoiceButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10.0),
+            answerChoiceButton.widthAnchor.constraint(equalTo:contentView.widthAnchor,multiplier:0.4)
            
         ])
         NSLayoutConstraint.activate([
@@ -405,7 +410,7 @@ class AnswerTableCell:UITableViewCell{
             answerChoiceButton.setTitleColor(redColor, for: .normal)
             answerChoiceButton.titleLabel!.font = answerChoiceButton.titleLabel!.font.withSize(20)
             answerChoiceButton.setImage(checkImage, for: .normal)
-            answerChoiceButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
+          
         }
         else{
             answerChoiceButton.isEnabled = true
@@ -414,14 +419,23 @@ class AnswerTableCell:UITableViewCell{
             answerChoiceButton.titleLabel!.font = answerChoiceButton.titleLabel!.font.withSize(20)
             answerChoiceButton.setTitleColor(.white, for: .normal)
             answerChoiceButton.setImage(nil, for: .normal)
-            answerChoiceButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
+            
         }
     }
-    func configure(answer:AnswerDetailModel){
+    func configure(answer:AnswerDetailModel,question:QuestionDetailModel?){
         answerTimeView.text = answer.createdAt
         answerContentView.text = answer.content
         profile.configure(answer:answer)
         setIsChosen(isChosen: answer.selected)
+        if question == nil{
+            answerChoiceButton.isHidden = true
+        }
+        else{
+            answerChoiceButton.isHidden = question!.close && !answer.selected
+        }
+    }
+    @objc func onSelect(){
+        onSelectButtonPressed?()
     }
 }
 class QuestionDetailViewController:UIViewController{
@@ -455,10 +469,32 @@ class QuestionDetailViewController:UIViewController{
             question in
             if let question{
                 self?.questionView.configure(question:question)
+                
             }
         }).disposed(by: bag)
-        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
-            (cell as! AnswerTableCell).configure(answer:model)
+    
+     
+       viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
+            
+           (cell as! AnswerTableCell).configure(answer:model,question:self.viewModel.question.value)
+           self.viewModel.question.subscribe(onNext: {
+                 question in
+               if let question{
+                   (cell as! AnswerTableCell).configure(answer:model,question:question)
+               }
+           })
+            (cell as! AnswerTableCell).onSelectButtonPressed = { [self] in
+                print("pressed")
+                self.viewModel.selectAnswer(index: index).subscribe(onSuccess: {_ in
+                    viewModel.refresh()
+                },onError:{
+                    _ in
+                    print("채택 실패")
+                })
+                
+            }
+           
+            
         }.disposed(by: bag)
         
     }
