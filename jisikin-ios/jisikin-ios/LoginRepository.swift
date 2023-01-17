@@ -205,6 +205,7 @@ final class LoginRepository {
                     
                     let JSON = JSON(data)
                     
+                    UserDefaults.standard.set(true, forKey: "isLogin")
                     UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
                     UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
                     
