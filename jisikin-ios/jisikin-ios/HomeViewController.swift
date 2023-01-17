@@ -153,7 +153,7 @@ class HomeViewController: UIViewController {
         case newYearBanner:
             print("hello new")
         case helpAnswerBanner:
-            print("hello help")
+            self.tabBarController?.selectedIndex = 1
         case devBanner:
             print("hello dev")
         default:
