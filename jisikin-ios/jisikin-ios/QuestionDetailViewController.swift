@@ -530,6 +530,16 @@ extension QuestionDetailViewController:UITableViewDelegate{
        
         questionView.setOnAnswerButtonClicked(){[weak self] in
             if UserDefaults.standard.bool(forKey: "isLogin"){
+                let selectedQuestionModel = self?.viewModel.question.value
+                
+                let selectedQuestion = QuestionModelForAnswerVC(title: selectedQuestionModel!.title, content: selectedQuestionModel!.content, createdAt: selectedQuestionModel!.createdAt, username: selectedQuestionModel!.username)
+                
+                let encoder = JSONEncoder()
+                
+                if let encoded = try? encoder.encode(selectedQuestion) {
+                    UserDefaults.standard.setValue(encoded, forKey: "selectedQuestion")
+                }
+                
                 var vc = WritingAnswerViewController()
                 vc.questionID = (self?.viewModel.questionID)!
                 self?.navigationController?.pushViewController(vc, animated: true)
@@ -609,4 +619,11 @@ extension UINavigationController {
 
         coordinator.animate(alongsideTransition: nil) { _ in completion() }
     }
+}
+
+struct QuestionModelForAnswerVC: Codable {
+    var title:String
+    var content:String
+    var createdAt:String
+    var username:String
 }

@@ -12,6 +12,7 @@
 		4E01E17E296D23C300B8EFD2 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E01E17D296D23C300B8EFD2 /* HomeViewController.swift */; };
 		4E152C18296007A5000E9D9A /* TestRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E152C17296007A5000E9D9A /* TestRepository.swift */; };
 		4E44C25D2963ED5D001165AD /* LoginRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E44C25C2963ED5D001165AD /* LoginRepository.swift */; };
+		4E610E972976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E610E962976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift */; };
 		4E682775296E75060001FC35 /* tagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E682773296E75060001FC35 /* tagViewCell.swift */; };
 		4E682776296E75060001FC35 /* WritingAnswerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E682774296E75060001FC35 /* WritingAnswerViewController.swift */; };
 		4E8BAE0629559F62001CE4BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8BAE0529559F62001CE4BD /* AppDelegate.swift */; };
@@ -67,6 +68,7 @@
 		4E01E17D296D23C300B8EFD2 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		4E152C17296007A5000E9D9A /* TestRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRepository.swift; sourceTree = "<group>"; };
 		4E44C25C2963ED5D001165AD /* LoginRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRepository.swift; sourceTree = "<group>"; };
+		4E610E962976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionDetailFromWritingAnswerViewController.swift; sourceTree = "<group>"; };
 		4E682773296E75060001FC35 /* tagViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tagViewCell.swift; sourceTree = "<group>"; };
 		4E682774296E75060001FC35 /* WritingAnswerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WritingAnswerViewController.swift; sourceTree = "<group>"; };
 		4E8BAE0229559F62001CE4BD /* jisikin-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "jisikin-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,6 +168,7 @@
 			children = (
 				4E682773296E75060001FC35 /* tagViewCell.swift */,
 				4E682774296E75060001FC35 /* WritingAnswerViewController.swift */,
+				4E610E962976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift */,
 				4E8BAE0529559F62001CE4BD /* AppDelegate.swift */,
 				4E8BAE0729559F62001CE4BD /* SceneDelegate.swift */,
 				C002B11D295AE1DA003303B7 /* TabBarViewController.swift */,
@@ -484,6 +487,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E610E972976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift in Sources */,
 				4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */,
 				4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */,
 				4E682775296E75060001FC35 /* tagViewCell.swift in Sources */,
