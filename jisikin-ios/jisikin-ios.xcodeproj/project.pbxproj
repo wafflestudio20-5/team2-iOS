@@ -39,7 +39,6 @@
 		C002B120295AE21B003303B7 /* AnswerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B11F295AE21B003303B7 /* AnswerViewController.swift */; };
 		C002B122295AE228003303B7 /* QuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B121295AE228003303B7 /* QuestionViewController.swift */; };
 		C002B124295AE236003303B7 /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B123295AE236003303B7 /* MyViewController.swift */; };
-		C0D6FC11295E12F100FF0A0C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C0D6FC10295E12F100FF0A0C /* Launch Screen.storyboard */; };
 		C0D6FC15295F319A00FF0A0C /* MyQAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D6FC14295F319A00FF0A0C /* MyQAViewController.swift */; };
 		C0D6FC19295F32BD00FF0A0C /* HeartedQViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D6FC18295F32BD00FF0A0C /* HeartedQViewController.swift */; };
 		C0D6FC1B295F5F2300FF0A0C /* ModifyProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D6FC1A295F5F2300FF0A0C /* ModifyProfileViewController.swift */; };
@@ -105,7 +104,6 @@
 		C002B11F295AE21B003303B7 /* AnswerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerViewController.swift; sourceTree = "<group>"; };
 		C002B121295AE228003303B7 /* QuestionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewController.swift; sourceTree = "<group>"; };
 		C002B123295AE236003303B7 /* MyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
-		C0D6FC10295E12F100FF0A0C /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		C0D6FC14295F319A00FF0A0C /* MyQAViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyQAViewController.swift; sourceTree = "<group>"; };
 		C0D6FC18295F32BD00FF0A0C /* HeartedQViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartedQViewController.swift; sourceTree = "<group>"; };
 		C0D6FC1A295F5F2300FF0A0C /* ModifyProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyProfileViewController.swift; sourceTree = "<group>"; };
@@ -186,7 +184,6 @@
 				4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */,
 				4E8BAE0E29559F63001CE4BD /* Assets.xcassets */,
 				4E8BAE1329559F63001CE4BD /* Info.plist */,
-				C0D6FC10295E12F100FF0A0C /* Launch Screen.storyboard */,
 				4E152C17296007A5000E9D9A /* TestRepository.swift */,
 				4E010325296009860060F342 /* TestViewcontroller.swift */,
 				4E9CAE7D296066F300D92F30 /* QuestionTableViewCell.swift */,
@@ -358,7 +355,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C0D6FC11295E12F100FF0A0C /* Launch Screen.storyboard in Resources */,
 				4E8BAE0F29559F63001CE4BD /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
