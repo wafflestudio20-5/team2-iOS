@@ -8,6 +8,7 @@
 import Foundation
 import Alamofire
 import RxSwift
+
 struct AnswerAPI:Codable{
     var content:String
     var photos:[String]
@@ -18,6 +19,11 @@ struct AnswerAPI:Codable{
     var profileImagePath:String?
     var userRecentAnswerDate:String
     var id:Int
+    var interactionCount:InteractionCount
+}
+struct InteractionCount:Codable{
+    var agree:Int
+    var disagree:Int
 }
 class AnswerRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
@@ -113,6 +119,22 @@ class AnswerRepository{
                     single(.failure(error))
                 }
                 
+            }
+            return Disposables.create()
+        }
+    }
+    func agreeAnswer(id:Int,isAgree:Bool)->Single<String>{
+        let fullURL = URL(string:baseURL + "/api/userAnswerInteraction/\(id)/\(isAgree)")
+        return Single<String>.create{
+            single in
+            AF.request(fullURL!,method:.put,interceptor:JWTInterceptor()).validate(statusCode: 200..<300).responseString{
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
             }
             return Disposables.create()
         }

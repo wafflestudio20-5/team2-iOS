@@ -269,7 +269,8 @@ class AnswerTableCell:UITableViewCell{
     var answerDeleteButton:UIButton!
     var answerChoiceButton:UIButton!
     var onSelectButtonPressed:(()->())?
-  
+    var onAgreeButtonPressed:(()->())?
+    var onDisagreeButtonPressed:(()->())?
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
@@ -339,7 +340,8 @@ class AnswerTableCell:UITableViewCell{
         lineAtTop.translatesAutoresizingMaskIntoConstraints = false
         
         answerChoiceButton.addTarget(self, action: #selector(onSelect), for: .touchDown)
-        
+        likeButton.addTarget(self, action: #selector(onAgree), for: .touchDown)
+        dislikeButton.addTarget(self, action: #selector(onDisagree), for: .touchDown)
         contentView.addSubview(lineAtTop)
         contentView.addSubview(profile)
         contentView.addSubview(answerContentView)
@@ -438,6 +440,8 @@ class AnswerTableCell:UITableViewCell{
         
         answerTimeView.text = answer.createdAt
         answerContentView.text = answer.content
+        likeButton.setTitle(String(answer.agree), for: .normal)
+        dislikeButton.setTitle(String(answer.disagree),for:.normal)
         profile.configure(answer:answer)
         setIsChosen(isChosen: answer.selected)
         if question == nil{
@@ -482,6 +486,13 @@ class AnswerTableCell:UITableViewCell{
     @objc func onSelect(){
         onSelectButtonPressed?()
     }
+    @objc func onAgree(){
+        onAgreeButtonPressed?()
+    }
+    @objc func onDisagree(){
+        onDisagreeButtonPressed?()
+    }
+    
 }
 class QuestionDetailViewController:UIViewController{
     var bag = DisposeBag()
@@ -571,6 +582,32 @@ class QuestionDetailViewController:UIViewController{
                 })
                 
             }
+           (cell as! AnswerTableCell).onAgreeButtonPressed = {[self]
+               if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
+                   self.viewModel.agreeAnswer(index: index, isAgree: true).subscribe(onSuccess:{
+                       _ in
+                       self.viewModel.refresh()
+                   })
+               }
+               else{
+                   self.showLoginAlert(onLogin: {
+                       self.tabBarController?.navigationController?.popViewController(animated: true)
+                   })
+               }
+           }
+           (cell as! AnswerTableCell).onDisagreeButtonPressed = {[self]
+               if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
+                   self.viewModel.agreeAnswer(index: index, isAgree: false).subscribe(onSuccess:{
+                       _ in
+                       self.viewModel.refresh()
+                   })
+               }
+               else{
+                   self.showLoginAlert(onLogin: {
+                       self.tabBarController?.navigationController?.popViewController(animated: true)
+                   })
+               }
+           }
            
             
         }.disposed(by: bag)
@@ -626,7 +663,13 @@ extension QuestionDetailViewController:UITableViewDelegate{
                 self?.navigationController?.pushViewController(vc, animated: true)
             }
             else{
-                self?.showLoginAlert()
+                self?.showLoginAlert{
+                    self?.tabBarController?.navigationController?.popViewController(animated: false){
+                        var vc = WritingAnswerViewController()
+                        vc.questionID = (self?.viewModel.questionID)!
+                        self?.navigationController?.pushViewController(vc, animated: true)
+                    }
+                }
             }
         }
         questionView.translatesAutoresizingMaskIntoConstraints = false
@@ -641,7 +684,7 @@ extension QuestionDetailViewController:UITableViewDelegate{
         ])
         return headerView
     }
-    func showLoginAlert(){
+    func showLoginAlert(onLogin:@escaping(()->())){
          let loginAction = UIAlertAction(title:"로그인",style: .default,handler: {[weak self]
              setAction in
              let appearance = UINavigationBarAppearance()
@@ -653,15 +696,10 @@ extension QuestionDetailViewController:UITableViewDelegate{
            
              let vc = LoginViewController()
            
-             vc.onLogin = {
-                 self?.tabBarController?.navigationController?.popViewController(animated: false){
-                     var vc = WritingAnswerViewController()
-                     vc.questionID = (self?.viewModel.questionID)!
-                     self?.navigationController?.pushViewController(vc, animated: true)
-                 }
+             vc.onLogin = onLogin
                  
                 
-             }
+             
              let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
              backBarButtonItem.tintColor = UIColor(named: "MainColor")
              self?.tabBarController?.navigationItem.backBarButtonItem = backBarButtonItem

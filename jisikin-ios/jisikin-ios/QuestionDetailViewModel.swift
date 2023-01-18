@@ -18,9 +18,10 @@ struct AnswerDetailModel{
     var profileImage:UIImage?
     var userRecentAnswerDate:String
     var id:Int
-    
+    var agree:Int
+    var disagree:Int
     static func fromAnswerAPI(answerAPI:AnswerAPI)->AnswerDetailModel{
-        return AnswerDetailModel(content: answerAPI.content,photos:answerAPI.photos, createdAt: answerAPI.createdAt, selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id)
+        return AnswerDetailModel(content: answerAPI.content,photos:answerAPI.photos, createdAt: answerAPI.createdAt, selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id,agree:answerAPI.interactionCount.agree,disagree:answerAPI.interactionCount.disagree)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
@@ -89,6 +90,19 @@ class QuestionDetailViewModel{
     func selectAnswer(index:Int)->Single<String>{
         return Single<String>.create{single in
             self.usecase.selectAnswer(questionID: self.questionID, answerID: self.answers.value[index].id).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+                
+            }, onFailure: {
+                error in
+                single(.failure(error))
+            })
+        }
+       
+    }
+    func agreeAnswer(index:Int,isAgree:Bool)->Single<String>{
+        return Single<String>.create{single in
+            self.usecase.agreeAnswer(id: self.answers.value[index].id ,isAgree:isAgree ).subscribe(onSuccess: {
                 result in
                 single(.success(result))
                 

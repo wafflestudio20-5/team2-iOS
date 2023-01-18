@@ -72,5 +72,17 @@ class QuestionAnswerUsecase{
             })
         }
     }
+    func agreeAnswer(id:Int,isAgree:Bool)->Single<String>{
+        return Single<String>.create{single in
+            self.answerRepo.agreeAnswer(id:id, isAgree: isAgree).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+            
+            }, onError: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
     
 }
