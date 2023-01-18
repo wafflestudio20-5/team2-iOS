@@ -17,6 +17,7 @@ struct AnswerAPI:Codable{
     var username:String
     var profileImagePath:String?
     var userRecentAnswerDate:String
+    var id:Int
 }
 class AnswerRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
@@ -46,7 +47,15 @@ class AnswerRepository{
                 response in
                 switch(response.result){
                 case .success(let data):
-                    single(.success(data))
+                    var val = (data as! [AnswerAPI])
+                    
+                    for (i,v) in val.enumerated(){
+                     //  val[i].photos.append("https://via.placeholder.com/150")
+                     //  val[i].photos.append("https://via.placeholder.com/150")
+                     //  val[i].photos.append("https://via.placeholder.com/1500")
+                    }
+                    single(.success(val))
+                    
                 case .failure(let error):
                     single(.failure(error))
                 }
@@ -83,4 +92,29 @@ class AnswerRepository{
             }
         }
     }
+    
+    func selectAnswer(id:Int)->Single<String>{
+        let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
+            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
+        ]
+        
+        let fullURL = URL(string: baseURL + "/api/answer/\(id)/select/true")
+        return Single<String>.create{
+            single in
+            AF.request(fullURL!,method:.put,headers:header).validate(statusCode:200..<300).responseString{
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+                
+            }
+            return Disposables.create()
+        }
+    }
 }
+    
