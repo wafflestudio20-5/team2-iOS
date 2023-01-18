@@ -70,7 +70,7 @@ class QuestionListViewModel{
     }
     
     func getMyHeartedQuestions(){
-        
+        usecase.getMyHeartedQuestions()
     }
     
     func postNewQuestion(titleText: String, contentText: String) {

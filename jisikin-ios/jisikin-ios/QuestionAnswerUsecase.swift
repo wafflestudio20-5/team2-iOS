@@ -47,6 +47,9 @@ class QuestionAnswerUsecase{
             }
         }).disposed(by: bag)
     }
+    func getMyHeartedQuestions(){
+        
+    }
     func getQuestionAndAnswersByID(id:Int){
         questionRepo.getQuestionByID(id: id).subscribe(onSuccess: {[weak self]
             data in

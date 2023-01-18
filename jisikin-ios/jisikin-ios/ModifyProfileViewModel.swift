@@ -9,7 +9,7 @@
 //import UIKit
 //import RxSwift
 //import RxCocoa
-//struct AnswerDetailModel{
+//struct ProfileDetailModel{
 //    var content:String
 //    var photos:[UIImage] = []
 //    var createdAt:String
@@ -32,7 +32,7 @@
 //        return dateFormatter.string(from: date)
 //    }
 //}
-//struct QuestionDetailModel{
+//struct ProfileModel{
 //    var title:String
 //    var content:String
 //    var photos:[UIImage] = []
@@ -58,9 +58,9 @@
 //        return dateFormatter.string(from: date)
 //    }
 //}
-//class QuestionDetailViewModel{
+//class ProfileViewModel{
 //    var bag = DisposeBag()
-//    var usecase:QuestionAnswerUsecase
+//    var usecase:ProfileUsecase
 //    var questionID:Int
 //    var question = BehaviorRelay<QuestionDetailModel?>(value:nil)
 //    var answers = BehaviorRelay<[AnswerDetailModel]>(value:[])

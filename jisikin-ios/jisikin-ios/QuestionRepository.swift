@@ -16,7 +16,6 @@ struct QuestionAPI:Codable{
     var modifiedAt:String
     var close:Bool
     var username:String
-    
 }
 final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
@@ -102,13 +101,14 @@ final class QuestionRepository{
     }
     func getMyQuestions()->Single<[QuestionAPI]>{
         let fullURL = URL(string: baseURL + "/api/user/myQuestions/")
-        let parameters: Parameters = [
+        let header: HTTPHeaders = [
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
+            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
         ]
         return Single<[QuestionAPI]>.create{
             single in
-            AF.request(fullURL!,method:.get, parameters: parameters).responseDecodable(of:[QuestionAPI].self){
+            AF.request(fullURL!,method:.get, headers: header).responseDecodable(of:[QuestionAPI].self){
                 response in
                 switch(response.result){
                 case .success(let data):
@@ -123,13 +123,14 @@ final class QuestionRepository{
     }
     func getMyAnsweredQuestions()->Single<[QuestionAPI]>{
         let fullURL = URL(string: baseURL + "/api/user/myAnswers/")
-        let parameters: Parameters = [
+        let header: HTTPHeaders = [
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
+            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
         ]
         return Single<[QuestionAPI]>.create{
             single in
-            AF.request(fullURL!,method:.get, parameters: parameters).responseDecodable(of:[QuestionAPI].self){
+            AF.request(fullURL!,method:.get, headers: header).responseDecodable(of:[QuestionAPI].self){
                 response in
                 switch(response.result){
                 case .success(let data):
