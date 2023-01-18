@@ -26,7 +26,7 @@ class AnswerRepository{
     func getAnswersByQuestionID(id:Int,onCompleted:@escaping([AnswerAPI])->()){
         
         let fullURL = URL(string:baseURL + "/api/answer/\(id)")
-        AF.request(fullURL!).responseDecodable(of:[AnswerAPI].self){[unowned self]
+        AF.request(fullURL!,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[AnswerAPI].self){[unowned self]
             response in
             switch(response.result){
             case .success(let data):
@@ -43,7 +43,7 @@ class AnswerRepository{
         let fullURL = URL(string: baseURL + "/api/answer/\(id)")
         return Single<[AnswerAPI]>.create{
             single in
-            AF.request(fullURL!,method:.get).responseDecodable(of:[AnswerAPI].self){
+            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[AnswerAPI].self){
                 response in
                 switch(response.result){
                 case .success(let data):
@@ -65,7 +65,7 @@ class AnswerRepository{
         }
     }
     
-    func postNewAnswer(id: Int, contentText: String) {
+    func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {
         let fullURL = URL(string: baseURL + "/api/answer/\(id)")
         
         let queryString: Parameters = [
@@ -78,12 +78,13 @@ class AnswerRepository{
             "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
         ]
         
-        AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, headers: header).responseData {
+        AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, headers: header,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
             response in
             switch(response.result) {
             case .success(let data):
                 print("성공")
                 print(String(data: data, encoding: .utf8)!)
+                handler()
                 break
             case .failure(let error):
                 print("실패")
@@ -103,7 +104,7 @@ class AnswerRepository{
         let fullURL = URL(string: baseURL + "/api/answer/\(id)/select/true")
         return Single<String>.create{
             single in
-            AF.request(fullURL!,method:.put,headers:header).validate(statusCode:200..<300).responseString{
+            AF.request(fullURL!,method:.put,headers:header,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseString{
                 response in
                 switch(response.result){
                 case .success(let data):

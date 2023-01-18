@@ -152,14 +152,14 @@ class QuestionView:UIView{
     @objc private func answerButtonClicked(_ sender: Any) {
         onAnswerButtonClicked?()
     }
-    func configure(question:QuestionDetailModel){
+    func configure(question:QuestionDetailModel,hasAnswers:Bool){
+        
         questionTitleView.text = question.title
         questionTimeView.text = question.createdAt
         questionContentView.text = question.content
         questionUserInfo.text = question.username
         answerButton.isHidden = question.close
         imageStackView.safelyRemoveArrangedSubviews()
-      
         for image in question.photos{
             let imageView = UIImageView()
            
@@ -174,6 +174,15 @@ class QuestionView:UIView{
                 onImageLoaded?()
                 layoutIfNeeded()
             }
+        }
+        if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
+            let username = UserDefaults.standard.string(forKey: "username")!
+            questionEditButton.isHidden = username != question.username || hasAnswers
+            questionDeleteButton.isHidden = username != question.username || hasAnswers
+        }
+        else{
+            questionEditButton.isHidden = true
+            questionDeleteButton.isHidden = true
         }
         
     }
@@ -426,7 +435,7 @@ class AnswerTableCell:UITableViewCell{
         }
     }
     func configure(answer:AnswerDetailModel,question:QuestionDetailModel?){
-        print("configure")
+        
         answerTimeView.text = answer.createdAt
         answerContentView.text = answer.content
         profile.configure(answer:answer)
@@ -454,6 +463,19 @@ class AnswerTableCell:UITableViewCell{
                 ])
            
                 print("image loaded")
+            }
+        }
+        if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
+            let username = UserDefaults.standard.string(forKey: "username")!
+            answerEditButton.isHidden =  username != answer.username || answer.selected
+            answerDeleteButton.isHidden =  username != answer.username || answer.selected
+            answerChoiceButton.isHidden = username != question?.username && !answer.selected
+        }
+        else{
+            answerEditButton.isHidden = true
+            answerDeleteButton.isHidden = true
+            if !answer.selected{
+                answerChoiceButton.isHidden = true
             }
         }
     }
@@ -509,12 +531,23 @@ class QuestionDetailViewController:UIViewController{
         // Do any additional setup after loading the view.
         viewModel.question.subscribe(onNext: {[weak self]
             question in
+            if self==nil{return}
             if let question{
-                self?.questionView.configure(question:question)
+                self!.questionView.configure(question:question,hasAnswers:self!.viewModel.answers.value.count != 0)
                 
             }
+            
         }).disposed(by: bag)
-    
+        viewModel.answers.subscribe(onNext: {[weak self]
+            answers in
+          
+            if self==nil{return}
+            if self!.viewModel.question.value == nil{return}
+            self!.questionView.configure(question:self!.viewModel.question.value!,hasAnswers:answers.count != 0)
+                
+            
+            
+        }).disposed(by: bag)
      
        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
            print("answer update")
@@ -524,7 +557,7 @@ class QuestionDetailViewController:UIViewController{
            self.viewModel.question.subscribe(onNext: {
                  question in
                if let question{
-                    print("question update")
+                    
                    (cell as! AnswerTableCell).configure(answer:model,question:question)
                }
            }).disposed(by: self.bag)

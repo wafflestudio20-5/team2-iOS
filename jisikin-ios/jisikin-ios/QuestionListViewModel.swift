@@ -65,8 +65,10 @@ class QuestionListViewModel{
         usecase.postNewQuestion(titleText: titleText, contentText: contentText)
     }
     
-    func postNewAnswer(id: Int, contentText: String) {
-        usecase.postNewAnswer(id: id, contentText: contentText)
+    func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {
+        usecase.postNewAnswer(id: id, contentText: contentText){
+            handler()
+        }
     }
 }
  

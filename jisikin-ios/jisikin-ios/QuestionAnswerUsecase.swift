@@ -55,8 +55,10 @@ class QuestionAnswerUsecase{
         questionRepo.postNewQuestion(titleText: titleText, contentText: contentText)
     }
     
-    func postNewAnswer(id: Int, contentText: String) {
-        answerRepo.postNewAnswer(id: id, contentText: contentText)
+    func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {
+        answerRepo.postNewAnswer(id: id, contentText: contentText){
+            handler()
+        }
     }
     func selectAnswer(questionID:Int,answerID:Int)->Single<String>{
         return Single<String>.create{single in

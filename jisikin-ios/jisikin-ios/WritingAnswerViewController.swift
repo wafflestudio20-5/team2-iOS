@@ -123,9 +123,11 @@ class WritingAnswerViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         } else {
             guard let contentText = contentView.text else { return }
-            viewModel.postNewAnswer(id: questionID, contentText: contentText)
+            viewModel.postNewAnswer(id: questionID, contentText: contentText){
+                self.navigationController?.popViewController(animated: true)
+            }
         }
-        navigationController?.popViewController(animated: true)
+      
     }
     
     @objc private func plusImage(_ sender: Any) {
