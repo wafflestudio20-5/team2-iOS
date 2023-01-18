@@ -38,14 +38,14 @@ class QuestionView:UIView{
         questionTitleView = UILabel()
         questionTitleView.font = questionTitleView.font.withSize(30)
         questionTitleView.textColor = .black
-        questionTitleView.text = "게임 이름 기억 안남"
+        questionTitleView.numberOfLines = 0
+       
      
         questionUserInfo = UILabel()
         questionUserInfo.textColor = .gray
-        questionUserInfo.text = "impri 질문수 10"
+        
         
         questionContentView = UILabel()
-        questionContentView.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean porta lacus vel justo interdum, ac mollis est blandit. Praesent et leo tempus, imperdiet mi sed, molestie tellus. Etiam faucibus velit at massa vestibulum, nec vestibulum nunc pretium. Duis ut diam at lectus elementum egestas. Integer gravida rutrum elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc aliquet sapien vel tortor dignissim, sit amet tempor felis eleifend. Proin in arcu condimentum, cursus ipsum sit amet, tristique neque. Etiam nec purus dignissim, sodales felis vitae, pharetra elit. Donec malesuada sed lacus nec consequat. Phasellus nec tortor gravida, porttitor mauris id, placerat magna. Proin sodales interdum turpis, ac scelerisque ipsum elementum tempus. Quisque eu felis elit. Nam et scelerisque purus. Suspendisse maximus nunc dolor. Praesent diam tortor, venenatis non libero eget, egestas sodales odio."
         questionContentView.numberOfLines = 0
         questionContentView.lineBreakMode = .byWordWrapping
         questionContentView.font = questionTitleView.font.withSize(20)
