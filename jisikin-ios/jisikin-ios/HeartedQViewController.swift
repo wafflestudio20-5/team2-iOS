@@ -31,7 +31,7 @@ class HeartedQViewController: UIViewController {
             (cell as! QuestionTableViewCell).configure(question:model)
             //self.questionTable?.refreshControl?.endRefreshing()
         }.disposed(by: bag)
-        viewModel.getMyQuestions()
+        viewModel.getMyHeartedQuestions()
         
         view.addSubview(questionTable)
         

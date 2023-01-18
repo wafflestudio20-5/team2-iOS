@@ -155,6 +155,27 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
+//    func getMyHeartedQuestions()->Single<[QuestionAPI]>{
+//        let fullURL = URL(string: baseURL + "/api/user/myAnswers/")
+//        let header: HTTPHeaders = [
+//            "Content-Type": "application/json",
+//            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
+//        ]
+//        return Single<[QuestionAPI]>.create{
+//            single in
+//            AF.request(fullURL!,method:.get, headers: header).responseDecodable(of:[QuestionAPI].self){
+//                response in
+//                switch(response.result){
+//                case .success(let data):
+//                    single(.success(data))
+//                case .failure(let error):
+//                    single(.failure(error))
+//                }
+//            
+//            }
+//            return Disposables.create()
+//        }
+//    }
     
     func deleteQuestion(id:Int)->Single<String>{
         let fullURL = URL(string:baseURL + "/api/question/\(id)")
