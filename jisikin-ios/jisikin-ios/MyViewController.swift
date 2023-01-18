@@ -52,6 +52,8 @@ todos = try! PropertyListDecoder().decode([ToDo].self, from: data)
 
 class MyViewController: UIViewController {
     
+    
+    
     let profilePhotoView = UIImageView()
     let modifyProfileBtn = UIButton()
     let nickName = UILabel()
@@ -59,6 +61,8 @@ class MyViewController: UIViewController {
     let QABtn = UIButton()
     let heartedQBtn = UIButton()
     let logInOutBtn = UIButton()
+    
+    var viewModel = ProfileViewModel()
     
     let LoginRepo = LoginRepository()
     
@@ -68,14 +72,24 @@ class MyViewController: UIViewController {
         
         self.view.backgroundColor = .white
         
+        if isLogin{
+            viewModel.getProfile()
+        }
+        
         let profilePhotoSize = CGFloat(45)
         //profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
-        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+        
         profilePhotoView.backgroundColor = .black
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
         profilePhotoView.layer.borderWidth = 3.0
-        profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
+        if isLogin{
+            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+            profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
+        }else{
+            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+            profilePhotoView.layer.borderColor = .none
+        }
         
         let tapGesture: UITapGestureRecognizer
         if isLogin{
@@ -164,78 +178,19 @@ class MyViewController: UIViewController {
             logInOutBtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
         }
         
-//        profileBtn.configuration = .plain()
-//        profileBtn.configuration?.imagePlacement = .top
-//        profileBtn.configuration?.imagePadding = 10
-//
-//        profileBtn.setImage(UIImage(systemName:"pencil", withConfiguration: largeConfig)!.withTintColor(.darkText, renderingMode: .alwaysOriginal), for: .normal)
-//        profileBtn.setTitle("프로필 수정", for: .normal)
-//        profileBtn.setTitleColor(.black, for: .normal)
-//        profileBtn.setTitleColor(.black, for: .highlighted)
-//        profileBtn.addTarget(self, action: #selector(onTapProfileBtn), for: .touchUpInside)
-        
-        
-        
-        
-        
-//        logOutBtn.configuration = .plain()
-//
-//        var configuration = UIButton.Configuration.plain()
-//        var titleContainer = AttributeContainer()
-//        titleContainer.font = UIFont.boldSystemFont(ofSize: 20)
-//        titleContainer.foregroundColor = .black
-//        configuration.attributedTitle = AttributedString("로그아웃", attributes: titleContainer)
-//
-//        logOutBtn.configuration = configuration
-//        logOutBtn.addTarget(self, action: #selector(onTapLogOutBtn), for: .touchUpInside)
-
-        
-//        var configuration = UIButton.Configuration.plain()
-//
-//        var titleContainer = AttributeContainer()
-//        titleContainer.font = UIFont.boldSystemFont(ofSize: 20)
-//
-//        var subtitleContainer = AttributeContainer()
-//        subtitleContainer.foregroundColor = UIColor.white.withAlphaComponent(0.5)
-//
-//        // 버튼 Contents 커스텀
-//        configuration.attributedTitle = AttributedString("Title", attributes: titleContainer)
-//        configuration.attributedSubtitle = AttributedString("Subtitle", attributes: subtitleContainer)
-//        configuration.image = UIImage(systemName: "swift")
-//        configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 30)
-//        configuration.imagePadding = 10
-//
-//        // 이미지가 왼쪽에 위치한 버튼
-//        configuration.titleAlignment = .leading
-//        let leftButton = UIButton(configuration: configuration)
-//
-//        // 이미지가 상단에 위치한 버튼
-//        configuration.imagePlacement = .top
-//        let topButton = UIButton(configuration: configuration)
-//
-//        // 이미지가 오른쪽에 위치한 버튼
-//        configuration.imagePlacement = .trailing
-//        let rightButton = UIButton(configuration: configuration)
-//
-//        // 이미지가 하단에 위치한 버튼
-//        configuration.imagePlacement = .bottom
-//        let bottomButton = UIButton(configuration: configuration)
         
         view.addSubview(profilePhotoView)
         view.addSubview(modifyProfileBtn)
         view.addSubview(nickName)
         view.addSubview(QABtn)
-//        view.addSubview(profileBtn)
         view.addSubview(heartedQBtn)
         view.addSubview(logInOutBtn)
-//        view.addSubview(leftButton)
         profilePhotoView.translatesAutoresizingMaskIntoConstraints = false
         modifyProfileBtn.translatesAutoresizingMaskIntoConstraints = false
         nickName.translatesAutoresizingMaskIntoConstraints = false
         QABtn.translatesAutoresizingMaskIntoConstraints = false
         heartedQBtn.translatesAutoresizingMaskIntoConstraints = false
         logInOutBtn.translatesAutoresizingMaskIntoConstraints = false
-//        leftButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             profilePhotoView.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor),
             profilePhotoView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor, constant: -profilePhotoSize),
@@ -327,26 +282,3 @@ class MyViewController: UIViewController {
     */
 
 }
-
-//extension UIButton {
-//    func alignTextBelow(spacing: CGFloat = 4.0) {
-//            guard let image = self.imageView?.image else {
-//                return
-//            }
-//
-//            guard let titleLabel = self.titleLabel else {
-//                return
-//            }
-//
-//            guard let titleText = titleLabel.text else {
-//                return
-//            }
-//
-//            let titleSize = titleText.size(withAttributes: [
-//                NSAttributedString.Key.font: titleLabel.font as Any
-//            ])
-//
-//            titleEdgeInsets = UIEdgeInsets(top: spacing, left: -image.size.width, bottom: -image.size.height, right: 0)
-//            imageEdgeInsets = UIEdgeInsets(top: -(titleSize.height + spacing), left: 0, bottom: 0, right: -titleSize.width)
-//        }
-//}

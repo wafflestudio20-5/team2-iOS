@@ -25,22 +25,19 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     let modifyCancelBtn = UILabel()
     let modifySaveBtn = UILabel()
     
+    let viewModel = ProfileViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
-        // navigationController?.navigationBar.isHidden = false
-        //navigationItem.leftItemsSupplementBackButton = false
         navigationItem.title = "프로필 수정"
         navigationItem.rightBarButtonItem = backBtn
-        //navigationController?.navigationBar.leftBarButtonItem = nil
-        //navigationController?.navigationBar.rightBarButtonItem = backBtn
         navigationItem.hidesBackButton = true
         
         profilePhotoLabel.text = "프로필 사진"
         
         let profilePhotoSize = CGFloat(45)
-//        profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
         profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
         profilePhotoView.backgroundColor = .systemGray
         profilePhotoView.layer.cornerRadius = profilePhotoSize
@@ -64,6 +61,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         modifyNickNameField.text = UserDefaults.standard.string(forKey: "username")
         
         genderLabel.text = "성별"
+        //genderSegment
         
         
         modifyCancelBtn.text = "취소하기"
@@ -203,6 +201,13 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     }
     @objc
     func onTapModifySaveBtn() {
+        if genderSegment.selectedSegmentIndex == 0{
+            viewModel.modifyProfile(profileImage: UIImage(), username: modifyNickNameField.text!, isMale: true)
+        }
+        else{
+            viewModel.modifyProfile(profileImage: UIImage(), username: modifyNickNameField.text!, isMale: false)
+        }
+        
         self.navigationController?.popViewController(animated: true)
     }
 

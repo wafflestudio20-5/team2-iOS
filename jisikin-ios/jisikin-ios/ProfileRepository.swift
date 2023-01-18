@@ -8,10 +8,11 @@
 import Foundation
 import Alamofire
 import RxSwift
+import SwiftyJSON
 struct Profile:Codable{
     var profileImage:String?
     var username:String
-    var isMale:Bool
+    var isMale:Bool?
 }
 class ProfileRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
@@ -19,13 +20,18 @@ class ProfileRepository{
     
     func getProfile()->Single<Profile>{
         let fullURL = URL(string: baseURL + "/api/user/myAllProfile/")
-        let parameters: Parameters = [
+        let header: HTTPHeaders = [
             "Content-Type": "application/json",
             "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
         ]
+        
+//        AF.request(fullURL!,method:.get, headers: header).responseJSON { response in
+//                    print(response)
+//                }
+        
         return Single<Profile>.create{
             single in
-            AF.request(fullURL!,method:.get, parameters: parameters).responseDecodable(of:Profile.self){
+            AF.request(fullURL!,method:.get, headers: header).responseDecodable(of:Profile.self){
                 response in
                 switch(response.result){
                 case .success(let data):
@@ -39,14 +45,14 @@ class ProfileRepository{
         }
     }
     
-    func putAccount(photoPath: URL, username: String, isMale: Bool) ->Single<String> {
+    func putAccount(username: String, isMale: Bool) ->Single<String> {
         let fullURL = URL(string: baseURL + "/api/user/putAccount")
-        
+        let photoPath = ""
         let queryString: Parameters = [
-            "profileImage": photoPath,
-            "username": username,
-            "isMale": isMale
-        ]
+                "profileImage": photoPath,
+                "username": username,
+                "isMale": isMale
+            ]
         
         let header: HTTPHeaders = [
             "Content-Type": "application/json",
