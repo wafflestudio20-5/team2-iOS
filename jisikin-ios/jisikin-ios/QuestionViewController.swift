@@ -43,6 +43,8 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     var photos: [UIImage] = []
     
+    var cnt: Int = 0
+    
     var tagCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -312,9 +314,35 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     }
 }
 
-extension QuestionViewController {
+extension QuestionViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     func presentCamera() {
+        let vc = UIImagePickerController()
+        vc.sourceType = .camera
+        vc.delegate = self
+        vc.allowsEditing = true
         
+        present(vc, animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if cnt % 2 == 0 {
+            if let image = info[.editedImage] as? UIImage {
+                self.photos.append(image)
+            }
+        }
+        else {
+            if let image = info[.originalImage] as? UIImage {
+                self.photos.append(image)
+            }
+        }
+        
+        cnt += 1
+        
+        dismiss(animated: true, completion: nil)
     }
     
     func presentAlbum() {
