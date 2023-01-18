@@ -113,5 +113,20 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
-    
+    func deleteQuestion(id:Int)->Single<String>{
+        let fullURL = URL(string:baseURL + "/api/question/\(id)")
+        return Single<String>.create{
+            single in
+            AF.request(fullURL!,method:.delete,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseString{
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            }
+            return Disposables.create()
+        }
+    }
 }

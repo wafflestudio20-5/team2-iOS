@@ -113,4 +113,30 @@ class QuestionDetailViewModel{
         }
        
     }
+   
+    func deleteAnswer(index:Int)->Single<String>{
+        return Single<String>.create{single in
+            self.usecase.deleteAnswer(id: self.answers.value[index].id  ).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+                
+            }, onFailure: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
+    func deleteQuestion()->Single<String>{
+        return Single<String>.create{single in
+            self.usecase.deleteQuestion(id:self.questionID).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+                
+            }, onFailure: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
+   
 }

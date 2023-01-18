@@ -23,6 +23,7 @@ class QuestionView:UIView{
     var questionImages:[UIImage] = []
     var onAnswerButtonClicked:(()->())?
     var onImageLoaded:(()->())?
+    var onDeleteButtonClicked:(()->())?
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -65,6 +66,7 @@ class QuestionView:UIView{
         questionDeleteButton = UIButton()
         questionDeleteButton.setTitle("삭제", for: .normal)
         questionDeleteButton.setTitleColor(.gray, for: .normal)
+        questionDeleteButton.addTarget(self, action: #selector(deleteButtonClicked), for: .touchDown)
         
         answerButton = UIButton()
         answerButton.backgroundColor = BLUE_COLOR
@@ -151,6 +153,9 @@ class QuestionView:UIView{
     }
     @objc private func answerButtonClicked(_ sender: Any) {
         onAnswerButtonClicked?()
+    }
+    @objc func deleteButtonClicked(){
+        onDeleteButtonClicked?()
     }
     func configure(question:QuestionDetailModel,hasAnswers:Bool){
         
@@ -271,6 +276,7 @@ class AnswerTableCell:UITableViewCell{
     var onSelectButtonPressed:(()->())?
     var onAgreeButtonPressed:(()->())?
     var onDisagreeButtonPressed:(()->())?
+    var onDeleteButtonPressed:(()->())?
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
@@ -342,6 +348,7 @@ class AnswerTableCell:UITableViewCell{
         answerChoiceButton.addTarget(self, action: #selector(onSelect), for: .touchDown)
         likeButton.addTarget(self, action: #selector(onAgree), for: .touchDown)
         dislikeButton.addTarget(self, action: #selector(onDisagree), for: .touchDown)
+        answerDeleteButton.addTarget(self, action: #selector(onDelete), for: .touchDown)
         contentView.addSubview(lineAtTop)
         contentView.addSubview(profile)
         contentView.addSubview(answerContentView)
@@ -492,6 +499,9 @@ class AnswerTableCell:UITableViewCell{
     @objc func onDisagree(){
         onDisagreeButtonPressed?()
     }
+    @objc func onDelete(){
+        onDeleteButtonPressed?()
+    }
     
 }
 class QuestionDetailViewController:UIViewController{
@@ -600,7 +610,7 @@ class QuestionDetailViewController:UIViewController{
                    self.viewModel.agreeAnswer(index: index, isAgree: false).subscribe(onSuccess:{
                        _ in
                        self.viewModel.refresh()
-                   })
+                   }).disposed(by: self.bag)
                }
                else{
                    self.showLoginAlert(onLogin: {
@@ -608,7 +618,12 @@ class QuestionDetailViewController:UIViewController{
                    })
                }
            }
-           
+           (cell as! AnswerTableCell).onDeleteButtonPressed = {
+               [self]
+               self.viewModel.deleteAnswer(index: index).subscribe(onSuccess: { _ in
+                   self.viewModel.refresh()
+               }).disposed(by: self.bag)
+           }
             
         }.disposed(by: bag)
         
@@ -671,6 +686,12 @@ extension QuestionDetailViewController:UITableViewDelegate{
                     }
                 }
             }
+        }
+        questionView.onDeleteButtonClicked = {
+            self.viewModel.deleteQuestion().subscribe(onSuccess:{[weak self]
+                _ in
+                self?.navigationController?.popViewController(animated: true)
+            })
         }
         questionView.translatesAutoresizingMaskIntoConstraints = false
         let headerView = UITableViewHeaderFooterView()

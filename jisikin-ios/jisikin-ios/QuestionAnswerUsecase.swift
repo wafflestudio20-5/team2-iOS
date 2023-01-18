@@ -84,5 +84,32 @@ class QuestionAnswerUsecase{
             })
         }
     }
+ 
+    func deleteAnswer(id:Int)->Single<String>{
+        return Single<String>.create{single in
+            self.answerRepo.deleteAnswer(id: id).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+            
+            }, onError: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
+    
+    
+    func deleteQuestion(id:Int)->Single<String>{
+        return Single<String>.create{single in
+            self.questionRepo.deleteQuestion(id: id).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+            
+            }, onError: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
     
 }
