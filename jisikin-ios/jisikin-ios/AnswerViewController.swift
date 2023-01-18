@@ -38,8 +38,9 @@ class AnswerViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
-
+        
         self.questionTable.deselectSelectedRow(animated: false)
+        viewModel.getQuestions()
     }
     func setBackButton() {
         let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)

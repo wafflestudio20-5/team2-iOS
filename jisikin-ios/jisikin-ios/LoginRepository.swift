@@ -281,7 +281,7 @@ final class LoginRepository {
         fullURL = URL(string: baseURL + "/api/user/regenerateToken")
         
         let accessToken = UserDefaults.standard.value(forKey: "accessToken") as? String
-        let refreshToken = UserDefaults.standard.value(forKey: "accessToken") as? String
+        let refreshToken = UserDefaults.standard.value(forKey: "refreshToken") as? String
         
         let parameters = [
             "accessToken": accessToken,
