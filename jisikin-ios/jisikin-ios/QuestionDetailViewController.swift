@@ -578,6 +578,16 @@ extension QuestionDetailViewController:UITableViewDelegate{
         }
         questionView.setOnAnswerButtonClicked(){[weak self] in
             if UserDefaults.standard.bool(forKey: "isLogin"){
+                let selectedQuestionModel = self?.viewModel.question.value
+                
+                let selectedQuestion = QuestionModelForAnswerVC(title: selectedQuestionModel!.title, content: selectedQuestionModel!.content, createdAt: selectedQuestionModel!.createdAt, username: selectedQuestionModel!.username)
+                
+                let encoder = JSONEncoder()
+                
+                if let encoded = try? encoder.encode(selectedQuestion) {
+                    UserDefaults.standard.setValue(encoded, forKey: "selectedQuestion")
+                }
+                
                 var vc = WritingAnswerViewController()
                 vc.questionID = (self?.viewModel.questionID)!
                 self?.navigationController?.pushViewController(vc, animated: true)
@@ -658,20 +668,15 @@ extension UINavigationController {
         coordinator.animate(alongsideTransition: nil) { _ in completion() }
     }
 }
-extension UIImageView {
-    func load(url: URL,on:@escaping(()->())) {
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                        on()
-                    }
-                }
-            }
-        }
-    }
+
+
+struct QuestionModelForAnswerVC: Codable {
+    var title:String
+    var content:String
+    var createdAt:String
+    var username:String
 }
+
 extension UIStackView {
 
     func safelyRemoveArrangedSubviews() {
@@ -688,4 +693,5 @@ extension UIStackView {
         // Remove the views from self
         removedSubviews.forEach({ $0.removeFromSuperview() })
     }
+
 }
