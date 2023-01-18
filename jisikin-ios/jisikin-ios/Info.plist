@@ -2,6 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>MainColor</string>
+		<key>UIImageName</key>
+		<string>TextLogoInverted</string>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>To take a photo and add it to your post, usage of the device camera is required.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

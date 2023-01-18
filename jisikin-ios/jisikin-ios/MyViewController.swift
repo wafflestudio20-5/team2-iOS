@@ -265,7 +265,13 @@ class MyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setBackButton()
         // Do any additional setup after loading the view.
+    }
+    func setBackButton() {
+        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = UIColor(named: "MainColor")
+        self.navigationItem.backBarButtonItem = backBarButtonItem
     }
     @objc
     func onTapModifyProfileBtn() {
@@ -306,9 +312,6 @@ class MyViewController: UIViewController {
     @objc
     func onTapLogInBtn() {
         let vc = LoginViewController()
-        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-        backBarButtonItem.tintColor = UIColor(named: "MainColor")
-        self.navigationItem.backBarButtonItem = backBarButtonItem
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

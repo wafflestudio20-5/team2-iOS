@@ -24,6 +24,7 @@ class AnswerViewController: UIViewController {
         super.viewDidLoad()
 
         self.view.backgroundColor = .white
+        setBackButton()
         setLayout()
         setConstraint()
         // Do any additional setup after loading the view.
@@ -39,6 +40,11 @@ class AnswerViewController: UIViewController {
         super.viewWillAppear(animated)
 
         self.questionTable.deselectSelectedRow(animated: false)
+    }
+    func setBackButton() {
+        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = UIColor(named: "MainColor")
+        self.navigationItem.backBarButtonItem = backBarButtonItem
     }
     func setLayout(){
         navigationController?.isNavigationBarHidden = false
