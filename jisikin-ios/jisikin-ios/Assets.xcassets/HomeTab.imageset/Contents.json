@@ -6,10 +6,12 @@
       "scale" : "1x"
     },
     {
+      "filename" : "HomeTabx2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "HomeTabx3.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -13,6 +13,11 @@ class HomeViewController: UIViewController {
     var helpAnswerBanner = UIImageView()
     var devBanner = UIImageView()
     
+    var myQuestionView = UIView()
+    var myQuestionTitleLabel = UILabel()
+    var myQuestionCountLabel = UILabel()
+    var myQuestionButton = UIButton()
+    
     private let scrollView: UIScrollView = {
         let view: UIScrollView = UIScrollView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -34,14 +39,25 @@ class HomeViewController: UIViewController {
         
         self.view.backgroundColor = .white
         
+        setBackButton()
         setLayout()
         setView()
         setImageView()
+        setMyQuestionView()
         setConstraint()
     }
     
+    func setBackButton() {
+        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = UIColor(named: "MainColor")
+        self.navigationItem.backBarButtonItem = backBarButtonItem
+    }
+    
     func setLayout() {
+        view.backgroundColor = .white
+
         navigationController?.isNavigationBarHidden = false
+        
         let titleLabel = UILabel()
         titleLabel.textColor = UIColor.black
         titleLabel.text = "지식2n"
@@ -49,11 +65,25 @@ class HomeViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleLabel)
         
         navigationItem.setRightBarButton(UIBarButtonItem(image:UIImage(systemName:"magnifyingglass")!.withTintColor(.black, renderingMode: .alwaysOriginal) , style: .plain, target: self, action: #selector(onSearchButtonPressed)), animated: true)
+        
+        view.backgroundColor = UIColor(named: "BackgroundColor")
+        scrollView.backgroundColor = UIColor.white.withAlphaComponent(0)
+        
+        myQuestionView.translatesAutoresizingMaskIntoConstraints = false
+        myQuestionTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        myQuestionCountLabel.translatesAutoresizingMaskIntoConstraints = false
+        myQuestionButton.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func setView() {
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
+        
+        view.addSubview(myQuestionView)
+        myQuestionView.addSubview(myQuestionTitleLabel)
+        myQuestionView.addSubview(myQuestionCountLabel)
+        myQuestionView.addSubview(myQuestionButton)
+        view.bringSubviewToFront(myQuestionView)
     }
     
     func setImageView() {
@@ -116,6 +146,33 @@ class HomeViewController: UIViewController {
         devBanner.addGestureRecognizer(devBannerTapGestureRecognizer)
     }
     
+    func setMyQuestionView() {
+            myQuestionView.backgroundColor = .white
+            myQuestionView.layer.masksToBounds = false
+            myQuestionView.clipsToBounds = true
+            myQuestionView.layer.cornerRadius = 20
+            myQuestionView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+            myQuestionView.layer.shadowColor = UIColor.gray.cgColor
+            myQuestionView.layer.shadowOffset = CGSize(width: 0.0, height : -3.0)
+            myQuestionView.layer.shadowOpacity = 0.5
+            myQuestionView.layer.shadowRadius = 3
+            
+            myQuestionTitleLabel.text = "나의 질문"
+            myQuestionTitleLabel.textColor = .black
+            myQuestionTitleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+
+            myQuestionCountLabel.text = "0"
+            myQuestionCountLabel.textColor = UIColor(named: "MainColor")
+            myQuestionCountLabel.font = UIFont.boldSystemFont(ofSize: 20)
+            
+            myQuestionButton.setTitle("전체보기 >", for: .normal)
+            myQuestionButton.setTitleColor(.gray, for: .normal)
+            myQuestionButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+            myQuestionButton.addTarget(self, action: #selector(myQuestionButtonTapped), for: .touchUpInside)
+
+    }
+    
+    
     func setConstraint() {
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -134,6 +191,28 @@ class HomeViewController: UIViewController {
         
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15)
+        
+        NSLayoutConstraint.activate([
+            myQuestionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            myQuestionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            myQuestionView.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 20),
+            myQuestionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 10)
+        ])
+        
+        NSLayoutConstraint.activate([
+            myQuestionTitleLabel.leadingAnchor.constraint(equalTo: myQuestionView.leadingAnchor, constant: 30),
+            myQuestionTitleLabel.topAnchor.constraint(equalTo: myQuestionView.topAnchor, constant: 15)
+        ])
+        
+        NSLayoutConstraint.activate([
+            myQuestionCountLabel.leadingAnchor.constraint(equalTo: myQuestionTitleLabel.trailingAnchor, constant: 5),
+            myQuestionCountLabel.centerYAnchor.constraint(equalTo: myQuestionTitleLabel.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            myQuestionButton.trailingAnchor.constraint(equalTo: myQuestionView.trailingAnchor, constant: -30),
+            myQuestionButton.centerYAnchor.constraint(equalTo: myQuestionTitleLabel.centerYAnchor)
+        ])
     }
     
     @objc func onSearchButtonPressed(){
@@ -146,15 +225,23 @@ class HomeViewController: UIViewController {
         
         switch tappedImage{
         case randomBanner:
-            print("hello random")
+            let randomInt = Int.random(in: 1..<10)
+            let viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
+            viewModel.getQuestions()
+            navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: randomInt)), animated: true)
         case newYearBanner:
             print("hello new")
         case helpAnswerBanner:
-            print("hello help")
+            self.tabBarController?.selectedIndex = 1
         case devBanner:
             print("hello dev")
         default:
             break
         }
+    }
+    
+    @objc func myQuestionButtonTapped() {
+        let vc = MyQAViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }

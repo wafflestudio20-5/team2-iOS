@@ -2,10 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>앨범 접근 권한을 허용해주세요</string>
 	<key>NSCameraUsageDescription</key>
 	<string>카메라 접근 권한을 허용해주세요</string>
+
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>MainColor</string>
+		<key>UIImageName</key>
+		<string>TextLogoInverted</string>
+	</dict>
+
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

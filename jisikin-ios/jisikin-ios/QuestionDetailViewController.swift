@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
+import Kingfisher
 class QuestionView:UIView{
     var questionTitleView:UILabel!
     var questionUserInfo:UILabel!
@@ -21,6 +22,7 @@ class QuestionView:UIView{
     var imageStackView:UIStackView!
     var questionImages:[UIImage] = []
     var onAnswerButtonClicked:(()->())?
+    var onImageLoaded:(()->())?
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -31,19 +33,19 @@ class QuestionView:UIView{
         fatalError("init(coder:) has not been implemented")
     }
     func setLayout(){
-        backgroundColor = .white
+        
         
         questionTitleView = UILabel()
         questionTitleView.font = questionTitleView.font.withSize(30)
         questionTitleView.textColor = .black
-        questionTitleView.text = "게임 이름 기억 안남"
+        questionTitleView.numberOfLines = 0
+       
      
         questionUserInfo = UILabel()
         questionUserInfo.textColor = .gray
-        questionUserInfo.text = "impri 질문수 10"
+        
         
         questionContentView = UILabel()
-        questionContentView.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean porta lacus vel justo interdum, ac mollis est blandit. Praesent et leo tempus, imperdiet mi sed, molestie tellus. Etiam faucibus velit at massa vestibulum, nec vestibulum nunc pretium. Duis ut diam at lectus elementum egestas. Integer gravida rutrum elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc aliquet sapien vel tortor dignissim, sit amet tempor felis eleifend. Proin in arcu condimentum, cursus ipsum sit amet, tristique neque. Etiam nec purus dignissim, sodales felis vitae, pharetra elit. Donec malesuada sed lacus nec consequat. Phasellus nec tortor gravida, porttitor mauris id, placerat magna. Proin sodales interdum turpis, ac scelerisque ipsum elementum tempus. Quisque eu felis elit. Nam et scelerisque purus. Suspendisse maximus nunc dolor. Praesent diam tortor, venenatis non libero eget, egestas sodales odio."
         questionContentView.numberOfLines = 0
         questionContentView.lineBreakMode = .byWordWrapping
         questionContentView.font = questionTitleView.font.withSize(20)
@@ -69,23 +71,14 @@ class QuestionView:UIView{
         answerButton.setTitle("답변하기", for: .normal)
         answerButton.addTarget(self, action: #selector(answerButtonClicked(_:)), for: .touchUpInside)
         
-        questionImages = [UIColor.yellow.image(CGSize(width: 100, height: 100)),UIColor.orange.image(CGSize(width: 100, height: 100)),UIColor.blue.image(CGSize(width: 1200, height: 800))]
+       
         
         imageStackView = UIStackView()
         imageStackView.axis = .vertical
         imageStackView.distribution = .equalSpacing
         imageStackView.alignment = .leading
         imageStackView.spacing = 20
-        for image in questionImages{
-            let imageView = UIImageView(image: image)
-            imageView.contentMode = .scaleAspectFit
-            imageStackView.addArrangedSubview(imageView)
-            NSLayoutConstraint.activate([
-                imageView.widthAnchor.constraint(lessThanOrEqualTo:imageStackView.widthAnchor),
-                imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: image.size.width/image.size.height)
-            ])
-        }
-        
+     
         
         questionTitleView.translatesAutoresizingMaskIntoConstraints = false
         questionUserInfo.translatesAutoresizingMaskIntoConstraints = false
@@ -164,7 +157,25 @@ class QuestionView:UIView{
         questionTimeView.text = question.createdAt
         questionContentView.text = question.content
         questionUserInfo.text = question.username
-    
+        answerButton.isHidden = question.close
+        imageStackView.safelyRemoveArrangedSubviews()
+      
+        for image in question.photos{
+            let imageView = UIImageView()
+           
+            imageStackView.addArrangedSubview(imageView)
+            imageView.kf.setImage(with:URL(string:image)!){ [self]result in
+                imageView.contentMode = .scaleAspectFit
+               
+                NSLayoutConstraint.activate([
+                    imageView.widthAnchor.constraint(lessThanOrEqualToConstant: imageStackView.frame.width),
+                    imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
+                ])
+                onImageLoaded?()
+                layoutIfNeeded()
+            }
+        }
+        
     }
 }
 class AnswerProfileView:UIView{
@@ -248,6 +259,8 @@ class AnswerTableCell:UITableViewCell{
     var answerEditButton:UIButton!
     var answerDeleteButton:UIButton!
     var answerChoiceButton:UIButton!
+    var onSelectButtonPressed:(()->())?
+  
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
@@ -260,7 +273,7 @@ class AnswerTableCell:UITableViewCell{
     func setLayout(){
         lineAtTop = UIView()
         lineAtTop.backgroundColor = UIColor(red: 235/255.0, green: 235/255.0, blue: 235/255.0, alpha: 1)
-        
+     
         profile = AnswerProfileView()
         
         answerContentView = UILabel()
@@ -275,21 +288,13 @@ class AnswerTableCell:UITableViewCell{
         answerPicture = UIImageView(image: UIColor.green.image(CGSize(width: 60, height: 40)))
         answerPicture.contentMode = .scaleAspectFit
         
-        answerImages = [UIColor.yellow.image(CGSize(width: 100, height: 100)),UIColor.orange.image(CGSize(width: 100, height: 100)),UIColor.blue.image(CGSize(width: 1200, height: 800))]
+       
         imageStackView = UIStackView()
         imageStackView.axis = .vertical
         imageStackView.distribution = .equalSpacing
         imageStackView.alignment = .leading
         imageStackView.spacing = 20
-        for image in answerImages{
-            let imageView = UIImageView(image: image)
-            imageView.contentMode = .scaleAspectFit
-            imageStackView.addArrangedSubview(imageView)
-            NSLayoutConstraint.activate([
-                imageView.widthAnchor.constraint(lessThanOrEqualTo:imageStackView.widthAnchor),
-                imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: image.size.width/image.size.height)
-            ])
-        }
+        
         
         likeButton = UIButton()
         likeButton.setTitle("2", for: .normal)
@@ -323,6 +328,8 @@ class AnswerTableCell:UITableViewCell{
         dislikeButton.translatesAutoresizingMaskIntoConstraints = false
         answerChoiceButton.translatesAutoresizingMaskIntoConstraints = false
         lineAtTop.translatesAutoresizingMaskIntoConstraints = false
+        
+        answerChoiceButton.addTarget(self, action: #selector(onSelect), for: .touchDown)
         
         contentView.addSubview(lineAtTop)
         contentView.addSubview(profile)
@@ -381,6 +388,7 @@ class AnswerTableCell:UITableViewCell{
             answerChoiceButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             answerChoiceButton.topAnchor.constraint(equalTo: answerTimeView.bottomAnchor,constant: 5.0),
             answerChoiceButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10.0),
+            answerChoiceButton.widthAnchor.constraint(equalTo:contentView.widthAnchor,multiplier:0.4)
            
         ])
         NSLayoutConstraint.activate([
@@ -405,7 +413,7 @@ class AnswerTableCell:UITableViewCell{
             answerChoiceButton.setTitleColor(redColor, for: .normal)
             answerChoiceButton.titleLabel!.font = answerChoiceButton.titleLabel!.font.withSize(20)
             answerChoiceButton.setImage(checkImage, for: .normal)
-            answerChoiceButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
+          
         }
         else{
             answerChoiceButton.isEnabled = true
@@ -414,14 +422,43 @@ class AnswerTableCell:UITableViewCell{
             answerChoiceButton.titleLabel!.font = answerChoiceButton.titleLabel!.font.withSize(20)
             answerChoiceButton.setTitleColor(.white, for: .normal)
             answerChoiceButton.setImage(nil, for: .normal)
-            answerChoiceButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
+            
         }
     }
-    func configure(answer:AnswerDetailModel){
+    func configure(answer:AnswerDetailModel,question:QuestionDetailModel?){
+        print("configure")
         answerTimeView.text = answer.createdAt
         answerContentView.text = answer.content
         profile.configure(answer:answer)
         setIsChosen(isChosen: answer.selected)
+        if question == nil{
+            answerChoiceButton.isHidden = true
+        }
+        else{
+            answerChoiceButton.isHidden = question!.close && !answer.selected
+        }
+        imageStackView.safelyRemoveArrangedSubviews()
+      
+       for image in answer.photos{
+            let imageView = UIImageView()
+           
+            imageStackView.addArrangedSubview(imageView)
+            print("add view")
+            imageView.kf.setImage(with:URL(string:image)!){ [self]result in
+              
+                imageView.contentMode = .scaleAspectFit
+                
+                NSLayoutConstraint.activate([
+                    imageView.widthAnchor.constraint(lessThanOrEqualToConstant: imageStackView.frame.width),
+                    imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
+                ])
+           
+                print("image loaded")
+            }
+        }
+    }
+    @objc func onSelect(){
+        onSelectButtonPressed?()
     }
 }
 class QuestionDetailViewController:UIViewController{
@@ -439,6 +476,28 @@ class QuestionDetailViewController:UIViewController{
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override func viewWillAppear(_ animated: Bool){
+        super.viewWillAppear(animated)
+        viewModel.refresh()
+    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if let headerView = answerTableView.tableHeaderView {
+
+            let height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+            var headerFrame = headerView.frame
+
+            //Comparison necessary to avoid infinite loop
+            if height != headerFrame.size.height {
+                headerFrame.size.height = height
+                headerView.frame = headerFrame
+                answerTableView.tableHeaderView = headerView
+            }
+            headerView.translatesAutoresizingMaskIntoConstraints = false
+            
+        }
+    }
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -446,15 +505,41 @@ class QuestionDetailViewController:UIViewController{
         self.view.backgroundColor = .white
         setLayout()
         setConstraint()
+      
         // Do any additional setup after loading the view.
         viewModel.question.subscribe(onNext: {[weak self]
             question in
             if let question{
                 self?.questionView.configure(question:question)
+                
             }
         }).disposed(by: bag)
-        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
-            (cell as! AnswerTableCell).configure(answer:model)
+    
+     
+       viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
+           print("answer update")
+          
+           (cell as! AnswerTableCell).configure(answer:model,question:self.viewModel.question.value)
+          
+           self.viewModel.question.subscribe(onNext: {
+                 question in
+               if let question{
+                    print("question update")
+                   (cell as! AnswerTableCell).configure(answer:model,question:question)
+               }
+           }).disposed(by: self.bag)
+            (cell as! AnswerTableCell).onSelectButtonPressed = { [self] in
+                print("pressed")
+                self.viewModel.selectAnswer(index: index).subscribe(onSuccess: {_ in
+                    viewModel.refresh()
+                },onError:{
+                    _ in
+                    print("채택 실패")
+                })
+                
+            }
+           
+            
         }.disposed(by: bag)
         
     }
@@ -486,10 +571,23 @@ class QuestionDetailViewController:UIViewController{
     }
 }
 extension QuestionDetailViewController:UITableViewDelegate{
+  
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-       
+        questionView.onImageLoaded = {
+            tableView.reloadData()
+        }
         questionView.setOnAnswerButtonClicked(){[weak self] in
             if UserDefaults.standard.bool(forKey: "isLogin"){
+                let selectedQuestionModel = self?.viewModel.question.value
+                
+                let selectedQuestion = QuestionModelForAnswerVC(title: selectedQuestionModel!.title, content: selectedQuestionModel!.content, createdAt: selectedQuestionModel!.createdAt, username: selectedQuestionModel!.username)
+                
+                let encoder = JSONEncoder()
+                
+                if let encoded = try? encoder.encode(selectedQuestion) {
+                    UserDefaults.standard.setValue(encoded, forKey: "selectedQuestion")
+                }
+                
                 var vc = WritingAnswerViewController()
                 vc.questionID = (self?.viewModel.questionID)!
                 self?.navigationController?.pushViewController(vc, animated: true)
@@ -569,4 +667,31 @@ extension UINavigationController {
 
         coordinator.animate(alongsideTransition: nil) { _ in completion() }
     }
+}
+
+
+struct QuestionModelForAnswerVC: Codable {
+    var title:String
+    var content:String
+    var createdAt:String
+    var username:String
+}
+
+extension UIStackView {
+
+    func safelyRemoveArrangedSubviews() {
+
+        // Remove all the arranged subviews and save them to an array
+        let removedSubviews = arrangedSubviews.reduce([]) { (sum, next) -> [UIView] in
+            self.removeArrangedSubview(next)
+            return sum + [next]
+        }
+
+        // Deactive all constraints at once
+        NSLayoutConstraint.deactivate(removedSubviews.flatMap({ $0.constraints }))
+
+        // Remove the views from self
+        removedSubviews.forEach({ $0.removeFromSuperview() })
+    }
+
 }
