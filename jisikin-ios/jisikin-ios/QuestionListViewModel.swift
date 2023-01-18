@@ -12,7 +12,7 @@ struct QuestionListModel{
     var title:String
     var content:String
     var answerNumber:Int?
-    var createdAt:String
+    var createdAt:String?
     var id:Int
     static func fromQuestionAPI(questionAPI:QuestionAPI)->QuestionListModel{
         return QuestionListModel(title:questionAPI.title,content:questionAPI.content,answerNumber:nil, createdAt: convertTimeFormat(time: questionAPI.createdAt),id:questionAPI.id)
@@ -59,6 +59,18 @@ class QuestionListViewModel{
         }
     func getQuestions(){
         usecase.getQuestionsAndAnswers()
+    }
+    
+    func getMyQuestions(){
+        usecase.getMyQuestions()
+    }
+    
+    func getMyAnsweredQuestions(){
+        usecase.getMyAnsweredQuestions()
+    }
+    
+    func getMyHeartedQuestions(){
+        
     }
     
     func postNewQuestion(titleText: String, contentText: String) {

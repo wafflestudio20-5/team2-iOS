@@ -27,6 +27,26 @@ class QuestionAnswerUsecase{
             }
         }).disposed(by: bag)
     }
+    func getMyQuestions(){
+        questionRepo.getMyQuestions().subscribe(onSuccess: {[weak self]
+            data in
+            if(self == nil){return}
+            self!.questions.accept(data)
+            for question in data{
+                self!.getAnswersByQuestionID(id: question.id)
+            }
+        }).disposed(by: bag)
+    }
+    func getMyAnsweredQuestions(){
+        questionRepo.getMyAnsweredQuestions().subscribe(onSuccess: {[weak self]
+            data in
+            if(self == nil){return}
+            self!.questions.accept(data)
+            for question in data{
+                self!.getAnswersByQuestionID(id: question.id)
+            }
+        }).disposed(by: bag)
+    }
     func getQuestionAndAnswersByID(id:Int){
         questionRepo.getQuestionByID(id: id).subscribe(onSuccess: {[weak self]
             data in

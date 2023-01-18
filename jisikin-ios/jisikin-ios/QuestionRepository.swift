@@ -100,5 +100,47 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
+    func getMyQuestions()->Single<[QuestionAPI]>{
+        let fullURL = URL(string: baseURL + "/api/user/myQuestions/")
+        let parameters: Parameters = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
+        ]
+        return Single<[QuestionAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get, parameters: parameters).responseDecodable(of:[QuestionAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    func getMyAnsweredQuestions()->Single<[QuestionAPI]>{
+        let fullURL = URL(string: baseURL + "/api/user/myAnswers/")
+        let parameters: Parameters = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
+        ]
+        return Single<[QuestionAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get, parameters: parameters).responseDecodable(of:[QuestionAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
     
 }
