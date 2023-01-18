@@ -23,6 +23,7 @@ class QuestionView:UIView{
     var questionImages:[UIImage] = []
     var onAnswerButtonClicked:(()->())?
     var onImageLoaded:(()->())?
+    var onDeleteButtonClicked:(()->())?
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -65,6 +66,7 @@ class QuestionView:UIView{
         questionDeleteButton = UIButton()
         questionDeleteButton.setTitle("삭제", for: .normal)
         questionDeleteButton.setTitleColor(.gray, for: .normal)
+        questionDeleteButton.addTarget(self, action: #selector(deleteButtonClicked), for: .touchDown)
         
         answerButton = UIButton()
         answerButton.backgroundColor = BLUE_COLOR
@@ -152,14 +154,17 @@ class QuestionView:UIView{
     @objc private func answerButtonClicked(_ sender: Any) {
         onAnswerButtonClicked?()
     }
-    func configure(question:QuestionDetailModel){
+    @objc func deleteButtonClicked(){
+        onDeleteButtonClicked?()
+    }
+    func configure(question:QuestionDetailModel,hasAnswers:Bool){
+        
         questionTitleView.text = question.title
         questionTimeView.text = question.createdAt
         questionContentView.text = question.content
         questionUserInfo.text = question.username
         answerButton.isHidden = question.close
         imageStackView.safelyRemoveArrangedSubviews()
-      
         for image in question.photos{
             let imageView = UIImageView()
            
@@ -174,6 +179,15 @@ class QuestionView:UIView{
                 onImageLoaded?()
                 layoutIfNeeded()
             }
+        }
+        if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
+            let username = UserDefaults.standard.string(forKey: "username")!
+            questionEditButton.isHidden = username != question.username || hasAnswers
+            questionDeleteButton.isHidden = username != question.username || hasAnswers
+        }
+        else{
+            questionEditButton.isHidden = true
+            questionDeleteButton.isHidden = true
         }
         
     }
@@ -260,7 +274,9 @@ class AnswerTableCell:UITableViewCell{
     var answerDeleteButton:UIButton!
     var answerChoiceButton:UIButton!
     var onSelectButtonPressed:(()->())?
-  
+    var onAgreeButtonPressed:(()->())?
+    var onDisagreeButtonPressed:(()->())?
+    var onDeleteButtonPressed:(()->())?
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
@@ -330,7 +346,9 @@ class AnswerTableCell:UITableViewCell{
         lineAtTop.translatesAutoresizingMaskIntoConstraints = false
         
         answerChoiceButton.addTarget(self, action: #selector(onSelect), for: .touchDown)
-        
+        likeButton.addTarget(self, action: #selector(onAgree), for: .touchDown)
+        dislikeButton.addTarget(self, action: #selector(onDisagree), for: .touchDown)
+        answerDeleteButton.addTarget(self, action: #selector(onDelete), for: .touchDown)
         contentView.addSubview(lineAtTop)
         contentView.addSubview(profile)
         contentView.addSubview(answerContentView)
@@ -426,9 +444,11 @@ class AnswerTableCell:UITableViewCell{
         }
     }
     func configure(answer:AnswerDetailModel,question:QuestionDetailModel?){
-        print("configure")
+        
         answerTimeView.text = answer.createdAt
         answerContentView.text = answer.content
+        likeButton.setTitle(String(answer.agree), for: .normal)
+        dislikeButton.setTitle(String(answer.disagree),for:.normal)
         profile.configure(answer:answer)
         setIsChosen(isChosen: answer.selected)
         if question == nil{
@@ -456,10 +476,33 @@ class AnswerTableCell:UITableViewCell{
                 print("image loaded")
             }
         }
+        if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
+            let username = UserDefaults.standard.string(forKey: "username")!
+            answerEditButton.isHidden =  username != answer.username || answer.selected
+            answerDeleteButton.isHidden =  username != answer.username || answer.selected
+            answerChoiceButton.isHidden = username != question?.username && !answer.selected
+        }
+        else{
+            answerEditButton.isHidden = true
+            answerDeleteButton.isHidden = true
+            if !answer.selected{
+                answerChoiceButton.isHidden = true
+            }
+        }
     }
     @objc func onSelect(){
         onSelectButtonPressed?()
     }
+    @objc func onAgree(){
+        onAgreeButtonPressed?()
+    }
+    @objc func onDisagree(){
+        onDisagreeButtonPressed?()
+    }
+    @objc func onDelete(){
+        onDeleteButtonPressed?()
+    }
+    
 }
 class QuestionDetailViewController:UIViewController{
     var bag = DisposeBag()
@@ -509,12 +552,23 @@ class QuestionDetailViewController:UIViewController{
         // Do any additional setup after loading the view.
         viewModel.question.subscribe(onNext: {[weak self]
             question in
+            if self==nil{return}
             if let question{
-                self?.questionView.configure(question:question)
+                self!.questionView.configure(question:question,hasAnswers:self!.viewModel.answers.value.count != 0)
                 
             }
+            
         }).disposed(by: bag)
-    
+        viewModel.answers.subscribe(onNext: {[weak self]
+            answers in
+          
+            if self==nil{return}
+            if self!.viewModel.question.value == nil{return}
+            self!.questionView.configure(question:self!.viewModel.question.value!,hasAnswers:answers.count != 0)
+                
+            
+            
+        }).disposed(by: bag)
      
        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
            print("answer update")
@@ -524,7 +578,7 @@ class QuestionDetailViewController:UIViewController{
            self.viewModel.question.subscribe(onNext: {
                  question in
                if let question{
-                    print("question update")
+                    
                    (cell as! AnswerTableCell).configure(answer:model,question:question)
                }
            }).disposed(by: self.bag)
@@ -538,7 +592,38 @@ class QuestionDetailViewController:UIViewController{
                 })
                 
             }
-           
+           (cell as! AnswerTableCell).onAgreeButtonPressed = {[self]
+               if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
+                   self.viewModel.agreeAnswer(index: index, isAgree: true).subscribe(onSuccess:{
+                       _ in
+                       self.viewModel.refresh()
+                   })
+               }
+               else{
+                   self.showLoginAlert(onLogin: {
+                       self.tabBarController?.navigationController?.popViewController(animated: true)
+                   })
+               }
+           }
+           (cell as! AnswerTableCell).onDisagreeButtonPressed = {[self]
+               if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
+                   self.viewModel.agreeAnswer(index: index, isAgree: false).subscribe(onSuccess:{
+                       _ in
+                       self.viewModel.refresh()
+                   }).disposed(by: self.bag)
+               }
+               else{
+                   self.showLoginAlert(onLogin: {
+                       self.tabBarController?.navigationController?.popViewController(animated: true)
+                   })
+               }
+           }
+           (cell as! AnswerTableCell).onDeleteButtonPressed = {
+               [self]
+               self.viewModel.deleteAnswer(index: index).subscribe(onSuccess: { _ in
+                   self.viewModel.refresh()
+               }).disposed(by: self.bag)
+           }
             
         }.disposed(by: bag)
         
@@ -593,8 +678,20 @@ extension QuestionDetailViewController:UITableViewDelegate{
                 self?.navigationController?.pushViewController(vc, animated: true)
             }
             else{
-                self?.showLoginAlert()
+                self?.showLoginAlert{
+                    self?.tabBarController?.navigationController?.popViewController(animated: false){
+                        var vc = WritingAnswerViewController()
+                        vc.questionID = (self?.viewModel.questionID)!
+                        self?.navigationController?.pushViewController(vc, animated: true)
+                    }
+                }
             }
+        }
+        questionView.onDeleteButtonClicked = {
+            self.viewModel.deleteQuestion().subscribe(onSuccess:{[weak self]
+                _ in
+                self?.navigationController?.popViewController(animated: true)
+            })
         }
         questionView.translatesAutoresizingMaskIntoConstraints = false
         let headerView = UITableViewHeaderFooterView()
@@ -608,7 +705,7 @@ extension QuestionDetailViewController:UITableViewDelegate{
         ])
         return headerView
     }
-    func showLoginAlert(){
+    func showLoginAlert(onLogin:@escaping(()->())){
          let loginAction = UIAlertAction(title:"로그인",style: .default,handler: {[weak self]
              setAction in
              let appearance = UINavigationBarAppearance()
@@ -620,15 +717,10 @@ extension QuestionDetailViewController:UITableViewDelegate{
            
              let vc = LoginViewController()
            
-             vc.onLogin = {
-                 self?.tabBarController?.navigationController?.popViewController(animated: false){
-                     var vc = WritingAnswerViewController()
-                     vc.questionID = (self?.viewModel.questionID)!
-                     self?.navigationController?.pushViewController(vc, animated: true)
-                 }
+             vc.onLogin = onLogin
                  
                 
-             }
+             
              let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
              backBarButtonItem.tintColor = UIColor(named: "MainColor")
              self?.tabBarController?.navigationItem.backBarButtonItem = backBarButtonItem
