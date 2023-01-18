@@ -123,9 +123,11 @@ class WritingAnswerViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         } else {
             guard let contentText = contentView.text else { return }
-            viewModel.postNewAnswer(id: questionID, contentText: contentText)
+            viewModel.postNewAnswer(id: questionID, contentText: contentText){
+                self.navigationController?.popViewController(animated: true)
+            }
         }
-        navigationController?.popViewController(animated: true)
+      
     }
     
     @objc private func plusImage(_ sender: Any) {
@@ -133,7 +135,13 @@ class WritingAnswerViewController: UIViewController {
     }
     
     @objc private func viewQuestion(_ sender: Any) {
-        
+        if let savedData = UserDefaults.standard.object(forKey: "selectedQuestion") as? Data {
+            let decoder = JSONDecoder()
+            if let selectedQuestion = try? decoder.decode(QuestionModelForAnswerVC.self, from: savedData) {
+                self.navigationController?.present(QuestionDetailFromWritingAnswerViewController(question: selectedQuestion), animated: true)
+                }
+            UserDefaults.standard.removeObject(forKey: "selectedQuestion")
+        }
     }
 }
 

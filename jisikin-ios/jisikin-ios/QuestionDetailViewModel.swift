@@ -11,16 +11,17 @@ import RxSwift
 import RxCocoa
 struct AnswerDetailModel{
     var content:String
-    var photos:[UIImage] = []
+    var photos:[String]
     var createdAt:String
     var selected:Bool
     var username:String
     var profileImage:UIImage?
     var userRecentAnswerDate:String
     var id:Int
-    
+    var agree:Int
+    var disagree:Int
     static func fromAnswerAPI(answerAPI:AnswerAPI)->AnswerDetailModel{
-        return AnswerDetailModel(content: answerAPI.content, createdAt: answerAPI.createdAt, selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id)
+        return AnswerDetailModel(content: answerAPI.content,photos:answerAPI.photos, createdAt: answerAPI.createdAt, selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id,agree:answerAPI.interactionCount.agree,disagree:answerAPI.interactionCount.disagree)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
@@ -35,14 +36,14 @@ struct AnswerDetailModel{
 struct QuestionDetailModel{
     var title:String
     var content:String
-    var photos:[UIImage] = []
+    var photos:[String]
     var createdAt:String
     var username:String
     var close:Bool
     static func fromQuestionAPI(questionAPI:QuestionAPI?)->QuestionDetailModel?{
        
         if let questionAPI = questionAPI{
-            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username,close:questionAPI.close)
+            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content,photos:questionAPI.photos, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username,close:questionAPI.close)
         }
         else{
             return nil
@@ -99,4 +100,43 @@ class QuestionDetailViewModel{
         }
        
     }
+    func agreeAnswer(index:Int,isAgree:Bool)->Single<String>{
+        return Single<String>.create{single in
+            self.usecase.agreeAnswer(id: self.answers.value[index].id ,isAgree:isAgree ).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+                
+            }, onFailure: {
+                error in
+                single(.failure(error))
+            })
+        }
+       
+    }
+   
+    func deleteAnswer(index:Int)->Single<String>{
+        return Single<String>.create{single in
+            self.usecase.deleteAnswer(id: self.answers.value[index].id  ).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+                
+            }, onFailure: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
+    func deleteQuestion()->Single<String>{
+        return Single<String>.create{single in
+            self.usecase.deleteQuestion(id:self.questionID).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+                
+            }, onFailure: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
+   
 }

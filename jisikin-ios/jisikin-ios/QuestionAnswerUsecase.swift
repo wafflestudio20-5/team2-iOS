@@ -55,12 +55,53 @@ class QuestionAnswerUsecase{
         questionRepo.postNewQuestion(titleText: titleText, contentText: contentText)
     }
     
-    func postNewAnswer(id: Int, contentText: String) {
-        answerRepo.postNewAnswer(id: id, contentText: contentText)
+    func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {
+        answerRepo.postNewAnswer(id: id, contentText: contentText){
+            handler()
+        }
     }
     func selectAnswer(questionID:Int,answerID:Int)->Single<String>{
         return Single<String>.create{single in
             self.answerRepo.selectAnswer(id: answerID).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+            
+            }, onError: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
+    func agreeAnswer(id:Int,isAgree:Bool)->Single<String>{
+        return Single<String>.create{single in
+            self.answerRepo.agreeAnswer(id:id, isAgree: isAgree).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+            
+            }, onError: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
+ 
+    func deleteAnswer(id:Int)->Single<String>{
+        return Single<String>.create{single in
+            self.answerRepo.deleteAnswer(id: id).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+            
+            }, onError: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
+    
+    
+    func deleteQuestion(id:Int)->Single<String>{
+        return Single<String>.create{single in
+            self.questionRepo.deleteQuestion(id: id).subscribe(onSuccess: {
                 result in
                 single(.success(result))
             

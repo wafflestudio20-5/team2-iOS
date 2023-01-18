@@ -24,6 +24,11 @@ final class LoginRepository {
     var errorMessage: String?
     var kakaoError: Bool = false
     
+    let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": ""
+    ]
+    
     func login(param: Login, completionHandler:@escaping (String)->Void) {
         
         fullURL = URL(string: baseURL + "/api/user/login")
@@ -36,7 +41,8 @@ final class LoginRepository {
         AF.request(fullURL!,
                    method: .post,
                    parameters: parameters,
-                   encoder: JSONParameterEncoder.default
+                   encoder: JSONParameterEncoder.default,
+                   headers: header
         )
         .responseData(){
             response in
@@ -51,6 +57,7 @@ final class LoginRepository {
                     
                     let JSON = JSON(data)
                     
+                    UserDefaults.standard.set(JSON["username"].string!, forKey: "username")
                     UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
                     UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
                     
@@ -105,7 +112,8 @@ final class LoginRepository {
         AF.request(fullURL!,
                    method: .post,
                    parameters: parameters,
-                   encoder: JSONParameterEncoder.default
+                   encoder: JSONParameterEncoder.default,
+                   headers: header
         )
         .responseData(){
             response in
@@ -177,7 +185,8 @@ final class LoginRepository {
         fullURL = URL(string: baseURL + "/api/user/kakaoLogin?accessToken=" + token)
         
         AF.request(fullURL!,
-                   method: .get
+                   method: .get,
+                   headers: header
         )
         .responseData(){
             response in
@@ -189,6 +198,7 @@ final class LoginRepository {
                     
                     let JSON = JSON(data)
                     
+                    UserDefaults.standard.set(JSON["username"].string!, forKey: "username")
                     UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
                     UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
                     
@@ -220,7 +230,8 @@ final class LoginRepository {
         AF.request(fullURL!,
                    method: .post,
                    parameters: parameters,
-                   encoder: JSONParameterEncoder.default
+                   encoder: JSONParameterEncoder.default,
+                   headers: header
         )
         .responseData(){
             response in
@@ -264,5 +275,49 @@ final class LoginRepository {
             }
         }
         
+    }
+    
+    func regenerateToken(completionHandler:@escaping (String)->Void) {
+        fullURL = URL(string: baseURL + "/api/user/regenerateToken")
+        
+        let accessToken = UserDefaults.standard.value(forKey: "accessToken") as? String
+        let refreshToken = UserDefaults.standard.value(forKey: "refreshToken") as? String
+        
+        let parameters = [
+            "accessToken": accessToken,
+            "refreshToken": refreshToken
+        ]
+        
+        AF.request(fullURL!,
+                   method: .post,
+                   parameters: parameters,
+                   encoder: JSONParameterEncoder.default,
+                   headers: header
+        )
+        .responseData(){
+            response in
+            
+            switch response.result {
+            case .success(let data):
+                do {
+                    let asJSON = try JSONSerialization.jsonObject(with: data)
+                    
+                    let JSON = JSON(data)
+                    
+                    UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
+                    UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
+                    
+                    completionHandler("success")
+                    } catch {
+                        self.errorMessage = String(data: data, encoding: .utf8)
+                        print(self.errorMessage)
+                        
+                        completionHandler("error")
+                    }
+                
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 }

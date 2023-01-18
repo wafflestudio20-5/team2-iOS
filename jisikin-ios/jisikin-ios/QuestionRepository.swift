@@ -16,6 +16,7 @@ struct QuestionAPI:Codable{
     var modifiedAt:String
     var close:Bool
     var username:String
+    var photos:[String]
     
 }
 final class QuestionRepository{
@@ -36,7 +37,7 @@ final class QuestionRepository{
             "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
         ]
         
-        AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, headers: header).responseData {
+        AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
             response in
             switch(response.result) {
             case .success(let data):
@@ -54,7 +55,7 @@ final class QuestionRepository{
     
     func getRecentQuestions(onCompleted:@escaping([QuestionAPI])->()){
         let fullURL = URL(string: baseURL + "/api/question/search")
-        AF.request(fullURL!,method:.get).responseDecodable(of:[QuestionAPI].self){[unowned self]
+        AF.request(fullURL!,method:.get).validate(statusCode:200..<300).responseDecodable(of:[QuestionAPI].self){[unowned self]
             response in
             switch(response.result){
             case .success(let data):
@@ -68,13 +69,20 @@ final class QuestionRepository{
     }
     func getQuestionsByLikes()->Single<[QuestionAPI]>{
         let fullURL = URL(string: baseURL + "/api/question/search")
+        
         return Single<[QuestionAPI]>.create{
             single in
-            AF.request(fullURL!,method:.get).responseDecodable(of:[QuestionAPI].self){
+            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionAPI].self){
                 response in
                 switch(response.result){
                 case .success(let data):
-                    single(.success(data))
+                    var val = data
+                  //  for (i,v) in val.photos.enumerated(){
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   // }
+                    single(.success(val))
                 case .failure(let error):
                     single(.failure(error))
                 }
@@ -87,11 +95,16 @@ final class QuestionRepository{
         let fullURL = URL(string: baseURL + "/api/question/\(id)")
         return Single<QuestionAPI>.create{
             single in
-            AF.request(fullURL!,method:.get).responseDecodable(of:QuestionAPI.self){
+            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:QuestionAPI.self){
                 response in
                 switch(response.result){
                 case .success(let data):
-                    single(.success(data))
+                    var v = data
+                 //   v.photos.append("https://via.placeholder.com/150")
+                 //   v.photos.append("https://via.placeholder.com/150")
+                 //   v.photos.append("https://via.placeholder.com/1500")
+                 
+                    single(.success(v))
                 case .failure(let error):
                     single(.failure(error))
                 }
@@ -100,5 +113,20 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
-    
+    func deleteQuestion(id:Int)->Single<String>{
+        let fullURL = URL(string:baseURL + "/api/question/\(id)")
+        return Single<String>.create{
+            single in
+            AF.request(fullURL!,method:.delete,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseString{
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            }
+            return Disposables.create()
+        }
+    }
 }
