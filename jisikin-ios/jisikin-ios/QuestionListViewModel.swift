@@ -15,7 +15,7 @@ struct QuestionListModel{
     var createdAt:String?
     var id:Int
     static func fromQuestionAPI(questionAPI:QuestionAPI)->QuestionListModel{
-        return QuestionListModel(title:questionAPI.title,content:questionAPI.content,answerNumber:nil, createdAt: convertTimeFormat(time: questionAPI.createdAt),id:questionAPI.id)
+        return QuestionListModel(title:questionAPI.title,content:questionAPI.content,answerNumber:nil, createdAt: convertTimeFormat(time: questionAPI.createdAt!),id:questionAPI.id)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()

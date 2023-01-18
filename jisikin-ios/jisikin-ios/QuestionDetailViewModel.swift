@@ -42,7 +42,7 @@ struct QuestionDetailModel{
     static func fromQuestionAPI(questionAPI:QuestionAPI?)->QuestionDetailModel?{
        
         if let questionAPI = questionAPI{
-            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username,close:questionAPI.close)
+            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content, createdAt:convertTimeFormat(time: questionAPI.createdAt!),username:questionAPI.username!,close:questionAPI.close!)
         }
         else{
             return nil

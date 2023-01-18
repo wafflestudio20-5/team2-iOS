@@ -12,10 +12,10 @@ struct QuestionAPI:Codable{
     var id:Int
     var title:String
     var content:String
-    var createdAt:String
-    var modifiedAt:String
-    var close:Bool
-    var username:String
+    var createdAt:String?
+    var modifiedAt:String?
+    var close:Bool?
+    var username:String?
 }
 final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
@@ -100,11 +100,10 @@ final class QuestionRepository{
         }
     }
     func getMyQuestions()->Single<[QuestionAPI]>{
-        let fullURL = URL(string: baseURL + "/api/user/myQuestions/")
+        let fullURL = URL(string: baseURL + "/api/user/myQuestions")
         let header: HTTPHeaders = [
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
-            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
         ]
         return Single<[QuestionAPI]>.create{
             single in
@@ -125,8 +124,7 @@ final class QuestionRepository{
         let fullURL = URL(string: baseURL + "/api/user/myAnswers/")
         let header: HTTPHeaders = [
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
-            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
         ]
         return Single<[QuestionAPI]>.create{
             single in

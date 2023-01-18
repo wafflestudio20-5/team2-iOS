@@ -1,5 +1,5 @@
 //
-//  ModifyProfileUsecase.swift
+//  ProfileUsecase.swift
 //  jisikin-ios
 //
 //  Created by 김령교 on 2023/01/17.
@@ -8,12 +8,12 @@
 import Foundation
 import RxSwift
 import RxCocoa
-class ModifyProfileUsecase{
+class ProfileUsecase{
     let bag = DisposeBag()
     let ProfileRepo = ProfileRepository()
     let PhotoRepo = PhotoRepository()
     
-    func getQuestionsAndAnswers(){
+    func getProfile(){
         ProfileRepo.getProfile().subscribe(onSuccess: {[weak self]
             data in
             if(self == nil){return}
