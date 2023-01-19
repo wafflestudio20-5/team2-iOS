@@ -21,7 +21,7 @@ struct AnswerDetailModel{
     var agree:Int
     var disagree:Int
     static func fromAnswerAPI(answerAPI:AnswerAPI)->AnswerDetailModel{
-        return AnswerDetailModel(content: answerAPI.content,photos:answerAPI.photos, createdAt: answerAPI.createdAt, selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id,agree:answerAPI.interactionCount.agree,disagree:answerAPI.interactionCount.disagree)
+        return AnswerDetailModel(content: answerAPI.content,photos:answerAPI.photos, createdAt:convertTimeFormat(time: answerAPI.createdAt), selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id,agree:answerAPI.interactionCount.agree,disagree:answerAPI.interactionCount.disagree)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
