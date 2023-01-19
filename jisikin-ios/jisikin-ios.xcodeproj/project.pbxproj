@@ -43,6 +43,8 @@
 		C0D6FC15295F319A00FF0A0C /* MyQAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D6FC14295F319A00FF0A0C /* MyQAViewController.swift */; };
 		C0D6FC19295F32BD00FF0A0C /* HeartedQViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D6FC18295F32BD00FF0A0C /* HeartedQViewController.swift */; };
 		C0D6FC1B295F5F2300FF0A0C /* ModifyProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D6FC1A295F5F2300FF0A0C /* ModifyProfileViewController.swift */; };
+		D4AC71732977167A007C037B /* BSImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = D4AC71722977167A007C037B /* BSImagePicker */; };
+		D4AC7175297718E3007C037B /* ImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AC7174297718E3007C037B /* ImageViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -110,6 +112,7 @@
 		C0D6FC18295F32BD00FF0A0C /* HeartedQViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartedQViewController.swift; sourceTree = "<group>"; };
 		C0D6FC1A295F5F2300FF0A0C /* ModifyProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyProfileViewController.swift; sourceTree = "<group>"; };
 		C5D7463FADBB0F894A002F8A /* Pods-jisikin-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jisikin-iosTests.debug.xcconfig"; path = "Target Support Files/Pods-jisikin-iosTests/Pods-jisikin-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
+		D4AC7174297718E3007C037B /* ImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +121,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EAA9FD4F818743CC10321BD /* Pods_jisikin_ios.framework in Frameworks */,
+				D4AC71732977167A007C037B /* BSImagePicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				4E682773296E75060001FC35 /* tagViewCell.swift */,
+				D4AC7174297718E3007C037B /* ImageViewCell.swift */,
 				4E682774296E75060001FC35 /* WritingAnswerViewController.swift */,
 				4E610E962976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift */,
 				4E8BAE0529559F62001CE4BD /* AppDelegate.swift */,
@@ -267,6 +272,9 @@
 			dependencies = (
 			);
 			name = "jisikin-ios";
+			packageProductDependencies = (
+				D4AC71722977167A007C037B /* BSImagePicker */,
+			);
 			productName = "jisikin-ios";
 			productReference = 4E8BAE0229559F62001CE4BD /* jisikin-ios.app */;
 			productType = "com.apple.product-type.application";
@@ -342,6 +350,9 @@
 				Base,
 			);
 			mainGroup = 4E8BADF929559F62001CE4BD;
+			packageReferences = (
+				D4AC71712977167A007C037B /* XCRemoteSwiftPackageReference "BSImagePicker" */,
+			);
 			productRefGroup = 4E8BAE0329559F62001CE4BD /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -495,6 +506,7 @@
 				4ED26AC8295F0D670034F1A7 /* SignupViewController.swift in Sources */,
 				C002B122295AE228003303B7 /* QuestionViewController.swift in Sources */,
 				4E682776296E75060001FC35 /* WritingAnswerViewController.swift in Sources */,
+				D4AC7175297718E3007C037B /* ImageViewCell.swift in Sources */,
 				4ECD064E296933BE00E848BF /* QuestionListViewModel.swift in Sources */,
 				4E9CAE7B2960001800D92F30 /* SearchViewController.swift in Sources */,
 				4E44C25D2963ED5D001165AD /* LoginRepository.swift in Sources */,
@@ -680,8 +692,10 @@
 				INFOPLIST_FILE = "jisikin-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "지식2n";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-				INFOPLIST_KEY_NSCameraUsageDescription = "";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "";
+
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 접근 권한을 허용해주세요";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "앨범 접근 권한을 허용해주세요";
+
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
@@ -716,8 +730,10 @@
 				INFOPLIST_FILE = "jisikin-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "지식2n";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-				INFOPLIST_KEY_NSCameraUsageDescription = "";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "";
+
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 접근 권한을 허용해주세요";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "앨범 접근 권한을 허용해주세요";
+
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
@@ -853,6 +869,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D4AC71712977167A007C037B /* XCRemoteSwiftPackageReference "BSImagePicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mikaoj/BSImagePicker.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D4AC71722977167A007C037B /* BSImagePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D4AC71712977167A007C037B /* XCRemoteSwiftPackageReference "BSImagePicker" */;
+			productName = BSImagePicker;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4E8BADFA29559F62001CE4BD /* Project object */;
 }
