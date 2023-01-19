@@ -227,7 +227,7 @@ class HomeViewController: UIViewController {
         case randomBanner:
             let randomInt = Int.random(in: 1..<10)
             let viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
-            viewModel.getQuestions()
+            viewModel.getQuestionsByDate()
             navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: randomInt)), animated: true)
         case newYearBanner:
             print("hello new")

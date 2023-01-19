@@ -20,6 +20,7 @@ struct AnswerAPI:Codable{
     var userRecentAnswerDate:String
     var id:Int
     var interactionCount:InteractionCount
+    var userIsAgreed:Bool?
 }
 struct InteractionCount:Codable{
     var agree:Int
