@@ -8,16 +8,29 @@
 import Foundation
 import Alamofire
 import RxSwift
-struct QuestionAPI:Codable{
+struct QuestionSearchAPI:Codable{
+    var questionId:Int
+    var title:String
+    var content:String
+    var answerContent:String?
+    var answerCount:Int
+    var questionLikeCount:Int
+    
+}
+struct QuestionDetailAPI:Codable{
     var id:Int
     var title:String
     var content:String
-    var createdAt:String
-    var modifiedAt:String
-    var close:Bool
+    var tag:[String]
     var username:String
-    var photos:[String]
-    
+    var profileImagePath: String?
+    var photos: [String]
+    var answerNumber: Int
+    var createdAt: String
+     var  modifiedAt: String
+    var close: Bool
+    var closedAt: String?
+    var userQuestionLikeNumber:Int
 }
 final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
@@ -53,26 +66,13 @@ final class QuestionRepository{
     }
     
     
-    func getRecentQuestions(onCompleted:@escaping([QuestionAPI])->()){
-        let fullURL = URL(string: baseURL + "/api/question/search")
-        AF.request(fullURL!,method:.get).validate(statusCode:200..<300).responseDecodable(of:[QuestionAPI].self){[unowned self]
-            response in
-            switch(response.result){
-            case .success(let data):
-                print(data)
-                onCompleted(data)
-            case .failure(let error):
-                self.isError = true
-                onCompleted([])
-            }
-        }
-    }
-    func getQuestionsByLikes()->Single<[QuestionAPI]>{
+  
+    func getQuestionsByLikes()->Single<[QuestionSearchAPI]>{
         let fullURL = URL(string: baseURL + "/api/question/search")
         
-        return Single<[QuestionAPI]>.create{
+        return Single<[QuestionSearchAPI]>.create{
             single in
-            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionAPI].self){
+            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
                 response in
                 switch(response.result){
                 case .success(let data):
@@ -91,11 +91,11 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
-    func getQuestionByID(id:Int)->Single<QuestionAPI>{
+    func getQuestionByID(id:Int)->Single<QuestionDetailAPI>{
         let fullURL = URL(string: baseURL + "/api/question/\(id)")
-        return Single<QuestionAPI>.create{
+        return Single<QuestionDetailAPI>.create{
             single in
-            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:QuestionAPI.self){
+            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:QuestionDetailAPI.self){
                 response in
                 switch(response.result){
                 case .success(let data):

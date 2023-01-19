@@ -40,7 +40,7 @@ struct QuestionDetailModel{
     var createdAt:String
     var username:String
     var close:Bool
-    static func fromQuestionAPI(questionAPI:QuestionAPI?)->QuestionDetailModel?{
+    static func fromQuestionAPI(questionAPI:QuestionDetailAPI?)->QuestionDetailModel?{
        
         if let questionAPI = questionAPI{
             return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content,photos:questionAPI.photos, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username,close:questionAPI.close)
@@ -68,21 +68,16 @@ class QuestionDetailViewModel{
     init(usecase: QuestionAnswerUsecase, questionID: Int) {
         self.usecase = usecase
         self.questionID = questionID
-        usecase.questions.asObservable().subscribe(onNext: {[weak self]
+        usecase.questionDetail.asObservable().subscribe(onNext: {[weak self]
             data in
-            self!.question.accept(QuestionDetailModel.fromQuestionAPI(questionAPI:data.first(where: {$0.id == self!.questionID})))
+            self!.question.accept(QuestionDetailModel.fromQuestionAPI(questionAPI:data))
             
         }).disposed(by: bag)
-        usecase.answersByQuestionID.asObservable().subscribe(onNext:{[weak self]
+        usecase.answerDetail.asObservable().subscribe(onNext:{[weak self]
             data in
-            if data[self!.questionID] == nil{
-                self!.answers.accept([])
-                return
-            }
-            self!.answers.accept( ((data[self!.questionID])?.map({
+            self!.answers.accept(data.map{
                 AnswerDetailModel.fromAnswerAPI(answerAPI: $0)
-            }))!)
-        }).disposed(by: bag)
+            })        }).disposed(by: bag)
     }
     func refresh(){
         usecase.getQuestionAndAnswersByID(id: questionID)

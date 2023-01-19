@@ -303,7 +303,7 @@ final class LoginRepository {
                     let asJSON = try JSONSerialization.jsonObject(with: data)
                     
                     let JSON = JSON(data)
-                    
+                    print(JSON)
                     UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
                     UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
                     
