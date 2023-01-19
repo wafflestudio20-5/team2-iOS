@@ -55,12 +55,12 @@ class QuestionView:UIView{
         likeButton = UIButton()
         likeButton.setTitle("15", for: .normal)
         likeButton.setTitleColor(.black, for: .normal)
-        likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        likeButton.setImage(systemName: "heart", color: UIColor.red)
         likeButton.addTarget(self, action: #selector(likeButtonClicked), for: .touchDown)
         
         questionTimeView = UILabel()
         questionTimeView.text = "2022.12.16"
-        questionTimeView.textColor = .black
+        questionTimeView.textColor = .lightGray
         questionEditButton = UIButton()
         questionEditButton.setTitle("수정", for: .normal)
         questionEditButton.setTitleColor(.gray, for: .normal)
@@ -71,11 +71,10 @@ class QuestionView:UIView{
         questionDeleteButton.addTarget(self, action: #selector(deleteButtonClicked), for: .touchDown)
         
         answerButton = UIButton()
-        answerButton.backgroundColor = BLUE_COLOR
-        answerButton.setTitle("답변하기", for: .normal)
+        answerButton.setImage(UIImage(named: "AnswerButton"), for: .normal)
         answerButton.addTarget(self, action: #selector(answerButtonClicked(_:)), for: .touchUpInside)
-        
-       
+        answerButton.imageView?.contentMode = .scaleAspectFit
+        answerButton.backgroundColor = BLUE_COLOR
         
         imageStackView = UIStackView()
         imageStackView.axis = .vertical
@@ -113,16 +112,18 @@ class QuestionView:UIView{
         ])
         NSLayoutConstraint.activate([
             questionUserInfo.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
-            questionUserInfo.topAnchor.constraint(equalTo: questionTitleView.bottomAnchor,constant: 20.0)
+            questionUserInfo.topAnchor.constraint(equalTo: questionTitleView.bottomAnchor,constant: 10.0)
         ])
         NSLayoutConstraint.activate([
             likeButton.centerYAnchor.constraint(equalTo: questionUserInfo.centerYAnchor),
-            likeButton.trailingAnchor.constraint(equalTo:  self.safeAreaLayoutGuide.trailingAnchor,constant: -20.0)
+            likeButton.trailingAnchor.constraint(equalTo:  self.safeAreaLayoutGuide.trailingAnchor,constant: -30.0),
+            likeButton.heightAnchor.constraint(equalToConstant: 35),
+            likeButton.widthAnchor.constraint(equalToConstant: 35)
         ])
        NSLayoutConstraint.activate([
             questionContentView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
             questionContentView.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor),
-            questionContentView.topAnchor.constraint(equalTo: likeButton.bottomAnchor,constant: 5.0)
+            questionContentView.topAnchor.constraint(equalTo: questionUserInfo.bottomAnchor,constant: 10.0)
         ])
         NSLayoutConstraint.activate([
             imageStackView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
@@ -144,10 +145,11 @@ class QuestionView:UIView{
             
         ])
         NSLayoutConstraint.activate([
-          answerButton.topAnchor.constraint(equalTo: questionTimeView.bottomAnchor,constant: 10.0),
+          answerButton.topAnchor.constraint(equalTo: questionTimeView.bottomAnchor,constant: 15.0),
            answerButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
           answerButton.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant:-20.0),
-          answerButton.widthAnchor.constraint(equalToConstant: 100)
+          answerButton.widthAnchor.constraint(equalToConstant: 200),
+          answerButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     func setOnAnswerButtonClicked(onAnswerButtonClicked:@escaping()->()){
@@ -306,6 +308,7 @@ class AnswerTableCell:UITableViewCell{
         
         answerTimeView = UILabel()
         answerTimeView.text = "1분 전"
+        answerTimeView.textColor = .lightGray
         
         answerPicture = UIImageView(image: UIColor.green.image(CGSize(width: 60, height: 40)))
         answerPicture.contentMode = .scaleAspectFit
@@ -321,13 +324,13 @@ class AnswerTableCell:UITableViewCell{
         likeButton = UIButton()
         likeButton.setTitle("2", for: .normal)
         likeButton.setTitleColor(.black, for: .normal)
-        likeButton.setImage(UIImage(systemName: "hand.thumbsup")?.withTintColor(.black,renderingMode: .alwaysOriginal),for:.normal)
+        likeButton.setImage(systemName: "hand.thumbsup", color: UIColor.black)
         likeButton.contentHorizontalAlignment = .fill
         likeButton.contentVerticalAlignment = .fill
         likeButton.imageView?.contentMode = .scaleAspectFit
         dislikeButton = UIButton()
         dislikeButton.setTitle("3", for: .normal)
-        dislikeButton.setImage(UIImage(systemName: "hand.thumbsdown")?.withTintColor(.black,renderingMode: .alwaysOriginal),for:.normal)
+        dislikeButton.setImage(systemName: "hand.thumbsdown", color: UIColor.black)
         dislikeButton.setTitleColor(.black, for: .normal)
         dislikeButton.contentHorizontalAlignment = .fill
         dislikeButton.contentVerticalAlignment = .fill
@@ -405,8 +408,7 @@ class AnswerTableCell:UITableViewCell{
         ])
         NSLayoutConstraint.activate([
             answerTimeView.topAnchor.constraint(equalTo: imageStackView.bottomAnchor,constant: 5.0),
-            answerTimeView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 5.0),
-          
+            answerTimeView.leadingAnchor.constraint(equalTo: answerContentView.leadingAnchor)
         ])
         NSLayoutConstraint.activate([
             answerChoiceButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
@@ -727,7 +729,7 @@ extension QuestionDetailViewController:UITableViewDelegate{
         return headerView
     }
     func showLoginAlert(onLogin:@escaping(()->())){
-         let loginAction = UIAlertAction(title:"로그인",style: .default,handler: {[weak self]
+         let loginAction = UIAlertAction(title: "로그인", style: .default,handler: {[weak self]
              setAction in
              let appearance = UINavigationBarAppearance()
              appearance.configureWithOpaqueBackground()
