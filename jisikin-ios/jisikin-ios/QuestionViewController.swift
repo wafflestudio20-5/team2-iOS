@@ -153,6 +153,12 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         setLayout()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.titleField.resignFirstResponder()
+        self.contentView.becomeFirstResponder()
+    }
+    
     private func setNavigationBar() {
         self.view.backgroundColor = .white
         // Do any additional setup after loading the view.
@@ -346,7 +352,7 @@ extension QuestionViewController: UIImagePickerControllerDelegate & UINavigation
         }
         
         cnt += 1
-        
+        self.imageCollectionView.reloadData()
         dismiss(animated: true, completion: nil)
     }
     
@@ -379,7 +385,7 @@ extension QuestionViewController: UIImagePickerControllerDelegate & UINavigation
                 
                 var thumnail = UIImage()
                 
-                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFit, options: option) { (result, info) in
+                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: option) { (result, info) in
                 thumnail = result!
                 }
                 
