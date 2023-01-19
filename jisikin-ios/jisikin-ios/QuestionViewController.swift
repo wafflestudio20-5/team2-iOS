@@ -153,6 +153,12 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         setLayout()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.titleField.resignFirstResponder()
+        self.contentView.becomeFirstResponder()
+    }
+    
     private func setNavigationBar() {
         self.view.backgroundColor = .white
         // Do any additional setup after loading the view.
@@ -164,8 +170,13 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        imageView.contentMode = .scaleAspectFit
+        let image = UIImage(named: "QuestionLogo")
+        imageView.image = image
+        navigationItem.titleView = imageView
+        
         navigationController?.isNavigationBarHidden = false
-        navigationController?.navigationBar.topItem?.title = "질문하기"
         navigationController?.navigationBar.topItem?.leftBarButtonItem = leftButton
         navigationController?.navigationBar.topItem?.rightBarButtonItem = rightButton
     }
@@ -341,7 +352,7 @@ extension QuestionViewController: UIImagePickerControllerDelegate & UINavigation
         }
         
         cnt += 1
-        
+        self.imageCollectionView.reloadData()
         dismiss(animated: true, completion: nil)
     }
     
@@ -374,7 +385,7 @@ extension QuestionViewController: UIImagePickerControllerDelegate & UINavigation
                 
                 var thumnail = UIImage()
                 
-                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFit, options: option) { (result, info) in
+                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: option) { (result, info) in
                 thumnail = result!
                 }
                 
