@@ -528,6 +528,7 @@ class QuestionDetailViewController:UIViewController{
     override func viewWillAppear(_ animated: Bool){
         super.viewWillAppear(animated)
         viewModel.refresh()
+    
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -552,6 +553,7 @@ class QuestionDetailViewController:UIViewController{
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = true
         self.view.backgroundColor = .white
+        viewModel.refresh()
         setLayout()
         setConstraint()
       

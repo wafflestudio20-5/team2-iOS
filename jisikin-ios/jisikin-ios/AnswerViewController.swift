@@ -32,7 +32,7 @@ class AnswerViewController: UIViewController {
             (cell as! QuestionTableViewCell).configure(question:model)
             self.questionTable?.refreshControl?.endRefreshing()
         }.disposed(by: bag)
-        viewModel.getQuestions()
+        viewModel.getQuestionsByDate()
         
     }
     override func viewWillAppear(_ animated: Bool)
@@ -40,7 +40,14 @@ class AnswerViewController: UIViewController {
         super.viewWillAppear(animated)
         
         self.questionTable.deselectSelectedRow(animated: false)
-        viewModel.getQuestions()
+        if let sortMethodSegment{
+            if sortMethodSegment.selectedSegmentIndex == 0{
+                viewModel.getQuestionsByDate()
+            }
+            else{
+                viewModel.getQuestionsByLikes()
+            }
+        }
     }
     func setBackButton() {
         let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
@@ -112,18 +119,18 @@ class AnswerViewController: UIViewController {
     }
     @objc func onSegmentValueChanged(segment:UISegmentedControl){
         if segment.selectedSegmentIndex == 0{
-            viewModel.getQuestions()
+            viewModel.getQuestionsByDate()
         }
         else{
-            viewModel.getQuestions()
+            viewModel.getQuestionsByLikes()
         }
     }
     @objc func onQuestionRefresh(){
         if sortMethodSegment.selectedSegmentIndex == 0{
-            viewModel.getQuestions()
+            viewModel.getQuestionsByDate()
         }
         else{
-            viewModel.getQuestions()
+            viewModel.getQuestionsByLikes()
         }
     }
     
