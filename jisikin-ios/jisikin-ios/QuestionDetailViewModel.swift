@@ -40,10 +40,11 @@ struct QuestionDetailModel{
     var createdAt:String
     var username:String
     var close:Bool
+    var likeNumber:Int
     static func fromQuestionAPI(questionAPI:QuestionDetailAPI?)->QuestionDetailModel?{
        
         if let questionAPI = questionAPI{
-            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content,photos:questionAPI.photos, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username,close:questionAPI.close)
+            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content,photos:questionAPI.photos, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username,close:questionAPI.close,likeNumber: questionAPI.userQuestionLikeNumber)
         }
         else{
             return nil
@@ -124,6 +125,18 @@ class QuestionDetailViewModel{
     func deleteQuestion()->Single<String>{
         return Single<String>.create{single in
             self.usecase.deleteQuestion(id:self.questionID).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+                
+            }, onFailure: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
+    func likeQuestion()->Single<String>{
+        return Single<String>.create{single in
+            self.usecase.likeQuestion(id:self.questionID).subscribe(onSuccess: {
                 result in
                 single(.success(result))
                 

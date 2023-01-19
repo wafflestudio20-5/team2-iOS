@@ -94,5 +94,17 @@ class QuestionAnswerUsecase{
             })
         }
     }
+    func likeQuestion(id:Int)->Single<String>{
+        return Single<String>.create{single in
+            self.questionRepo.likeQuestion(id: id).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+            
+            }, onError: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
     
 }
