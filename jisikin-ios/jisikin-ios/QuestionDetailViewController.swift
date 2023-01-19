@@ -24,6 +24,7 @@ class QuestionView:UIView{
     var onAnswerButtonClicked:(()->())?
     var onImageLoaded:(()->())?
     var onDeleteButtonClicked:(()->())?
+    var onLikeButtonClicked:(()->())?
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -55,6 +56,7 @@ class QuestionView:UIView{
         likeButton.setTitle("15", for: .normal)
         likeButton.setTitleColor(.black, for: .normal)
         likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        likeButton.addTarget(self, action: #selector(likeButtonClicked), for: .touchDown)
         
         questionTimeView = UILabel()
         questionTimeView.text = "2022.12.16"
@@ -157,6 +159,9 @@ class QuestionView:UIView{
     @objc func deleteButtonClicked(){
         onDeleteButtonClicked?()
     }
+    @objc func likeButtonClicked(){
+        onLikeButtonClicked?()
+    }
     func configure(question:QuestionDetailModel,hasAnswers:Bool){
         
         questionTitleView.text = question.title
@@ -164,6 +169,7 @@ class QuestionView:UIView{
         questionContentView.text = question.content
         questionUserInfo.text = question.username
         answerButton.isHidden = question.close
+        likeButton.setTitle(String(question.likeNumber), for: .normal)
         imageStackView.safelyRemoveArrangedSubviews()
         for image in question.photos{
             let imageView = UIImageView()
@@ -684,6 +690,19 @@ extension QuestionDetailViewController:UITableViewDelegate{
                         vc.questionID = (self?.viewModel.questionID)!
                         self?.navigationController?.pushViewController(vc, animated: true)
                     }
+                }
+            }
+        }
+        questionView.onLikeButtonClicked = {
+            if UserDefaults.standard.bool(forKey: "isLogin"){
+                self.viewModel.likeQuestion().subscribe(onSuccess:{
+                    _ in
+                    self.viewModel.refresh()
+                })
+            }
+            else{
+                self.showLoginAlert{
+                    self.tabBarController?.navigationController?.popViewController(animated: true)
                 }
             }
         }

@@ -8,49 +8,32 @@
 import Foundation
 import RxSwift
 import RxCocoa
+
 class QuestionAnswerUsecase{
     let bag = DisposeBag()
     let questionRepo = QuestionRepository()
     let answerRepo = AnswerRepository()
-    var questions = BehaviorRelay<[QuestionAPI]>(value:[])
-    var questionPhotosByQuestionID = BehaviorRelay<[Int:[UIImage]]>(value:[:])
-    var answersByQuestionID = BehaviorRelay<[Int:[AnswerAPI]]>(value:[:])
-    var answerPhotosByAnswerID = BehaviorRelay<[Int:[UIImage]]>(value:[:])
-    
-    func getQuestionsAndAnswers(){
-        questionRepo.getQuestionsByLikes().subscribe(onSuccess: {[weak self]
-            data in
-            if(self == nil){return}
-            self!.questions.accept(data)
-            for question in data{
-                self!.getAnswersByQuestionID(id: question.id)
-            }
+    var questionSearch = BehaviorRelay<[QuestionSearchAPI]>(value:[])
+    var questionDetail = BehaviorRelay<QuestionDetailAPI?>(value:nil)
+    var answerDetail = BehaviorRelay<[AnswerAPI]>(value:[])
+    func getQuestionsByLikes(){
+        questionRepo.getQuestionsByLikes().subscribe(onSuccess: {
+            result in
+            self.questionSearch.accept(result)
         }).disposed(by: bag)
     }
     func getQuestionAndAnswersByID(id:Int){
-        questionRepo.getQuestionByID(id: id).subscribe(onSuccess: {[weak self]
+        questionRepo.getQuestionByID(id: id).subscribe(onSuccess: {
             data in
-            if(self == nil){return}
-            var value = self!.questions.value
-            if let row = value.firstIndex(where: {$0.id == id}) {
-                value[row] = data
-            }
-            self!.questions.accept(value)
-            
-            self!.getAnswersByQuestionID(id: data.id)
+            self.questionDetail.accept(data)
             
         }).disposed(by: bag)
-    }
-    func getAnswersByQuestionID(id:Int){
-        answerRepo.getAnswersByQuestionID(id: id).subscribe(onSuccess: {[weak self]
+        answerRepo.getAnswersByQuestionID(id: id).subscribe(onSuccess:{
             data in
-            if self == nil{return}
-            var answers = self!.answersByQuestionID.value
-            answers[id] = data
-            self!.answersByQuestionID.accept(answers)
-        }).disposed(by: bag)
+            self.answerDetail.accept(data)
+        })
     }
-    
+   
     func postNewQuestion(titleText: String, contentText: String) {
         questionRepo.postNewQuestion(titleText: titleText, contentText: contentText)
     }
@@ -102,6 +85,18 @@ class QuestionAnswerUsecase{
     func deleteQuestion(id:Int)->Single<String>{
         return Single<String>.create{single in
             self.questionRepo.deleteQuestion(id: id).subscribe(onSuccess: {
+                result in
+                single(.success(result))
+            
+            }, onError: {
+                error in
+                single(.failure(error))
+            })
+        }
+    }
+    func likeQuestion(id:Int)->Single<String>{
+        return Single<String>.create{single in
+            self.questionRepo.likeQuestion(id: id).subscribe(onSuccess: {
                 result in
                 single(.success(result))
             
