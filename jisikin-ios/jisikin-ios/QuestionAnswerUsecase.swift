@@ -22,6 +22,12 @@ class QuestionAnswerUsecase{
             self.questionSearch.accept(result)
         }).disposed(by: bag)
     }
+    func getQuestionsByDate(){
+        questionRepo.getQuestionsByDate().subscribe(onSuccess: {
+            result in
+            self.questionSearch.accept(result)
+        }).disposed(by: bag)
+    }
     func getQuestionAndAnswersByID(id:Int){
         questionRepo.getQuestionByID(id: id).subscribe(onSuccess: {
             data in

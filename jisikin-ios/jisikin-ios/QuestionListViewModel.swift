@@ -42,8 +42,11 @@ class QuestionListViewModel{
             })
         })
         }
-    func getQuestions(){
+    func getQuestionsByLikes(){
         usecase.getQuestionsByLikes()
+    }
+    func getQuestionsByDate(){
+        usecase.getQuestionsByDate()
     }
     
     func postNewQuestion(titleText: String, contentText: String) {
