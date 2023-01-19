@@ -260,7 +260,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         } else {
             guard let titleText = titleField.text else { return }
             guard let contentText = contentView.text else { return }
-            viewModel.postNewQuestion(titleText: titleText, contentText: contentText, tag: self.tags)
+            viewModel.postNewQuestion(titleText: titleText, contentText: contentText)
         }
         
         view.endEditing(true)

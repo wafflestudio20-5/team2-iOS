@@ -46,8 +46,8 @@ class QuestionListViewModel{
         usecase.getQuestionsByLikes()
     }
     
-    func postNewQuestion(titleText: String, contentText: String, tag: [String]) {
-        usecase.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag)
+    func postNewQuestion(titleText: String, contentText: String) {
+        usecase.postNewQuestion(titleText: titleText, contentText: contentText)
     }
     
     func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {
