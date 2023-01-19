@@ -12,14 +12,14 @@ import BSImagePicker
 extension UIButton {
 
     func setImage(systemName: String, color: UIColor) {
-        contentHorizontalAlignment = .fill
-        contentVerticalAlignment = .fill
+        //contentHorizontalAlignment = .fill
+        //contentVerticalAlignment = .fill
         
         imageView?.tintColor = color
-        imageView?.contentMode = .scaleAspectFit
+       // imageView?.contentMode = .scaleAspectFit
         imageEdgeInsets = .zero
         
-        setImage(UIImage(systemName: systemName), for: .normal)
+        setImage(UIImage(systemName: systemName,withConfiguration: UIImage.SymbolConfiguration(pointSize: 20)), for: .normal)
     }
 }
 

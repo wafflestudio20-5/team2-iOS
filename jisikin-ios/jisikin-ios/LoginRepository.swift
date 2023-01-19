@@ -287,7 +287,7 @@ final class LoginRepository {
             "accessToken": accessToken,
             "refreshToken": refreshToken
         ]
-        
+        print(parameters)
         AF.request(fullURL!,
                    method: .post,
                    parameters: parameters,

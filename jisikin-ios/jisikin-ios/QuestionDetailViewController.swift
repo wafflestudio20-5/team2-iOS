@@ -56,8 +56,10 @@ class QuestionView:UIView{
         likeButton.setTitle("15", for: .normal)
         likeButton.setTitleColor(.black, for: .normal)
         likeButton.setImage(systemName: "heart", color: UIColor.red)
-        likeButton.addTarget(self, action: #selector(likeButtonClicked), for: .touchDown)
         
+        likeButton.addTarget(self, action: #selector(likeButtonClicked), for: .touchDown)
+        likeButton.layer.borderWidth = 2
+        likeButton.layer.borderColor = UIColor.blue.cgColor
         questionTimeView = UILabel()
         questionTimeView.text = "2022.12.16"
         questionTimeView.textColor = .lightGray
@@ -117,13 +119,13 @@ class QuestionView:UIView{
         NSLayoutConstraint.activate([
             likeButton.centerYAnchor.constraint(equalTo: questionUserInfo.centerYAnchor),
             likeButton.trailingAnchor.constraint(equalTo:  self.safeAreaLayoutGuide.trailingAnchor,constant: -30.0),
-            likeButton.heightAnchor.constraint(equalToConstant: 35),
-            likeButton.widthAnchor.constraint(equalToConstant: 35)
+            likeButton.heightAnchor.constraint(equalToConstant: 50),
+            likeButton.widthAnchor.constraint(equalToConstant: 50)
         ])
        NSLayoutConstraint.activate([
             questionContentView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
             questionContentView.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor),
-            questionContentView.topAnchor.constraint(equalTo: questionUserInfo.bottomAnchor,constant: 10.0)
+            questionContentView.topAnchor.constraint(equalTo:likeButton.bottomAnchor,constant: 10.0)
         ])
         NSLayoutConstraint.activate([
             imageStackView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
@@ -199,6 +201,7 @@ class QuestionView:UIView{
         }
         
     }
+    
 }
 class AnswerProfileView:UIView{
 
