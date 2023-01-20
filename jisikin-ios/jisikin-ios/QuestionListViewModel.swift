@@ -49,18 +49,6 @@ class QuestionListViewModel{
         usecase.getQuestionsByDate()
     }
     
-    func getMyQuestions(){
-        usecase.getMyQuestions()
-    }
-    
-    func getMyAnsweredQuestions(){
-        usecase.getMyAnsweredQuestions()
-    }
-    
-    func getMyHeartedQuestions(){
-        usecase.getMyHeartedQuestions()
-    }
-    
     func postNewQuestion(titleText: String, contentText: String, tag: [String]) {
         usecase.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag)
     }

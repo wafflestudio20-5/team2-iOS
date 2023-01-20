@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 import RxSwift
 import SwiftyJSON
-struct Profile:Codable{
+struct ProfileRequest:Codable{
     var profileImage:String?
     var username:String
     var isMale:Bool?
@@ -18,7 +18,7 @@ class ProfileRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
     
-    func getProfile()->Single<Profile>{
+    func getProfile()->Single<ProfileRequest>{
         let fullURL = URL(string: baseURL + "/api/user/myAllProfile/")
         let header: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -29,9 +29,9 @@ class ProfileRepository{
 //                    print(response)
 //                }
         
-        return Single<Profile>.create{
+        return Single<ProfileRequest>.create{
             single in
-            AF.request(fullURL!,method:.get, headers: header).responseDecodable(of:Profile.self){
+            AF.request(fullURL!,method:.get, headers: header).responseDecodable(of:ProfileRequest.self){
                 response in
                 switch(response.result){
                 case .success(let data):

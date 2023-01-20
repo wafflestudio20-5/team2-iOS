@@ -12,7 +12,22 @@ class MyQAViewController: UIViewController{
     var bag = DisposeBag()
     var segmentedControl: PlainSegmentedControl!
     var questionTable:UITableView!
-    var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
+    var viewModel = MyRelatedQuestionListViewModel(usecase:MyRelatedQuestionUsecase())
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        
+        self.questionTable.deselectSelectedRow(animated: false)
+        if let segmentedControl{
+            if segmentedControl.selectedSegmentIndex == 0{
+                viewModel.getMyQuestions()
+            }
+            else{
+                viewModel.getMyAnsweredQuestions()
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,15 +57,15 @@ class MyQAViewController: UIViewController{
         segmentedControl.backgroundColor = .systemGray6
         
         questionTable = UITableView()
-//        questionTable.delegate = self
+        questionTable.delegate = self
         
         questionTable.separatorStyle = UITableViewCell.SeparatorStyle.none
-        questionTable.register(QuestionTableViewCell.self,forCellReuseIdentifier: QuestionTableViewCell.ID)
+        questionTable.register(MyRelatedQuestionTableViewCell.self,forCellReuseIdentifier: MyRelatedQuestionTableViewCell.ID)
         questionTable.refreshControl = UIRefreshControl()
         questionTable.refreshControl?.addTarget(self, action: #selector(onQuestionRefresh), for: .valueChanged)
         
-        viewModel.questions.asObservable().bind(to:questionTable.rx.items(cellIdentifier: QuestionTableViewCell.ID)){index,model,cell in
-            (cell as! QuestionTableViewCell).configure(question:model)
+        viewModel.questions.asObservable().bind(to:questionTable.rx.items(cellIdentifier: MyRelatedQuestionTableViewCell.ID)){index,model,cell in
+            (cell as! MyRelatedQuestionTableViewCell).configure(question:model)
             //self.questionTable?.refreshControl?.endRefreshing()
         }.disposed(by: bag)
         viewModel.getMyQuestions()
@@ -104,6 +119,7 @@ class MyQAViewController: UIViewController{
 }
 extension MyQAViewController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: viewModel.questions.value[indexPath.row].questionId)), animated: true)
+        print(viewModel.questions.value[indexPath.row].id)
+        navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: QuestionAnswerUsecase(), questionID: viewModel.questions.value[indexPath.row].id)), animated: true)
     }
 }

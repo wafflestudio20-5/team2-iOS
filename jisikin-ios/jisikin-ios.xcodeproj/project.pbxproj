@@ -43,9 +43,10 @@
 		C03F3CE52976AA2F0046DDDF /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CE42976AA2F0046DDDF /* ProfileViewModel.swift */; };
 		C03F3CE72976AB510046DDDF /* ProfileUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CE62976AB510046DDDF /* ProfileUsecase.swift */; };
 		C03F3CEB2976AD4A0046DDDF /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CEA2976AD4A0046DDDF /* ProfileRepository.swift */; };
-		C03F3CF12976DE770046DDDF /* MyQAViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CF02976DE770046DDDF /* MyQAViewModel.swift */; };
-		C03F3CF32976E0730046DDDF /* MyQAUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CF22976E0730046DDDF /* MyQAUsecase.swift */; };
 		C03F3CF52977A4070046DDDF /* PhotoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CF42977A4070046DDDF /* PhotoRepository.swift */; };
+		C03F3CF9297A94480046DDDF /* MyRelatedQuestionUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CF8297A94480046DDDF /* MyRelatedQuestionUsecase.swift */; };
+		C03F3CFB297A95490046DDDF /* MyRelatedQuestionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CFA297A95490046DDDF /* MyRelatedQuestionListViewModel.swift */; };
+		C03F3CFD297AA9040046DDDF /* MyRelatedQuestionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CFC297AA9040046DDDF /* MyRelatedQuestionTableViewCell.swift */; };
 		C0D6FC15295F319A00FF0A0C /* MyQAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D6FC14295F319A00FF0A0C /* MyQAViewController.swift */; };
 		C0D6FC19295F32BD00FF0A0C /* HeartedQViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D6FC18295F32BD00FF0A0C /* HeartedQViewController.swift */; };
 		C0D6FC1B295F5F2300FF0A0C /* ModifyProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D6FC1A295F5F2300FF0A0C /* ModifyProfileViewController.swift */; };
@@ -117,9 +118,10 @@
 		C03F3CE42976AA2F0046DDDF /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		C03F3CE62976AB510046DDDF /* ProfileUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUsecase.swift; sourceTree = "<group>"; };
 		C03F3CEA2976AD4A0046DDDF /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
-		C03F3CF02976DE770046DDDF /* MyQAViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyQAViewModel.swift; sourceTree = "<group>"; };
-		C03F3CF22976E0730046DDDF /* MyQAUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyQAUsecase.swift; sourceTree = "<group>"; };
 		C03F3CF42977A4070046DDDF /* PhotoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoRepository.swift; sourceTree = "<group>"; };
+		C03F3CF8297A94480046DDDF /* MyRelatedQuestionUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRelatedQuestionUsecase.swift; sourceTree = "<group>"; };
+		C03F3CFA297A95490046DDDF /* MyRelatedQuestionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRelatedQuestionListViewModel.swift; sourceTree = "<group>"; };
+		C03F3CFC297AA9040046DDDF /* MyRelatedQuestionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRelatedQuestionTableViewCell.swift; sourceTree = "<group>"; };
 		C0D6FC14295F319A00FF0A0C /* MyQAViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyQAViewController.swift; sourceTree = "<group>"; };
 		C0D6FC18295F32BD00FF0A0C /* HeartedQViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartedQViewController.swift; sourceTree = "<group>"; };
 		C0D6FC1A295F5F2300FF0A0C /* ModifyProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyProfileViewController.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				C002B121295AE228003303B7 /* QuestionViewController.swift */,
 				C002B123295AE236003303B7 /* MyViewController.swift */,
 				C0D6FC1A295F5F2300FF0A0C /* ModifyProfileViewController.swift */,
+				C03F3CFC297AA9040046DDDF /* MyRelatedQuestionTableViewCell.swift */,
 				C0D6FC14295F319A00FF0A0C /* MyQAViewController.swift */,
 				C0D6FC18295F32BD00FF0A0C /* HeartedQViewController.swift */,
 				4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */,
@@ -209,7 +212,9 @@
 				4E44C25C2963ED5D001165AD /* LoginRepository.swift */,
 				4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */,
 				4ECD064D296933BE00E848BF /* QuestionListViewModel.swift */,
+				C03F3CFA297A95490046DDDF /* MyRelatedQuestionListViewModel.swift */,
 				4ECD0657296BE7B100E848BF /* QuestionAnswerUsecase.swift */,
+				C03F3CF8297A94480046DDDF /* MyRelatedQuestionUsecase.swift */,
 				4ECD064B29692C1900E848BF /* QuestionRepository.swift */,
 				4ECD06512969567900E848BF /* AnswerRepository.swift */,
 				4ECD0659296BFB2700E848BF /* QuestionDetailViewModel.swift */,
@@ -217,8 +222,6 @@
 				C03F3CE62976AB510046DDDF /* ProfileUsecase.swift */,
 				C03F3CF42977A4070046DDDF /* PhotoRepository.swift */,
 				C03F3CEA2976AD4A0046DDDF /* ProfileRepository.swift */,
-				C03F3CF02976DE770046DDDF /* MyQAViewModel.swift */,
-				C03F3CF22976E0730046DDDF /* MyQAUsecase.swift */,
 				4ECD06612977D76E00E848BF /* JWTInterceptor.swift */,
 			);
 			path = "jisikin-ios";
@@ -531,13 +534,14 @@
 				4E9CAE7B2960001800D92F30 /* SearchViewController.swift in Sources */,
 				4E44C25D2963ED5D001165AD /* LoginRepository.swift in Sources */,
 				C002B124295AE236003303B7 /* MyViewController.swift in Sources */,
-				C03F3CF32976E0730046DDDF /* MyQAUsecase.swift in Sources */,
 				C0D6FC1B295F5F2300FF0A0C /* ModifyProfileViewController.swift in Sources */,
 				4E01E17E296D23C300B8EFD2 /* HomeViewController.swift in Sources */,
+				C03F3CF9297A94480046DDDF /* MyRelatedQuestionUsecase.swift in Sources */,
 				4ECD064C29692C1900E848BF /* QuestionRepository.swift in Sources */,
 				C03F3CE72976AB510046DDDF /* ProfileUsecase.swift in Sources */,
 				C0D6FC15295F319A00FF0A0C /* MyQAViewController.swift in Sources */,
 				4ECD065A296BFB2700E848BF /* QuestionDetailViewModel.swift in Sources */,
+				C03F3CFB297A95490046DDDF /* MyRelatedQuestionListViewModel.swift in Sources */,
 				4E9CAE7C2960001800D92F30 /* QuestionDetailViewController.swift in Sources */,
 				C002B120295AE21B003303B7 /* AnswerViewController.swift in Sources */,
 				4ECD06622977D76E00E848BF /* JWTInterceptor.swift in Sources */,
@@ -547,7 +551,7 @@
 				4E152C18296007A5000E9D9A /* TestRepository.swift in Sources */,
 				4E9CAE792960001800D92F30 /* plainSegmentedControl.swift in Sources */,
 				4E8BAE0629559F62001CE4BD /* AppDelegate.swift in Sources */,
-				C03F3CF12976DE770046DDDF /* MyQAViewModel.swift in Sources */,
+				C03F3CFD297AA9040046DDDF /* MyRelatedQuestionTableViewCell.swift in Sources */,
 				4E9CAE7E296066F300D92F30 /* QuestionTableViewCell.swift in Sources */,
 				4E8BAE0829559F62001CE4BD /* SceneDelegate.swift in Sources */,
 				C0D6FC19295F32BD00FF0A0C /* HeartedQViewController.swift in Sources */,
@@ -716,10 +720,8 @@
 				INFOPLIST_FILE = "jisikin-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "지식2n";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 접근 권한을 허용해주세요";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "앨범 접근 권한을 허용해주세요";
-
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
@@ -754,10 +756,8 @@
 				INFOPLIST_FILE = "jisikin-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "지식2n";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 접근 권한을 허용해주세요";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "앨범 접근 권한을 허용해주세요";
-
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;

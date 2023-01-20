@@ -12,22 +12,20 @@ class ProfileUsecase{
     let bag = DisposeBag()
     let ProfileRepo = ProfileRepository()
     let PhotoRepo = PhotoRepository()
-    
-//    var profile : Observable<Profile>
-//    var image : Observable<UIImage>
-//    
-//    init(){
-//        profile =
-//    }
+    var profile = BehaviorRelay<ProfileRequest?>(value:nil)
+    var profilePhoto = BehaviorRelay<Data?>(value:nil)
     
     func getProfile(){
-        ProfileRepo.getProfile().subscribe(onSuccess: {[weak self] data in
-            if(self == nil){
-                return
-            }
-            else{
-                print(data.username, data.isMale)
-            }
+        ProfileRepo.getProfile().subscribe(onSuccess: {[weak self]
+            data in
+            self!.profile.accept(data)
+        }).disposed(by: bag)
+    }
+    
+    func getProfileImage(url: String){
+        PhotoRepo.getImageData(url: url).subscribe(onSuccess:{[weak self]
+            data in
+            self!.profilePhoto.accept(data)
         }).disposed(by: bag)
     }
     
