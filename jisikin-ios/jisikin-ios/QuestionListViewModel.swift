@@ -42,14 +42,14 @@ class QuestionListViewModel{
             })
         })
         }
-    func getQuestions(){
+    func getQuestionsByLikes(){
         usecase.getQuestionsByLikes()
     }
-    /*
-    private func UIImageToURL(photos: [UIImage]) -> [String] {
-        let urlPhotos
+
+    func getQuestionsByDate(){
+        usecase.getQuestionsByDate()
     }
-     */
+
     
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         //let urlPhotos: [String] = UIImageToURL(photos: photos)

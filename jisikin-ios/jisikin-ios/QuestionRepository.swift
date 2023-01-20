@@ -113,12 +113,16 @@ final class QuestionRepository{
         }
     }
     
+
+
     func getQuestionsByLikes()->Single<[QuestionSearchAPI]>{
         let fullURL = URL(string: baseURL + "/api/question/search")
-        
+        let parameters = [
+            "order":"like"
+        ]
         return Single<[QuestionSearchAPI]>.create{
             single in
-            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
+            AF.request(fullURL!,method:.get,parameters: parameters,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
                 response in
                 switch(response.result){
                 case .success(let data):
