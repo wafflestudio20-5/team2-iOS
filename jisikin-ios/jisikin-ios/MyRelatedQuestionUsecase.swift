@@ -1,48 +1,50 @@
 //
-//  QuestionAnswerUsecase.swift
+//  MyRelatedQuestionUsecase.swift
 //  jisikin-ios
 //
-//  Created by 박정헌 on 2023/01/09.
+//  Created by 김령교 on 2023/01/20.
 //
 
 import Foundation
 import RxSwift
 import RxCocoa
 
-class QuestionAnswerUsecase{
+class MyRelatedQuestionUsecase{
     let bag = DisposeBag()
     let questionRepo = QuestionRepository()
     let answerRepo = AnswerRepository()
-    var questionSearch = BehaviorRelay<[QuestionSearchAPI]>(value:[])
-    var questionDetail = BehaviorRelay<QuestionDetailAPI?>(value:nil)
+    var myRelatedQuestions = BehaviorRelay<[MyRelatedQuestionResponse]>(value:[])
+    var myRelatedQuestionDetail = BehaviorRelay<QuestionDetailAPI?>(value:nil)
+    var answersByQuestionID = BehaviorRelay<[Int:[AnswerAPI]]>(value:[:])
     var answerDetail = BehaviorRelay<[AnswerAPI]>(value:[])
-    func getQuestionsByLikes(){
-        questionRepo.getQuestionsByLikes().subscribe(onSuccess: {
-            result in
-            self.questionSearch.accept(result)
+    func getMyQuestions(){
+        questionRepo.getMyQuestions().subscribe(onSuccess: {[weak self]
+            data in
+            self!.myRelatedQuestions.accept(data)
         }).disposed(by: bag)
     }
-    func getQuestionsByDate(){
-        questionRepo.getQuestionsByDate().subscribe(onSuccess: {
-            result in
-            self.questionSearch.accept(result)
+    func getMyAnsweredQuestions(){
+        questionRepo.getMyAnsweredQuestions().subscribe(onSuccess: {[weak self]
+            data in
+            self!.myRelatedQuestions.accept(data)
         }).disposed(by: bag)
     }
-    
+    func getMyHeartedQuestions(){
+        questionRepo.getMyHeartedQuestions().subscribe(onSuccess: {[weak self]
+            data in
+            self!.myRelatedQuestions.accept(data)
+        }).disposed(by: bag)
+    }
     func getQuestionAndAnswersByID(id:Int){
         questionRepo.getQuestionByID(id: id).subscribe(onSuccess: {
             data in
-            self.questionDetail.accept(data)
+            self.myRelatedQuestionDetail.accept(data)
             
         }).disposed(by: bag)
         answerRepo.getAnswersByQuestionID(id: id).subscribe(onSuccess:{
             data in
             self.answerDetail.accept(data)
         })
-    }
-   
-    func postNewQuestion(titleText: String, contentText: String, tag: [String]) {
-        questionRepo.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag)
     }
     
     func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {

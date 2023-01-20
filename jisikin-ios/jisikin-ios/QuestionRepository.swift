@@ -8,6 +8,17 @@
 import Foundation
 import Alamofire
 import RxSwift
+struct MyRelatedQuestionResponse:Codable{
+    var id:Int
+    var title:String
+    var content:String
+    var createdAt:String
+    var modifiedAt:String
+    var close:Bool
+    var username:String
+    var photos:[String]
+    
+}
 struct QuestionSearchAPI:Codable{
     var questionId:Int
     var title:String
@@ -15,7 +26,6 @@ struct QuestionSearchAPI:Codable{
     var answerContent:String?
     var answerCount:Int
     var questionLikeCount:Int
-    
 }
 struct QuestionDetailAPI:Codable{
     var id:Int
@@ -27,7 +37,7 @@ struct QuestionDetailAPI:Codable{
     var photos: [String]
     var answerNumber: Int
     var createdAt: String
-     var  modifiedAt: String
+    var modifiedAt: String
     var close: Bool
     var closedAt: String?
     var userQuestionLikeNumber:Int
@@ -141,6 +151,63 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
+    func getMyQuestions()->Single<[MyRelatedQuestionResponse]>{
+        let fullURL = URL(string: baseURL + "/api/user/myQuestions")
+//        let header: HTTPHeaders = [
+//            "Content-Type": "application/json",
+//            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
+//        ]
+        return Single<[MyRelatedQuestionResponse]>.create{
+            single in
+            AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[MyRelatedQuestionResponse].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    print(data)
+                    single(.success(data))
+                case .failure(let error):
+                    print(error)
+                    single(.failure(error))
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    func getMyAnsweredQuestions()->Single<[MyRelatedQuestionResponse]>{
+        let fullURL = URL(string: baseURL + "/api/user/myAnswers/")
+        return Single<[MyRelatedQuestionResponse]>.create{
+            single in
+            AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    func getMyHeartedQuestions()->Single<[MyRelatedQuestionResponse]>{
+        let fullURL = URL(string: baseURL + "/api/questionLike")
+        return Single<[MyRelatedQuestionResponse]>.create{
+            single in
+            AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    single(.success(data))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    
     func deleteQuestion(id:Int)->Single<String>{
         let fullURL = URL(string:baseURL + "/api/question/\(id)")
         return Single<String>.create{
