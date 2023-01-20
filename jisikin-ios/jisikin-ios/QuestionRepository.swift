@@ -46,13 +46,60 @@ final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
     
-    func postNewQuestion(titleText: String, contentText: String, tag: [String]) {
+    private func postImage(photos: [UIImage]) -> [String] {
+        let fullURL = URL(string: baseURL + "/api/photo")
+        
+        let header: HTTPHeaders = [
+            "Content-Type": "multipart/form-data",
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
+            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
+        ]
+        
+        if photos.count == 0 {
+            return []
+        }
+        
+        var strImage: [String] = []
+        
+        for image in photos {
+            let queryString: Parameters = [
+                "image": image.jpegData(compressionQuality: 1)
+            ]
+            
+            AF.upload(multipartFormData: { multipartFormData in
+                for (key, value) in queryString {
+                    let uuidName = UUID().uuidString
+                    multipartFormData.append(value as! Data, withName: "\(key)", fileName: "\(uuidName).jpg", mimeType: "image/jpeg")
+                }
+                
+            }, to: fullURL!, usingThreshold: UInt64.init(), method: .post, headers: header).responseString { response in
+                switch(response.result) {
+                case .success(let data):
+                    print("이미지 성공")
+                    print(data)
+                    strImage.append(data)
+                    break
+                case .failure(let error):
+                    print("이미지 실패")
+                    print(error.localizedDescription)
+                    break
+                }
+            }
+        }
+        
+        return strImage
+    }
+    
+    func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         let fullURL = URL(string: baseURL + "/api/question/")
+        
+        let strImage: [String] = postImage(photos: photos)
         
         let queryString: Parameters = [
             "title": titleText,
             "content": contentText,
-            "tag": tag
+            "tag": tag,
+            "photos": strImage
         ]
         
         let header: HTTPHeaders = [
@@ -75,7 +122,6 @@ final class QuestionRepository{
             }
         }
     }
-    
     
     func getQuestionsByDate()->Single<[QuestionSearchAPI]>{
         let fullURL = URL(string: baseURL + "/api/question/search")
@@ -103,6 +149,7 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
+
     func getQuestionsByLikes()->Single<[QuestionSearchAPI]>{
         let fullURL = URL(string: baseURL + "/api/question/search")
         let parameters = [

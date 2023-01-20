@@ -170,7 +170,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
         imageView.contentMode = .scaleAspectFit
         let image = UIImage(named: "QuestionLogo")
         imageView.image = image
@@ -260,7 +260,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         } else {
             guard let titleText = titleField.text else { return }
             guard let contentText = contentView.text else { return }
-            viewModel.postNewQuestion(titleText: titleText, contentText: contentText, tag: self.tags)
+            viewModel.postNewQuestion(titleText: titleText, contentText: contentText, tag: self.tags, photos: self.photos)
         }
         
         view.endEditing(true)

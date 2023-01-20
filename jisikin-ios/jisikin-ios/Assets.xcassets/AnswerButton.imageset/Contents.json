@@ -1,16 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "a답변하기배경.png",
+      "filename" : "answerBtn.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "a답변하기배경 1.png",
+      "filename" : "answerBtn 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "answerBtn 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
