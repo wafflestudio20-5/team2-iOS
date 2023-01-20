@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Photos
+import BSImagePicker
 
 extension UIButton {
 
@@ -39,13 +41,31 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     var tags: [String] = []
     
-    var collectionView: UICollectionView = {
+    var photos: [UIImage] = []
+    
+    var cnt: Int = 0
+    
+    var tagCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 13
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .white
         collectionView.register(tagViewCell.self, forCellWithReuseIdentifier: "tagViewCell")
+        collectionView.isScrollEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.contentInset = .zero
+        
+        return collectionView
+    }()
+    
+    var imageCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 2
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
+        collectionView.register(ImageViewCell.self, forCellWithReuseIdentifier: "ImageViewCell")
         collectionView.isScrollEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInset = .zero
@@ -108,7 +128,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     let textViewPlaceHolder = "무엇이 궁금한가요?"
     
     lazy var accessoryView: UIView = {
-        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 100))
+        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 300))
     }()
     
     lazy var contentView: UITextView = {
@@ -126,9 +146,17 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationBar()
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        tagCollectionView.dataSource = self
+        tagCollectionView.delegate = self
+        imageCollectionView.dataSource = self
+        imageCollectionView.delegate = self
         setLayout()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.titleField.resignFirstResponder()
+        self.contentView.becomeFirstResponder()
     }
     
     private func setNavigationBar() {
@@ -142,8 +170,13 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
+        imageView.contentMode = .scaleAspectFit
+        let image = UIImage(named: "QuestionLogo")
+        imageView.image = image
+        navigationItem.titleView = imageView
+        
         navigationController?.isNavigationBarHidden = false
-        navigationController?.navigationBar.topItem?.title = "질문하기"
         navigationController?.navigationBar.topItem?.leftBarButtonItem = leftButton
         navigationController?.navigationBar.topItem?.rightBarButtonItem = rightButton
     }
@@ -154,8 +187,9 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         view.addSubview(contentView)
         accessoryView.addSubview(plusImageButton)
         accessoryView.addSubview(lineView)
-        accessoryView.addSubview(collectionView)
+        accessoryView.addSubview(tagCollectionView)
         accessoryView.addSubview(addTagButton)
+        accessoryView.addSubview(imageCollectionView)
         
         guard let lineSuperView = lineView.superview else { return }
         
@@ -165,7 +199,8 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         plusImageButton.translatesAutoresizingMaskIntoConstraints = false
         addTagButton.translatesAutoresizingMaskIntoConstraints = false
         lineView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        tagCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        imageCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10.0),
@@ -193,15 +228,19 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
             lineView.heightAnchor.constraint(equalToConstant: 1),
             lineView.centerXAnchor.constraint(equalTo: lineSuperView.centerXAnchor),
             
-            collectionView.leftAnchor.constraint(equalTo: addTagButton.rightAnchor, constant: 10),
-            collectionView.rightAnchor.constraint(equalTo: lineSuperView.rightAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: plusImageButton.topAnchor, constant: -10),
-            collectionView.heightAnchor.constraint(equalToConstant: 22),
+            tagCollectionView.leftAnchor.constraint(equalTo: addTagButton.rightAnchor, constant: 10),
+            tagCollectionView.rightAnchor.constraint(equalTo: lineSuperView.rightAnchor),
+            tagCollectionView.bottomAnchor.constraint(equalTo: plusImageButton.topAnchor, constant: -10),
+            tagCollectionView.heightAnchor.constraint(equalToConstant: 22),
             
             addTagButton.heightAnchor.constraint(equalToConstant: 20),
             addTagButton.leftAnchor.constraint(equalTo: lineSuperView.leftAnchor, constant: 10),
             addTagButton.widthAnchor.constraint(equalToConstant: 20),
-            addTagButton.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor)
+            addTagButton.bottomAnchor.constraint(equalTo: tagCollectionView.bottomAnchor),
+            imageCollectionView.leftAnchor.constraint(equalTo: lineSuperView.leftAnchor, constant: 10),
+            imageCollectionView.rightAnchor.constraint(equalTo: lineSuperView.rightAnchor),
+            imageCollectionView.heightAnchor.constraint(equalToConstant: 120),
+            imageCollectionView.bottomAnchor.constraint(equalTo: tagCollectionView.topAnchor, constant: -3)
         ])
     }
     
@@ -221,7 +260,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         } else {
             guard let titleText = titleField.text else { return }
             guard let contentText = contentView.text else { return }
-            viewModel.postNewQuestion(titleText: titleText, contentText: contentText)
+            viewModel.postNewQuestion(titleText: titleText, contentText: contentText, tag: self.tags, photos: self.photos)
         }
         
         view.endEditing(true)
@@ -229,7 +268,23 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc private func plusImage(_ sender: Any) {
+        let alert = UIAlertController(title: nil, message: "이미지 삽입", preferredStyle: .actionSheet)
         
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let album = UIAlertAction(title: "사진 보관함", style: .default) {
+            [weak self] (_) in
+            self?.presentAlbum()
+        }
+        let camera = UIAlertAction(title: "사진 찍기", style: .default) {
+            [weak self] (_) in
+            self?.presentCamera()
+        }
+        
+        alert.addAction(cancel)
+        alert.addAction(camera)
+        alert.addAction(album)
+        
+        present(alert, animated: true, completion: nil)
     }
     
     @objc private func leftButton(_ sender: Any) {
@@ -256,10 +311,9 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
                 return
             }
             
-            // 텍스트 내용 전달해서 cell의 label의 텍스트 바꾸기
             guard let tag = controller.textFields?.first!.text else { return }
             self.tags.append(tag)
-            self.collectionView.reloadData()
+            self.tagCollectionView.reloadData()
         }
         
         let cancelAction = UIAlertAction(title: "취소", style: .default)
@@ -271,37 +325,136 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     }
 }
 
+extension QuestionViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    func presentCamera() {
+        let vc = UIImagePickerController()
+        vc.sourceType = .camera
+        vc.delegate = self
+        vc.allowsEditing = true
+        
+        present(vc, animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if cnt % 2 == 0 {
+            if let image = info[.editedImage] as? UIImage {
+                self.photos.append(image)
+            }
+        }
+        else {
+            if let image = info[.originalImage] as? UIImage {
+                self.photos.append(image)
+            }
+        }
+        
+        cnt += 1
+        self.imageCollectionView.reloadData()
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func presentAlbum() {
+        let imagePicker = ImagePickerController()
+        
+        imagePicker.modalPresentationStyle = .fullScreen
+        imagePicker.settings.selection.max = 20
+        imagePicker.settings.theme.backgroundColor = .white
+        imagePicker.settings.theme.selectionStyle = .numbered
+        imagePicker.settings.fetch.assets.supportedMediaTypes = [.image]
+        imagePicker.settings.theme.selectionFillColor = BLUE_COLOR
+        imagePicker.settings.theme.selectionStrokeColor = .white
+        imagePicker.doneButton.image = UIImage(systemName: "arrow.right")
+        imagePicker.doneButton.tintColor = BLUE_COLOR
+        imagePicker.cancelButton.image = UIImage(systemName: "xmark")
+        imagePicker.cancelButton.tintColor = BLUE_COLOR
+        
+        self.presentImagePicker(imagePicker, select: { (asset) in
+            
+        }, deselect: { (asset) in
+            
+        }, cancel: { (assets) in
+            
+        }, finish: { (assets) in
+            for i in 0..<assets.count {
+                let imageManager = PHImageManager.default()
+                let option = PHImageRequestOptions()
+                option.isSynchronous = true
+                
+                var thumnail = UIImage()
+                
+                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: option) { (result, info) in
+                thumnail = result!
+                }
+                
+                let data = thumnail.jpegData(compressionQuality: 0.7)
+                self.photos.append(UIImage(data: data!)! as UIImage)
+                self.imageCollectionView.reloadData()
+            }
+        })
+    }
+}
+
 extension QuestionViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: tagViewCell.identifier, for: indexPath) as? tagViewCell else {
-            return UICollectionViewCell()
+        if collectionView == tagCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: tagViewCell.identifier, for: indexPath) as? tagViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.tagLabel.text = "#" + self.tags[indexPath.row]
+            cell.xButton.tag = indexPath.row
+            cell.xButton.addTarget(self, action: #selector(xButtonPressed(sender:)), for: .touchUpInside)
+            
+            return cell
         }
-        cell.tagLabel.text = "#" + self.tags[indexPath.row]
-        cell.xButton.tag = indexPath.row
-        cell.xButton.addTarget(self, action: #selector(xButtonPressed(sender:)), for: .touchUpInside)
-        
-        return cell
+        else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageViewCell.identifier, for: indexPath) as? ImageViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.imageView.image = self.photos[indexPath.row]
+            cell.xButton.tag = indexPath.row
+            cell.xButton.addTarget(self, action: #selector(xButtonImagePressed(sender:)), for: .touchUpInside)
+            
+            return cell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.tags.count
+        if collectionView == tagCollectionView {
+            return self.tags.count
+        }
+        else {
+            return self.photos.count
+        }
     }
     
     @objc private func xButtonPressed(sender: UIButton) {
-        collectionView.deleteItems(at: [IndexPath.init(row: sender.tag, section: 0)])
+        tagCollectionView.deleteItems(at: [IndexPath.init(row: sender.tag, section: 0)])
         tags.remove(at: sender.tag)
+    }
+    
+    @objc private func xButtonImagePressed(sender: UIButton) {
+        imageCollectionView.deleteItems(at: [IndexPath.init(row: sender.tag, section: 0)])
+        photos.remove(at: sender.tag)
     }
 }
 
 extension QuestionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let label = UILabel()
-        label.text = "#" + self.tags[indexPath.row]
-        label.font = .systemFont(ofSize: 18)
-        label.sizeToFit()
-        let cellWidth = label.frame.width + 22
-        
-        return CGSize(width: cellWidth, height: 22)
+        if collectionView == tagCollectionView {
+            let label = UILabel()
+            label.text = "#" + self.tags[indexPath.row]
+            label.font = .systemFont(ofSize: 18)
+            label.sizeToFit()
+            let cellWidth = label.frame.width + 22
+            
+            return CGSize(width: cellWidth, height: 22)
+        }
+        else {
+            return CGSize(width: 110, height: 110)
+        }
     }
 }
 

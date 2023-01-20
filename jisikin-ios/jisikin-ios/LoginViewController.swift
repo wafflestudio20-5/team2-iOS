@@ -153,20 +153,13 @@ class LoginViewController: UIViewController {
                     
                     self.usernameCriteriaLabel.text = ""
                     self.passwordCriteriaLabel.text = ""
-                    let loginAlert = UIAlertController(title: nil, message: "로그인 성공", preferredStyle: .alert)
-                    let loginAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: {
-                        loginAction in
-                        if self.onLogin != nil{
-                            self.onLogin!()
-                        }
-                        else{
-                            self.navigationController?.popViewController(animated: true)
-                        }
-                    })
-                    
-                    loginAlert.addAction(loginAction)
-                    
-                    self.present(loginAlert, animated: false)
+                
+                    if self.onLogin != nil{
+                        self.onLogin!()
+                    }
+                    else{
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
             })
         }
@@ -186,14 +179,12 @@ class LoginViewController: UIViewController {
             if(completionHandler == "success"){
                 UserDefaults.standard.set(true, forKey: "isLogin")
                 
-                let loginAlert = UIAlertController(title: nil, message: "로그인 성공", preferredStyle: .alert)
-                let loginAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default, handler: { loginAction in
+                if self.onLogin != nil{
+                    self.onLogin!()
+                }
+                else{
                     self.navigationController?.popViewController(animated: true)
-                })
-                
-                loginAlert.addAction(loginAction)
-                
-                self.present(loginAlert, animated: false)
+                }
             }
             
             else {

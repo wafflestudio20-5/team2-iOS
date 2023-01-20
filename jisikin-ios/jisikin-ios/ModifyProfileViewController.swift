@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ModifyProfileViewController: UIViewController {
+class ModifyProfileViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     
     lazy var backBtn: UIBarButtonItem = {
         let btn = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(onTapModifyCancelBtn))
@@ -25,22 +25,19 @@ class ModifyProfileViewController: UIViewController {
     let modifyCancelBtn = UILabel()
     let modifySaveBtn = UILabel()
     
+    let viewModel = ProfileViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
-        // navigationController?.navigationBar.isHidden = false
-        //navigationItem.leftItemsSupplementBackButton = false
         navigationItem.title = "프로필 수정"
         navigationItem.rightBarButtonItem = backBtn
-        //navigationController?.navigationBar.leftBarButtonItem = nil
-        //navigationController?.navigationBar.rightBarButtonItem = backBtn
         navigationItem.hidesBackButton = true
         
         profilePhotoLabel.text = "프로필 사진"
         
         let profilePhotoSize = CGFloat(45)
-//        profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
         profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
         profilePhotoView.backgroundColor = .systemGray
         profilePhotoView.layer.cornerRadius = profilePhotoSize
@@ -61,8 +58,10 @@ class ModifyProfileViewController: UIViewController {
         nickNameLabel.text = "닉네임"
         modifyNickNameField.backgroundColor = .lightGray
         modifyNickNameField.textColor = .white
+        modifyNickNameField.text = UserDefaults.standard.string(forKey: "username")
         
         genderLabel.text = "성별"
+        //genderSegment
         
         
         modifyCancelBtn.text = "취소하기"
@@ -145,9 +144,56 @@ class ModifyProfileViewController: UIViewController {
         ])
         // Do any additional setup after loading the view.
     }
+    func presentCamera(){
+            
+            let vc = UIImagePickerController()
+            vc.sourceType = .camera
+            vc.delegate = self
+            vc.allowsEditing = true
+            vc.cameraFlashMode = .on
+            
+            present(vc, animated: true, completion: nil)
+        }
+        
+        func presentAlbum(){
+            
+            
+            let vc = UIImagePickerController()
+            vc.sourceType = .photoLibrary
+            vc.delegate = self
+            vc.allowsEditing = true
+            
+            present(vc, animated: true, completion: nil)
+        }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            dismiss(animated: true, completion: nil)
+        }
+    //카메라나 앨범등 PickerController가 사용되고 이미지 촬영을 했을 때 발동 된다.
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+  
+            if let image = info[.editedImage] as? UIImage {
+                profilePhotoView.image = image
+            }
+         dismiss(animated: true, completion: nil)
+        
+    }
     @objc
     func onTapModifyProfilePhotoBtn() {
+        let alert = UIAlertController(title: "선택", message: "이미지를 추가할 방식을 선택하세요", preferredStyle: .actionSheet)
+            
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let camera = UIAlertAction(title: "카메라", style: .default) { [weak self] (_) in
+            self?.presentCamera()
+        }
+        let album = UIAlertAction(title: "앨범", style: .default) { [weak self] (_) in
+            self?.presentAlbum()
+        }
         
+        alert.addAction(cancel)
+        alert.addAction(camera)
+        alert.addAction(album)
+        
+        present(alert, animated: true, completion: nil)
     }
     @objc
     func onTapModifyCancelBtn() {
@@ -155,6 +201,13 @@ class ModifyProfileViewController: UIViewController {
     }
     @objc
     func onTapModifySaveBtn() {
+        if genderSegment.selectedSegmentIndex == 0{
+            viewModel.modifyProfile(profileImage: UIImage(), username: modifyNickNameField.text!, isMale: true)
+        }
+        else{
+            viewModel.modifyProfile(profileImage: UIImage(), username: modifyNickNameField.text!, isMale: false)
+        }
+        
         self.navigationController?.popViewController(animated: true)
     }
 

@@ -9,13 +9,15 @@ import Foundation
 import RxSwift
 import RxCocoa
 struct QuestionListModel{
+    var questionId:Int
     var title:String
     var content:String
-    var answerNumber:Int?
-    var createdAt:String
-    var id:Int
-    static func fromQuestionAPI(questionAPI:QuestionAPI)->QuestionListModel{
-        return QuestionListModel(title:questionAPI.title,content:questionAPI.content,answerNumber:nil, createdAt: convertTimeFormat(time: questionAPI.createdAt),id:questionAPI.id)
+    var answerContent:String?
+    var answerCount:Int
+    var questionLikeCount:Int
+    
+    static func fromQuestionAPI(questionAPI:QuestionSearchAPI)->QuestionListModel{
+        return QuestionListModel(questionId: questionAPI.questionId, title: questionAPI.title, content: questionAPI.content, answerContent: questionAPI.answerContent, answerCount: questionAPI.answerCount, questionLikeCount: questionAPI.questionLikeCount)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
@@ -33,36 +35,25 @@ class QuestionListViewModel{
     var questions = BehaviorRelay<[QuestionListModel]>(value:[])
     init(usecase:QuestionAnswerUsecase){
         self.usecase = usecase
-        usecase.questions.asObservable().subscribe(onNext: {[weak self]
-            data in
-            if self == nil{return}
-            self!.questions.accept(data.map{ questionAPI in
-                var question = QuestionListModel.fromQuestionAPI(questionAPI: questionAPI)
-                question.answerNumber = usecase.answersByQuestionID.value[question.id]?.count
-                return question
-                
+        usecase.questionSearch.asObservable().subscribe(onNext:{
+            questions in
+            self.questions.accept(questions.map{
+                QuestionListModel.fromQuestionAPI(questionAPI: $0)
             })
-        }).disposed(by: bag)
-        usecase.answersByQuestionID.asObservable().subscribe(onNext:{[weak self]
-            data in
-            if self == nil{return}
-            var value = self!.questions.value
-            if value.count == 0{
-                return
-            }
-            for i in 0...value.count-1{
-                value[i].answerNumber = data[value[i].id]?.count
-            }
-            self!.questions.accept(value)
-            
         })
         }
-    func getQuestions(){
-        usecase.getQuestionsAndAnswers()
+    func getQuestionsByLikes(){
+        usecase.getQuestionsByLikes()
     }
+
+    func getQuestionsByDate(){
+        usecase.getQuestionsByDate()
+    }
+
     
-    func postNewQuestion(titleText: String, contentText: String) {
-        usecase.postNewQuestion(titleText: titleText, contentText: contentText)
+    func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
+        //let urlPhotos: [String] = UIImageToURL(photos: photos)
+        usecase.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag, photos: photos)
     }
     
     func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {

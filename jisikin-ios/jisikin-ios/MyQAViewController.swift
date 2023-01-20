@@ -6,15 +6,36 @@
 //
 
 import UIKit
+import RxSwift
 
-class MyQAViewController: UIViewController {
-    let segmentedControl = PlainSegmentedControl(items: ["질문", "답변"])
+class MyQAViewController: UIViewController{
+    var bag = DisposeBag()
+    var segmentedControl: PlainSegmentedControl!
+    var questionTable:UITableView!
+    var viewModel = MyRelatedQuestionListViewModel(usecase:MyRelatedQuestionUsecase())
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        
+        self.questionTable.deselectSelectedRow(animated: false)
+        if let segmentedControl{
+            if segmentedControl.selectedSegmentIndex == 0{
+                viewModel.getMyQuestions()
+            }
+            else{
+                viewModel.getMyAnsweredQuestions()
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
         navigationItem.title = "나의 Q&A"
+        
+        segmentedControl = PlainSegmentedControl(items: ["질문", "답변"])
         
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.addTarget(self, action: #selector(indexChanged(_:)), for: .valueChanged)
@@ -35,23 +56,53 @@ class MyQAViewController: UIViewController {
           )
         segmentedControl.backgroundColor = .systemGray6
         
+        questionTable = UITableView()
+        questionTable.delegate = self
+        
+        questionTable.separatorStyle = UITableViewCell.SeparatorStyle.none
+        questionTable.register(MyRelatedQuestionTableViewCell.self,forCellReuseIdentifier: MyRelatedQuestionTableViewCell.ID)
+        questionTable.refreshControl = UIRefreshControl()
+        questionTable.refreshControl?.addTarget(self, action: #selector(onQuestionRefresh), for: .valueChanged)
+        
+        viewModel.questions.asObservable().bind(to:questionTable.rx.items(cellIdentifier: MyRelatedQuestionTableViewCell.ID)){index,model,cell in
+            (cell as! MyRelatedQuestionTableViewCell).configure(question:model)
+            //self.questionTable?.refreshControl?.endRefreshing()
+        }.disposed(by: bag)
+        viewModel.getMyQuestions()
+        
         view.addSubview(segmentedControl)
+        view.addSubview(questionTable)
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        questionTable.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             segmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),//80
             segmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),//-80
             segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             segmentedControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),//30
+            
+            questionTable.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor),
+            questionTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            questionTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+            questionTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
         ])
         // Do any additional setup after loading the view.
     }
     @objc func indexChanged(_ sender: UISegmentedControl) {
         if (sender.selectedSegmentIndex == 0){
-            
+            viewModel.getMyQuestions()
         }
         else if (sender.selectedSegmentIndex == 1){
-            
+            viewModel.getMyAnsweredQuestions()
         }
+    }
+    @objc func onQuestionRefresh(){
+        if segmentedControl.selectedSegmentIndex == 0{
+            viewModel.getMyQuestions()
+        }
+        else{
+            viewModel.getMyAnsweredQuestions()
+        }
+        self.questionTable?.refreshControl?.endRefreshing()
     }
     
 
@@ -65,4 +116,10 @@ class MyQAViewController: UIViewController {
     }
     */
 
+}
+extension MyQAViewController:UITableViewDelegate{
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(viewModel.questions.value[indexPath.row].id)
+        navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: QuestionAnswerUsecase(), questionID: viewModel.questions.value[indexPath.row].id)), animated: true)
+    }
 }

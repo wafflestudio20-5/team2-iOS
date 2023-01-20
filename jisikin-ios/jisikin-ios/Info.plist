@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>앨범 접근 권한을 허용해주세요</string>
+	<key>NSCameraUsageDescription</key>
+	<string>카메라 접근 권한을 허용해주세요</string>
+
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>
@@ -9,10 +15,7 @@
 		<key>UIImageName</key>
 		<string>TextLogoInverted</string>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>To take a photo and add it to your post, usage of the device camera is required.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To add a photo from your device to your post, usage of the photo library is required.</string>
+
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -33,6 +36,8 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
+		<key>NSAllowsArbitraryLoadsUsageDescription</key>
+		<dict/>
 	</dict>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

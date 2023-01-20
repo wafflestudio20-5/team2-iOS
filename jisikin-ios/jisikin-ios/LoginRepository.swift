@@ -287,7 +287,7 @@ final class LoginRepository {
             "accessToken": accessToken,
             "refreshToken": refreshToken
         ]
-        
+        print(parameters)
         AF.request(fullURL!,
                    method: .post,
                    parameters: parameters,
@@ -303,7 +303,7 @@ final class LoginRepository {
                     let asJSON = try JSONSerialization.jsonObject(with: data)
                     
                     let JSON = JSON(data)
-                    
+                    print(JSON)
                     UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
                     UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
                     
