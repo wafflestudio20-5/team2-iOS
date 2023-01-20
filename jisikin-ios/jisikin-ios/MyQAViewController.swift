@@ -42,7 +42,7 @@ class MyQAViewController: UIViewController{
         segmentedControl.backgroundColor = .systemGray6
         
         questionTable = UITableView()
-        questionTable.delegate = self
+//        questionTable.delegate = self
         
         questionTable.separatorStyle = UITableViewCell.SeparatorStyle.none
         questionTable.register(QuestionTableViewCell.self,forCellReuseIdentifier: QuestionTableViewCell.ID)
@@ -104,6 +104,6 @@ class MyQAViewController: UIViewController{
 }
 extension MyQAViewController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: viewModel.questions.value[indexPath.row].id)), animated: true)
+        navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: viewModel.questions.value[indexPath.row].questionId)), animated: true)
     }
 }

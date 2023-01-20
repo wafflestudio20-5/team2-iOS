@@ -27,7 +27,7 @@ struct QuestionDetailAPI:Codable{
     var photos: [String]
     var answerNumber: Int
     var createdAt: String
-     var  modifiedAt: String
+    var modifiedAt: String
     var close: Bool
     var closedAt: String?
     var userQuestionLikeNumber:Int
@@ -140,15 +140,15 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
-    func getMyQuestions()->Single<[QuestionAPI]>{
+    func getMyQuestions()->Single<[QuestionSearchAPI]>{
         let fullURL = URL(string: baseURL + "/api/user/myQuestions")
         let header: HTTPHeaders = [
             "Content-Type": "application/json",
             "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
         ]
-        return Single<[QuestionAPI]>.create{
+        return Single<[QuestionSearchAPI]>.create{
             single in
-            AF.request(fullURL!,method:.get, headers: header).responseDecodable(of:[QuestionAPI].self){
+            AF.request(fullURL!,method:.get, headers: header).responseDecodable(of:[QuestionSearchAPI].self){
                 response in
                 switch(response.result){
                 case .success(let data):
@@ -161,15 +161,15 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
-    func getMyAnsweredQuestions()->Single<[QuestionAPI]>{
+    func getMyAnsweredQuestions()->Single<[QuestionSearchAPI]>{
         let fullURL = URL(string: baseURL + "/api/user/myAnswers/")
         let header: HTTPHeaders = [
             "Content-Type": "application/json",
             "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
         ]
-        return Single<[QuestionAPI]>.create{
+        return Single<[QuestionSearchAPI]>.create{
             single in
-            AF.request(fullURL!,method:.get, headers: header).responseDecodable(of:[QuestionAPI].self){
+            AF.request(fullURL!,method:.get, headers: header).responseDecodable(of:[QuestionSearchAPI].self){
                 response in
                 switch(response.result){
                 case .success(let data):
