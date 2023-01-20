@@ -45,9 +45,15 @@ class QuestionListViewModel{
     func getQuestions(){
         usecase.getQuestionsByLikes()
     }
+    /*
+    private func UIImageToURL(photos: [UIImage]) -> [String] {
+        let urlPhotos
+    }
+     */
     
-    func postNewQuestion(titleText: String, contentText: String, tag: [String]) {
-        usecase.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag)
+    func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
+        //let urlPhotos: [String] = UIImageToURL(photos: photos)
+        usecase.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag, photos: photos)
     }
     
     func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {

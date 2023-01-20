@@ -36,7 +36,7 @@ final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
     
-    func postNewQuestion(titleText: String, contentText: String, tag: [String]) {
+    func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         let fullURL = URL(string: baseURL + "/api/question/")
         
         let queryString: Parameters = [
@@ -50,7 +50,7 @@ final class QuestionRepository{
             "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
             "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
         ]
-        
+        /*
         AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
             response in
             switch(response.result) {
@@ -63,7 +63,19 @@ final class QuestionRepository{
                 print(error.localizedDescription)
                 break
             }
-        }
+        }*/
+        
+        AF.upload(multipartFormData: { multipartFormData in
+            for (key, value) in queryString {
+                multipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
+            }
+            for image in photos {
+                if let urlImage = image.jpegData(compressionQuality: 1) {
+                    multipartFormData.append(urlImage, withName: "image", fileName: "\(image).jpg", mimeType: "image/jpg")
+                }
+            }
+            
+        }, to: fullURL!, usingThreshold: UInt64.init(), method: .post, headers: header)
     }
     
     

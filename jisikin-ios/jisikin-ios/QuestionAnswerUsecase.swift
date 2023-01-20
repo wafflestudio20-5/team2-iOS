@@ -34,8 +34,8 @@ class QuestionAnswerUsecase{
         })
     }
    
-    func postNewQuestion(titleText: String, contentText: String, tag: [String]) {
-        questionRepo.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag)
+    func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
+        questionRepo.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag, photos: photos)
     }
     
     func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {
