@@ -36,12 +36,13 @@ final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
     
-    func postNewQuestion(titleText: String, contentText: String) {
+    func postNewQuestion(titleText: String, contentText: String, tag: [String]) {
         let fullURL = URL(string: baseURL + "/api/question/")
         
         let queryString: Parameters = [
             "title": titleText,
-            "content": contentText
+            "content": contentText,
+            "tag": tag
         ]
         
         let header: HTTPHeaders = [

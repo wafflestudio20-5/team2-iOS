@@ -49,8 +49,8 @@ class QuestionListViewModel{
         usecase.getQuestionsByDate()
     }
     
-    func postNewQuestion(titleText: String, contentText: String) {
-        usecase.postNewQuestion(titleText: titleText, contentText: contentText)
+    func postNewQuestion(titleText: String, contentText: String, tag: [String]) {
+        usecase.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag)
     }
     
     func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {
