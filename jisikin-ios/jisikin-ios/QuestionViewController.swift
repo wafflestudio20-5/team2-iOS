@@ -170,7 +170,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
         imageView.contentMode = .scaleAspectFit
         let image = UIImage(named: "QuestionLogo")
         imageView.image = image

@@ -36,13 +36,60 @@ final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
     
+    private func postImage(photos: [UIImage]) -> [String] {
+        let fullURL = URL(string: baseURL + "/api/photo")
+        
+        let header: HTTPHeaders = [
+            "Content-Type": "multipart/form-data",
+            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
+            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
+        ]
+        
+        if photos.count == 0 {
+            return []
+        }
+        
+        var strImage: [String] = []
+        
+        for image in photos {
+            let queryString: Parameters = [
+                "image": image.jpegData(compressionQuality: 1)
+            ]
+            
+            AF.upload(multipartFormData: { multipartFormData in
+                for (key, value) in queryString {
+                    let uuidName = UUID().uuidString
+                    multipartFormData.append(value as! Data, withName: "\(key)", fileName: "\(uuidName).jpg", mimeType: "image/jpeg")
+                }
+                
+            }, to: fullURL!, usingThreshold: UInt64.init(), method: .post, headers: header).responseString { response in
+                switch(response.result) {
+                case .success(let data):
+                    print("이미지 성공")
+                    print(data)
+                    strImage.append(data)
+                    break
+                case .failure(let error):
+                    print("이미지 실패")
+                    print(error.localizedDescription)
+                    break
+                }
+            }
+        }
+        
+        return strImage
+    }
+    
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         let fullURL = URL(string: baseURL + "/api/question/")
+        
+        let strImage: [String] = postImage(photos: photos)
         
         let queryString: Parameters = [
             "title": titleText,
             "content": contentText,
-            "tag": tag
+            "tag": tag,
+            "photos": strImage
         ]
         
         let header: HTTPHeaders = [
@@ -50,7 +97,7 @@ final class QuestionRepository{
             "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
             "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
         ]
-        /*
+        
         AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
             response in
             switch(response.result) {
@@ -63,23 +110,9 @@ final class QuestionRepository{
                 print(error.localizedDescription)
                 break
             }
-        }*/
-        
-        AF.upload(multipartFormData: { multipartFormData in
-            for (key, value) in queryString {
-                multipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
-            }
-            for image in photos {
-                if let urlImage = image.jpegData(compressionQuality: 1) {
-                    multipartFormData.append(urlImage, withName: "image", fileName: "\(image).jpg", mimeType: "image/jpg")
-                }
-            }
-            
-        }, to: fullURL!, usingThreshold: UInt64.init(), method: .post, headers: header)
+        }
     }
     
-    
-  
     func getQuestionsByLikes()->Single<[QuestionSearchAPI]>{
         let fullURL = URL(string: baseURL + "/api/question/search")
         
