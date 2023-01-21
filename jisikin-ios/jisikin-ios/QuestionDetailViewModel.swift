@@ -41,10 +41,11 @@ struct QuestionDetailModel{
     var username:String
     var close:Bool
     var likeNumber:Int
+    var tag:[String]
     static func fromQuestionAPI(questionAPI:QuestionDetailAPI?)->QuestionDetailModel?{
        
         if let questionAPI = questionAPI{
-            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content,photos:questionAPI.photos, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username,close:questionAPI.close,likeNumber: questionAPI.userQuestionLikeNumber)
+            return QuestionDetailModel(title: questionAPI.title, content: questionAPI.content,photos:questionAPI.photos, createdAt:convertTimeFormat(time: questionAPI.createdAt),username:questionAPI.username,close:questionAPI.close,likeNumber: questionAPI.userQuestionLikeNumber,tag:questionAPI.tag)
         }
         else{
             return nil
