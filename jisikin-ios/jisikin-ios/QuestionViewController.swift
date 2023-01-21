@@ -111,6 +111,12 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         return view
     }()
     
+    let textViewPlaceHolder = "무엇이 궁금한가요?"
+    
+    lazy var accessoryView: UIView = {
+        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 300))
+    }()
+    
     lazy var titleField: UITextField = {
         let field = UITextField()
         
@@ -121,14 +127,9 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         field.backgroundColor = UIColor.white
         field.delegate = self
         field.becomeFirstResponder()
+        field.inputAccessoryView = accessoryView
         
         return field
-    }()
-    
-    let textViewPlaceHolder = "무엇이 궁금한가요?"
-    
-    lazy var accessoryView: UIView = {
-        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 300))
     }()
     
     lazy var contentView: UITextView = {

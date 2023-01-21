@@ -41,20 +41,12 @@ final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
     
-    private func postImage(photos: [UIImage]) -> [String] {
-        let fullURL = URL(string: baseURL + "/api/photo")
+    func postImage(photos: [UIImage], completionhandler: @escaping ([String]) -> Void) {
+        var strImages: [String] = []
         
-        let header: HTTPHeaders = [
-            "Content-Type": "multipart/form-data",
-            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
-            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
-        ]
+        let fullURL2 = URL(string: baseURL + "/api/photo")
         
-        if photos.count == 0 {
-            return []
-        }
-        
-        var strImage: [String] = []
+        var i: Int = 0
         
         for image in photos {
             let queryString: Parameters = [
@@ -67,53 +59,54 @@ final class QuestionRepository{
                     multipartFormData.append(value as! Data, withName: "\(key)", fileName: "\(uuidName).jpg", mimeType: "image/jpeg")
                 }
                 
-            }, to: fullURL!, usingThreshold: UInt64.init(), method: .post, headers: header).responseString { response in
+            }, to: fullURL2!, usingThreshold: UInt64.init(), method: .post, interceptor:JWTInterceptor()).responseString { response in
                 switch(response.result) {
                 case .success(let data):
                     print("이미지 성공")
                     print(data)
-                    strImage.append(data)
-                    break
+                    strImages.append(data)
+                    i += 1
+                    print("i = " + "\(i)")
+                    print("photos.count = " + "\(photos.count)")
+                    if i == photos.count {
+                        print("completionhandler")
+                        completionhandler(strImages)
+                    }
                 case .failure(let error):
                     print("이미지 실패")
                     print(error.localizedDescription)
-                    break
                 }
             }
+            
         }
-        
-        return strImage
     }
     
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         let fullURL = URL(string: baseURL + "/api/question/")
-        
-        let strImage: [String] = postImage(photos: photos)
-        
-        let queryString: Parameters = [
-            "title": titleText,
-            "content": contentText,
-            "tag": tag,
-            "photos": strImage
-        ]
-        
-        let header: HTTPHeaders = [
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
-            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
-        ]
-        
-        AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
-            response in
-            switch(response.result) {
-            case .success(let data):
-                print("성공")
-                print(String(data: data, encoding: .utf8)!)
-                break
-            case .failure(let error):
-                print("실패")
-                print(error.localizedDescription)
-                break
+    
+        postImage(photos: photos) { [weak self] strImages in
+            guard let self = self else { return }
+            print("strImage = " + "\(strImages)")
+            
+            let queryString: Parameters = [
+                "title": titleText,
+                "content": contentText,
+                "tag": tag,
+                "photos": strImages
+            ]
+            
+            AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
+                response in
+                switch(response.result) {
+                case .success(let data):
+                    print("성공")
+                    print(String(data: data, encoding: .utf8)!)
+                    break
+                case .failure(let error):
+                    print("실패")
+                    print(error.localizedDescription)
+                    break
+                }
             }
         }
     }
