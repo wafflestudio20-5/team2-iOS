@@ -46,20 +46,20 @@ final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
     
-    private func postImage(photos: [UIImage]) -> [String] {
-        let fullURL = URL(string: baseURL + "/api/photo")
+    func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
+        let fullURL = URL(string: baseURL + "/api/question/")
+        let fullURL2 = URL(string: baseURL + "/api/photo")
+        let semaphore = DispatchSemaphore(value: 0) // 비동기 작업 동기화 시 필요
         
-        let header: HTTPHeaders = [
+        let header2: HTTPHeaders = [
             "Content-Type": "multipart/form-data",
             "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
             "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
         ]
         
-        if photos.count == 0 {
-            return []
-        }
-        
         var strImage: [String] = []
+        
+        semaphore.wait()
         
         for image in photos {
             let queryString: Parameters = [
@@ -72,28 +72,23 @@ final class QuestionRepository{
                     multipartFormData.append(value as! Data, withName: "\(key)", fileName: "\(uuidName).jpg", mimeType: "image/jpeg")
                 }
                 
-            }, to: fullURL!, usingThreshold: UInt64.init(), method: .post, headers: header).responseString { response in
+            }, to: fullURL2!, usingThreshold: UInt64.init(), method: .post, headers: header2, interceptor:JWTInterceptor()).responseString { response in
                 switch(response.result) {
                 case .success(let data):
                     print("이미지 성공")
                     print(data)
                     strImage.append(data)
-                    break
+                    if image == photos.last {
+                        semaphore.signal()
+                    }
                 case .failure(let error):
                     print("이미지 실패")
                     print(error.localizedDescription)
-                    break
                 }
             }
         }
-        
-        return strImage
-    }
-    
-    func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
-        let fullURL = URL(string: baseURL + "/api/question/")
-        
-        let strImage: [String] = postImage(photos: photos)
+        semaphore.wait()
+        print("strImage = " + "\(strImage)")
         
         let queryString: Parameters = [
             "title": titleText,
