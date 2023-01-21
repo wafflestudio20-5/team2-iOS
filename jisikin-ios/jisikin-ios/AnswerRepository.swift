@@ -117,7 +117,7 @@ class AnswerRepository{
         }
     }
     
-    func postNewAnswer(id: Int, contentText: String, photos: [UIImage]) {
+    func postNewAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
         let fullURL = URL(string: baseURL + "/api/answer/\(id)")
     
         postImage(photos: photos) { [weak self] strImages in
@@ -135,10 +135,12 @@ class AnswerRepository{
                 case .success(let data):
                     print("성공")
                     print(String(data: data, encoding: .utf8)!)
+                    completionhandler("success")
                     break
                 case .failure(let error):
                     print("실패")
                     print(error.localizedDescription)
+                    completionhandler("failure")
                     break
                 }
             }

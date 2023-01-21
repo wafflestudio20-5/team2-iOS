@@ -48,7 +48,9 @@ class MyRelatedQuestionUsecase{
     }
     
     func postNewAnswer(id: Int, contentText: String, photos: [UIImage]) {
-        answerRepo.postNewAnswer(id: id, contentText: contentText, photos: photos)
+        answerRepo.postNewAnswer(id: id, contentText: contentText, photos: photos){
+            _ in
+        }
     }
     func selectAnswer(questionID:Int,answerID:Int)->Single<String>{
         return Single<String>.create{single in
