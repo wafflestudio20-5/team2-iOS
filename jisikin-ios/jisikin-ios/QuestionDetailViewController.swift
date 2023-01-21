@@ -11,6 +11,8 @@ import RxSwift
 import RxCocoa
 import Kingfisher
 class QuestionView:UIView{
+    var tags:[String] = []
+    
     var questionTitleView:UILabel!
     var questionUserInfo:UILabel!
     var questionContentView:UILabel!
@@ -21,6 +23,7 @@ class QuestionView:UIView{
     var likeButton:UIButton!
     var answerButton:UIButton!
     var imageStackView:UIStackView!
+    var tagView:SelfSizingCollectionView!
     var questionImages:[UIImage] = []
     var onAnswerButtonClicked:(()->())?
     var onImageLoaded:(()->())?
@@ -78,8 +81,11 @@ class QuestionView:UIView{
         answerButton.imageView?.contentMode = .scaleAspectFit
         answerButton.backgroundColor = BLUE_COLOR
         
-        
-        
+        let layout = UICollectionViewFlowLayout()
+        tagView = SelfSizingCollectionView(frame: .zero, collectionViewLayout: layout)
+        tagView.dataSource = self
+        tagView.delegate = self
+        tagView.register(DetailTagViewCell.self, forCellWithReuseIdentifier: DetailTagViewCell.identifier)
         imageStackView = UIStackView()
         imageStackView.axis = .vertical
         imageStackView.distribution = .equalSpacing
@@ -97,6 +103,8 @@ class QuestionView:UIView{
         questionDeleteButton.translatesAutoresizingMaskIntoConstraints = false
         answerButton.translatesAutoresizingMaskIntoConstraints = false
         likeNumberView.translatesAutoresizingMaskIntoConstraints = false
+        tagView.translatesAutoresizingMaskIntoConstraints = false
+        
         addSubview(questionTitleView)
         addSubview(questionUserInfo)
         addSubview(questionContentView)
@@ -107,6 +115,7 @@ class QuestionView:UIView{
         addSubview(questionEditButton)
         addSubview(questionDeleteButton)
         addSubview(answerButton)
+        addSubview(tagView)
         
     }
     
@@ -155,7 +164,13 @@ class QuestionView:UIView{
             
         ])
         NSLayoutConstraint.activate([
-          answerButton.topAnchor.constraint(equalTo: questionTimeView.bottomAnchor,constant: 10.0),
+            tagView.topAnchor.constraint(equalTo: questionTimeView.bottomAnchor,constant: 5.0),
+            tagView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
+            tagView.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor),
+       
+        ])
+        NSLayoutConstraint.activate([
+          answerButton.topAnchor.constraint(equalTo: tagView.bottomAnchor,constant: 10.0),
            answerButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
           answerButton.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant:-20.0),
           answerButton.widthAnchor.constraint(equalTo:self.widthAnchor,multiplier: 0.5),
@@ -216,10 +231,46 @@ class QuestionView:UIView{
             questionEditButton.isHidden = true
             questionDeleteButton.isHidden = true
         }
-        
+        tags = question.tag
+        tagView.reloadData()
     }
     
 }
+extension QuestionView:UICollectionViewDataSource{
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print(tags.count)
+        return tags.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailTagViewCell.identifier, for: indexPath) as? DetailTagViewCell else {
+            return UICollectionViewCell()
+        }
+        print("cell")
+        cell.tagLabel.text = "#" + self.tags[indexPath.row]
+        return cell
+    }
+    
+    
+}
+extension QuestionView:UICollectionViewDelegate{
+    
+}
+extension QuestionView:UICollectionViewDelegateFlowLayout{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+      
+            let label = UILabel()
+            label.text = "#" + self.tags[indexPath.row]
+            label.font = .systemFont(ofSize: 18)
+            label.sizeToFit()
+            let cellWidth = label.frame.width
+            print("width")
+            return CGSize(width: cellWidth, height: 22)
+        
+        
+    }
+}
+
 class AnswerProfileView:UIView{
 
     
@@ -569,6 +620,10 @@ class QuestionDetailViewController:UIViewController{
             headerView.translatesAutoresizingMaskIntoConstraints = false
             
         }
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.refresh()
     }
     override func viewDidLoad() {
         
