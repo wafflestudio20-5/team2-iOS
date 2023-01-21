@@ -51,6 +51,8 @@ final class QuestionRepository{
         
         let fullURL2 = URL(string: baseURL + "/api/photo")
         
+        var i: Int = 0
+        
         for image in photos {
             let queryString: Parameters = [
                 "image": image.jpegData(compressionQuality: 1)
@@ -68,7 +70,11 @@ final class QuestionRepository{
                     print("이미지 성공")
                     print(data)
                     strImages.append(data)
-                    if image == photos.last {
+                    i += 1
+                    print("i = " + "\(i)")
+                    print("photos.count = " + "\(photos.count)")
+                    if i == photos.count {
+                        print("completionhandler")
                         completionhandler(strImages)
                     }
                 case .failure(let error):
@@ -76,6 +82,7 @@ final class QuestionRepository{
                     print(error.localizedDescription)
                 }
             }
+            
         }
     }
     
