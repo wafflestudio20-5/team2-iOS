@@ -621,6 +621,10 @@ class QuestionDetailViewController:UIViewController{
             
         }
     }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.refresh()
+    }
     override func viewDidLoad() {
         
         super.viewDidLoad()
