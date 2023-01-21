@@ -72,31 +72,70 @@ class AnswerRepository{
         }
     }
     
-    func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {
+    func postImage(photos: [UIImage], completionhandler: @escaping ([String]) -> Void) {
+        var strImages: [String] = []
+        
+        let fullURL2 = URL(string: baseURL + "/api/photo")
+        
+        var i: Int = 0
+        
+        for image in photos {
+            let queryString: Parameters = [
+                "image": image.jpegData(compressionQuality: 1)
+            ]
+            
+            AF.upload(multipartFormData: { multipartFormData in
+                for (key, value) in queryString {
+                    let uuidName = UUID().uuidString
+                    multipartFormData.append(value as! Data, withName: "\(key)", fileName: "\(uuidName).jpg", mimeType: "image/jpeg")
+                }
+                
+            }, to: fullURL2!, usingThreshold: UInt64.init(), method: .post, interceptor:JWTInterceptor()).responseString { response in
+                switch(response.result) {
+                case .success(let data):
+                    print("이미지 성공")
+                    print(data)
+                    strImages.append(data)
+                    i += 1
+                    //print("i = " + "\(i)")
+                    //print("photos.count = " + "\(photos.count)")
+                    if i == photos.count {
+                        //print("completionhandler")
+                        completionhandler(strImages)
+                    }
+                case .failure(let error):
+                    print("이미지 실패")
+                    print(error.localizedDescription)
+                }
+            }
+            
+        }
+    }
+    
+    func postNewAnswer(id: Int, contentText: String, photos: [UIImage], handler:@escaping(()->())) {
         let fullURL = URL(string: baseURL + "/api/answer/\(id)")
-        
-        let queryString: Parameters = [
-            "content": contentText
-        ]
-        
-        let header: HTTPHeaders = [
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
-            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
-        ]
-        
-        AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, headers: header,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
-            response in
-            switch(response.result) {
-            case .success(let data):
-                print("성공")
-                print(String(data: data, encoding: .utf8)!)
-                handler()
-                break
-            case .failure(let error):
-                print("실패")
-                print(error.localizedDescription)
-                break
+    
+        postImage(photos: photos) { [weak self] strImages in
+            guard let self = self else { return }
+            print("strImage = " + "\(strImages)")
+            
+            let queryString: Parameters = [
+                "content": contentText,
+                "photos": strImages
+            ]
+            
+            AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
+                response in
+                switch(response.result) {
+                case .success(let data):
+                    print("성공")
+                    print(String(data: data, encoding: .utf8)!)
+                    break
+                case .failure(let error):
+                    print("실패")
+                    print(error.localizedDescription)
+                    break
+                }
             }
         }
     }
