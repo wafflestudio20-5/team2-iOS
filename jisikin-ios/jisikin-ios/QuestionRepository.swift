@@ -11,13 +11,8 @@ import RxSwift
 struct MyRelatedQuestionResponse:Codable{
     var id:Int
     var title:String
-    var content:String
     var createdAt:String
-    var modifiedAt:String
-    var close:Bool
-    var username:String
-    var photos:[String]
-    
+    var answerCount:Int?
 }
 struct QuestionSearchAPI:Codable{
     var questionId:Int
@@ -238,7 +233,7 @@ final class QuestionRepository{
         }
     }
     func getMyHeartedQuestions()->Single<[MyRelatedQuestionResponse]>{
-        let fullURL = URL(string: baseURL + "/api/questionLike")
+        let fullURL = URL(string: baseURL + "/api/user/myLikeQuestions")
         return Single<[MyRelatedQuestionResponse]>.create{
             single in
             AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
