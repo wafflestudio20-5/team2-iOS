@@ -48,6 +48,11 @@ final class QuestionRepository{
         
         var i: Int = 0
         
+        if photos.count == 0 {
+            completionhandler([])
+            return
+        }
+        
         for image in photos {
             let queryString: Parameters = [
                 "image": image.jpegData(compressionQuality: 1)

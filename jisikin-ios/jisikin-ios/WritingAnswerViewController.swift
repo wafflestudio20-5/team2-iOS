@@ -6,12 +6,32 @@
 //
 
 import UIKit
+import Photos
+import BSImagePicker
 
 class WritingAnswerViewController: UIViewController {
     
     var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
     
     var questionID: Int = -1
+    
+    var photos: [UIImage] = []
+    
+    var cnt: Int = 0
+    
+    var imageCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 2
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
+        collectionView.register(ImageViewCell.self, forCellWithReuseIdentifier: "ImageViewCell")
+        collectionView.isScrollEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.contentInset = .zero
+        
+        return collectionView
+    }()
     
     lazy var rightButton: UIBarButtonItem = {
         let btn = UIBarButtonItem(title: "답변등록", style: .plain, target: self, action: #selector(doneAnswer(_:)))
@@ -51,7 +71,7 @@ class WritingAnswerViewController: UIViewController {
     """
     
     lazy var accessoryView: UIView = {
-        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 170))
     }()
     
     lazy var contentView: UITextView = {
@@ -68,8 +88,15 @@ class WritingAnswerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        imageCollectionView.delegate = self
+        imageCollectionView.dataSource = self
         setNavigationBar()
         setLayout()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.contentView.becomeFirstResponder()
     }
     
     private func setNavigationBar() {
@@ -85,12 +112,14 @@ class WritingAnswerViewController: UIViewController {
         view.addSubview(contentView)
         accessoryView.addSubview(plusImageButton)
         accessoryView.addSubview(lineView)
+        accessoryView.addSubview(imageCollectionView)
         
         guard let lineSuperView = plusImageButton.superview else { return }
         
         contentView.translatesAutoresizingMaskIntoConstraints = false
         plusImageButton.translatesAutoresizingMaskIntoConstraints = false
         lineView.translatesAutoresizingMaskIntoConstraints = false
+        imageCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10.0),
@@ -106,7 +135,10 @@ class WritingAnswerViewController: UIViewController {
             lineView.bottomAnchor.constraint(equalTo: plusImageButton.topAnchor, constant: -1),
             lineView.widthAnchor.constraint(equalTo: lineSuperView.widthAnchor),
             lineView.heightAnchor.constraint(equalToConstant: 1),
-            lineView.centerXAnchor.constraint(equalTo: lineSuperView.centerXAnchor),
+            lineView.centerXAnchor.constraint(equalTo: lineSuperView.centerXAnchor),imageCollectionView.leftAnchor.constraint(equalTo: lineSuperView.leftAnchor, constant: 10),
+            imageCollectionView.rightAnchor.constraint(equalTo: lineSuperView.rightAnchor),
+            imageCollectionView.heightAnchor.constraint(equalToConstant: 120),
+            imageCollectionView.bottomAnchor.constraint(equalTo: lineView.topAnchor, constant: -3)
         ])
     }
     
@@ -123,15 +155,34 @@ class WritingAnswerViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         } else {
             guard let contentText = contentView.text else { return }
-            viewModel.postNewAnswer(id: questionID, contentText: contentText){
-                self.navigationController?.popViewController(animated: true)
+            viewModel.postNewAnswer(id: questionID, contentText: contentText, photos: self.photos){
+                result in
+                if result == "success"{
+                    self.navigationController?.popViewController(animated: false)
+                }
             }
         }
-      
+       
     }
     
     @objc private func plusImage(_ sender: Any) {
+        let alert = UIAlertController(title: nil, message: "이미지 삽입", preferredStyle: .actionSheet)
         
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let album = UIAlertAction(title: "사진 보관함", style: .default) {
+            [weak self] (_) in
+            self?.presentAlbum()
+        }
+        let camera = UIAlertAction(title: "사진 찍기", style: .default) {
+            [weak self] (_) in
+            self?.presentCamera()
+        }
+        
+        alert.addAction(cancel)
+        alert.addAction(camera)
+        alert.addAction(album)
+        
+        present(alert, animated: true, completion: nil)
     }
     
     @objc private func viewQuestion(_ sender: Any) {
@@ -142,6 +193,107 @@ class WritingAnswerViewController: UIViewController {
                 }
             UserDefaults.standard.removeObject(forKey: "selectedQuestion")
         }
+    }
+}
+
+extension WritingAnswerViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    func presentCamera() {
+        let vc = UIImagePickerController()
+        vc.sourceType = .camera
+        vc.delegate = self
+        vc.allowsEditing = true
+        
+        present(vc, animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if cnt % 2 == 0 {
+            if let image = info[.editedImage] as? UIImage {
+                self.photos.append(image)
+            }
+        }
+        else {
+            if let image = info[.originalImage] as? UIImage {
+                self.photos.append(image)
+            }
+        }
+        
+        cnt += 1
+        self.imageCollectionView.reloadData()
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func presentAlbum() {
+        let imagePicker = ImagePickerController()
+        
+        imagePicker.modalPresentationStyle = .fullScreen
+        imagePicker.settings.selection.max = 20
+        imagePicker.settings.theme.backgroundColor = .white
+        imagePicker.settings.theme.selectionStyle = .numbered
+        imagePicker.settings.fetch.assets.supportedMediaTypes = [.image]
+        imagePicker.settings.theme.selectionFillColor = BLUE_COLOR
+        imagePicker.settings.theme.selectionStrokeColor = .white
+        imagePicker.doneButton.image = UIImage(systemName: "arrow.right")
+        imagePicker.doneButton.tintColor = BLUE_COLOR
+        imagePicker.cancelButton.image = UIImage(systemName: "xmark")
+        imagePicker.cancelButton.tintColor = BLUE_COLOR
+        
+        self.presentImagePicker(imagePicker, select: { (asset) in
+            
+        }, deselect: { (asset) in
+            
+        }, cancel: { (assets) in
+            
+        }, finish: { (assets) in
+            for i in 0..<assets.count {
+                let imageManager = PHImageManager.default()
+                let option = PHImageRequestOptions()
+                option.isSynchronous = true
+                
+                var thumnail = UIImage()
+                
+                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: option) { (result, info) in
+                thumnail = result!
+                }
+                
+                let data = thumnail.jpegData(compressionQuality: 0.7)
+                self.photos.append(UIImage(data: data!)! as UIImage)
+                self.imageCollectionView.reloadData()
+            }
+        })
+    }
+}
+
+extension WritingAnswerViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageViewCell.identifier, for: indexPath) as? ImageViewCell else {
+            return UICollectionViewCell()
+        }
+        cell.imageView.image = self.photos[indexPath.row]
+        cell.xButton.tag = indexPath.row
+        cell.xButton.addTarget(self, action: #selector(xButtonImagePressed(sender:)), for: .touchUpInside)
+            
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.photos.count
+    }
+    
+    @objc private func xButtonImagePressed(sender: UIButton) {
+        print("xButtonPressed")
+        imageCollectionView.deleteItems(at: [IndexPath.init(row: sender.tag, section: 0)])
+        self.photos.remove(at: sender.tag)
+    }
+}
+
+extension WritingAnswerViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 110, height: 110)
     }
 }
 

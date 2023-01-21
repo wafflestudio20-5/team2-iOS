@@ -273,6 +273,7 @@ extension QuestionView:UICollectionViewDelegateFlowLayout{
 
 class AnswerProfileView:UIView{
 
+  
     
     var answerUserView:UILabel!
     var recentAnswerTime:UILabel!
@@ -340,6 +341,9 @@ class AnswerProfileView:UIView{
 class AnswerTableCell:UITableViewCell{
     static let ID = "AnswerTableCell"
     
+    var imageURL:[String] = []
+  
+    
     var lineAtTop:UIView!
     var profile:AnswerProfileView!
     var answerContentView:UILabel!
@@ -356,6 +360,7 @@ class AnswerTableCell:UITableViewCell{
     var onAgreeButtonPressed:(()->())?
     var onDisagreeButtonPressed:(()->())?
     var onDeleteButtonPressed:(()->())?
+    var onImageLoaded:(()->())?
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
@@ -529,31 +534,61 @@ class AnswerTableCell:UITableViewCell{
         likeButton.setTitle(String(answer.agree), for: .normal)
         dislikeButton.setTitle(String(answer.disagree),for:.normal)
         profile.configure(answer:answer)
+        /*setIsChosen(isChosen: answer.selected)
+        if question == nil{
+            answerChoiceButton.isHidden = true
+        }
+        else{
+            answerChoiceButton.isHidden = question!.close && !answer.selected
+        }*/
+        configureButtons(question: question, answer: answer)
+        configurePhotos(answer: answer)
+    
+     /*   if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
+            let username = UserDefaults.standard.string(forKey: "username")!
+            answerEditButton.isHidden =  username != answer.username || answer.selected
+            answerDeleteButton.isHidden =  username != answer.username || answer.selected
+            answerChoiceButton.isHidden = username != question?.username && !answer.selected
+        }
+        else{
+            answerEditButton.isHidden = true
+            answerDeleteButton.isHidden = true
+            if !answer.selected{
+                answerChoiceButton.isHidden = true
+            }
+        }*/
+    }
+    func configurePhotos(answer:AnswerDetailModel){
+        if answer.photos != imageURL{
+            imageURL = answer.photos
+            imageStackView.safelyRemoveArrangedSubviews()
+            
+            for image in answer.photos{
+                let imageView = UIImageView()
+                
+                imageStackView.addArrangedSubview(imageView)
+                
+                imageView.kf.setImage(with:URL(string:image)!){ [self]result in
+                    
+                    imageView.contentMode = .scaleAspectFit
+                    
+                    NSLayoutConstraint.activate([
+                        imageView.widthAnchor.constraint(lessThanOrEqualToConstant: imageStackView.frame.width),
+                        imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
+                    ])
+                    onImageLoaded?()
+                    
+                }
+            }
+        }
+    }
+    func configureButtons(question:QuestionDetailModel?,answer:AnswerDetailModel){
         setIsChosen(isChosen: answer.selected)
         if question == nil{
             answerChoiceButton.isHidden = true
         }
         else{
             answerChoiceButton.isHidden = question!.close && !answer.selected
-        }
-        imageStackView.safelyRemoveArrangedSubviews()
-      
-       for image in answer.photos{
-            let imageView = UIImageView()
-           
-            imageStackView.addArrangedSubview(imageView)
-            print("add view")
-            imageView.kf.setImage(with:URL(string:image)!){ [self]result in
-              
-                imageView.contentMode = .scaleAspectFit
-                
-                NSLayoutConstraint.activate([
-                    imageView.widthAnchor.constraint(lessThanOrEqualToConstant: imageStackView.frame.width),
-                    imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
-                ])
-           
-                print("image loaded")
-            }
         }
         if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
             let username = UserDefaults.standard.string(forKey: "username")!
@@ -600,8 +635,14 @@ class QuestionDetailViewController:UIViewController{
     }
     override func viewWillAppear(_ animated: Bool){
         super.viewWillAppear(animated)
-        viewModel.refresh()
-    
+      
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+       
+            self.viewModel.refresh()
+     
+        
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -656,8 +697,10 @@ class QuestionDetailViewController:UIViewController{
         }).disposed(by: bag)
      
        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
-           print("answer update")
-          
+       
+           (cell as! AnswerTableCell).onImageLoaded = {
+               self.answerTableView.reloadData()
+           }
            (cell as! AnswerTableCell).configure(answer:model,question:self.viewModel.question.value)
           
            self.viewModel.question.subscribe(onNext: {
@@ -724,7 +767,8 @@ class QuestionDetailViewController:UIViewController{
         answerTableView.register(AnswerTableCell.self, forCellReuseIdentifier: AnswerTableCell.ID)
         answerTableView.backgroundColor = .white
         answerTableView.sectionHeaderHeight = UITableView.automaticDimension
-        answerTableView.separatorStyle = .none
+        answerTableView.rowHeight = UITableView.automaticDimension
+    
         answerTableView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(answerTableView)

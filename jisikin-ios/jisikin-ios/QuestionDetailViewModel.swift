@@ -9,9 +9,11 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
+import Kingfisher
 struct AnswerDetailModel{
     var content:String
     var photos:[String]
+    var photosByURL:[String:UIImage] = [:]
     var createdAt:String
     var selected:Bool
     var username:String
@@ -75,6 +77,7 @@ class QuestionDetailViewModel{
             self!.question.accept(QuestionDetailModel.fromQuestionAPI(questionAPI:data))
             
         }).disposed(by: bag)
+        
         usecase.answerDetail.asObservable().subscribe(onNext:{[weak self]
             data in
             self!.answers.accept(data.map{
