@@ -79,6 +79,11 @@ class AnswerRepository{
         
         var i: Int = 0
         
+        if photos.count == 0 {
+            completionhandler([])
+            return
+        }
+        
         for image in photos {
             let queryString: Parameters = [
                 "image": image.jpegData(compressionQuality: 1)
@@ -112,7 +117,7 @@ class AnswerRepository{
         }
     }
     
-    func postNewAnswer(id: Int, contentText: String, photos: [UIImage], handler:@escaping(()->())) {
+    func postNewAnswer(id: Int, contentText: String, photos: [UIImage]) {
         let fullURL = URL(string: baseURL + "/api/answer/\(id)")
     
         postImage(photos: photos) { [weak self] strImages in

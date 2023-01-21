@@ -71,7 +71,7 @@ class WritingAnswerViewController: UIViewController {
     """
     
     lazy var accessoryView: UIView = {
-        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 150))
+        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 170))
     }()
     
     lazy var contentView: UITextView = {
@@ -155,11 +155,9 @@ class WritingAnswerViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         } else {
             guard let contentText = contentView.text else { return }
-            viewModel.postNewAnswer(id: questionID, contentText: contentText, photos: self.photos){
-                self.navigationController?.popViewController(animated: true)
-            }
+            viewModel.postNewAnswer(id: questionID, contentText: contentText, photos: self.photos)
         }
-      
+        self.navigationController?.popViewController(animated: false)
     }
     
     @objc private func plusImage(_ sender: Any) {
