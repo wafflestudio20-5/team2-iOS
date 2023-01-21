@@ -71,7 +71,7 @@ class WritingAnswerViewController: UIViewController {
     """
     
     lazy var accessoryView: UIView = {
-        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 300))
+        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 150))
     }()
     
     lazy var contentView: UITextView = {
@@ -88,6 +88,8 @@ class WritingAnswerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        imageCollectionView.delegate = self
+        imageCollectionView.dataSource = self
         setNavigationBar()
         setLayout()
     }
@@ -117,6 +119,7 @@ class WritingAnswerViewController: UIViewController {
         contentView.translatesAutoresizingMaskIntoConstraints = false
         plusImageButton.translatesAutoresizingMaskIntoConstraints = false
         lineView.translatesAutoresizingMaskIntoConstraints = false
+        imageCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10.0),
@@ -274,14 +277,20 @@ extension WritingAnswerViewController: UICollectionViewDelegate, UICollectionVie
         return cell
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.photos.count
     }
     
     @objc private func xButtonImagePressed(sender: UIButton) {
+        print("xButtonPressed")
         imageCollectionView.deleteItems(at: [IndexPath.init(row: sender.tag, section: 0)])
-        photos.remove(at: sender.tag)
+        self.photos.remove(at: sender.tag)
+    }
+}
+
+extension WritingAnswerViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 110, height: 110)
     }
 }
 
