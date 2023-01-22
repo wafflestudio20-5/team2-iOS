@@ -23,6 +23,7 @@ class SearchViewController:UIViewController{
         setConstraint()
     }
     func setLayout(){
+        searchBar.delegate = self
         navigationController?.isNavigationBarHidden = false
         navigationItem.titleView = searchBar
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchButton)
@@ -77,4 +78,11 @@ extension SearchViewController:UITableViewDelegate{
     }
     
     
+}
+extension SearchViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.searchQuestions(keyword: searchBar.text!)
+        dismissKeyboard()
+    }
 }
