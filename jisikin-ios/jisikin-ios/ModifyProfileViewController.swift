@@ -6,14 +6,18 @@
 //
 
 import UIKit
+import RxSwift
 
 class ModifyProfileViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    let bag = DisposeBag()
     
     lazy var backBtn: UIBarButtonItem = {
         let btn = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(onTapModifyCancelBtn))
         btn.tintColor = .black
         return btn
     }()
+    
+    let defaultProfilePhoto = UIImage(named:"DefaultProfilePhoto")
     
     let profilePhotoLabel = UILabel()
     let profilePhotoView = UIImageView()
@@ -38,7 +42,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         profilePhotoLabel.text = "프로필 사진"
         
         let profilePhotoSize = CGFloat(45)
-        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+//        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
         profilePhotoView.backgroundColor = .systemGray
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
@@ -58,11 +62,30 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         nickNameLabel.text = "닉네임"
         modifyNickNameField.backgroundColor = .lightGray
         modifyNickNameField.textColor = .white
-        modifyNickNameField.text = UserDefaults.standard.string(forKey: "username")
+//        modifyNickNameField.text = UserDefaults.standard.string(forKey: "username")
         
         genderLabel.text = "성별"
         //genderSegment
-        
+        viewModel.getProfile()
+        viewModel.profile.subscribe(onNext: {[weak self]
+            profile in
+            if self==nil{return}
+            if let profile{
+                profile.profileImage.subscribe(onNext:{[weak self] image in
+                    if let profileImage = image{
+                        self!.profilePhotoView.image = profileImage
+                    }else{
+                        self!.profilePhotoView.image = self!.defaultProfilePhoto
+                    }
+                })
+                self!.modifyNickNameField.text = profile.username
+                if profile.isMale!{
+                    self!.genderSegment.selectedSegmentIndex = 0
+                }else{
+                    self!.genderSegment.selectedSegmentIndex = 1
+                }
+            }
+        }).disposed(by: bag)
         
         modifyCancelBtn.text = "취소하기"
         modifyCancelBtn.textAlignment = .center
@@ -202,10 +225,19 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     @objc
     func onTapModifySaveBtn() {
         if genderSegment.selectedSegmentIndex == 0{
-            viewModel.modifyProfile(profileImage: UIImage(), username: modifyNickNameField.text!, isMale: true)
+            if profilePhotoView.image != defaultProfilePhoto{
+                viewModel.modifyProfile(profileImage: profilePhotoView.image!, username: modifyNickNameField.text!, isMale: true)
+            }else{
+                viewModel.modifyProfile(profileImage: profilePhotoView.image!, username: modifyNickNameField.text!, isMale: true)
+            }
+            
         }
         else{
-            viewModel.modifyProfile(profileImage: UIImage(), username: modifyNickNameField.text!, isMale: false)
+            if profilePhotoView.image != defaultProfilePhoto{
+                viewModel.modifyProfile(profileImage: profilePhotoView.image!, username: modifyNickNameField.text!, isMale: false)
+            }else{
+                viewModel.modifyProfile(profileImage: profilePhotoView.image!, username: modifyNickNameField.text!, isMale: false)
+            }
         }
         
         self.navigationController?.popViewController(animated: true)

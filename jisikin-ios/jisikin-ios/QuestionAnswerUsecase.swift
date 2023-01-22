@@ -40,6 +40,13 @@ class QuestionAnswerUsecase{
             self.answerDetail.accept(data)
         })
     }
+    
+    func searchQuestions(keyword:String){
+        questionRepo.searchQuestions(keyword:keyword).subscribe(onSuccess: {
+            result in
+            self.questionSearch.accept(result)
+        }).disposed(by: bag)
+    }
    
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         questionRepo.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag, photos: photos)
