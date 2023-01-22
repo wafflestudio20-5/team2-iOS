@@ -30,7 +30,7 @@ class AnswerViewController: UIViewController {
         // Do any additional setup after loading the view.
         viewModel.questions.asObservable().bind(to:questionTable.rx.items(cellIdentifier: QuestionTableViewCell.ID)){index,model,cell in
             (cell as! QuestionTableViewCell).configure(question:model)
-            self.questionTable?.refreshControl?.endRefreshing()
+            
         }.disposed(by: bag)
         viewModel.getQuestionsByDate()
         
@@ -132,6 +132,7 @@ class AnswerViewController: UIViewController {
         else{
             viewModel.getQuestionsByLikes()
         }
+        self.questionTable?.refreshControl?.endRefreshing()
     }
     
 
