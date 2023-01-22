@@ -186,13 +186,10 @@ class WritingAnswerViewController: UIViewController {
     }
     
     @objc private func viewQuestion(_ sender: Any) {
-        if let savedData = UserDefaults.standard.object(forKey: "selectedQuestion") as? Data {
-            let decoder = JSONDecoder()
-            if let selectedQuestion = try? decoder.decode(QuestionModelForAnswerVC.self, from: savedData) {
-                self.navigationController?.present(QuestionDetailFromWritingAnswerViewController(question: selectedQuestion), animated: true)
-                }
-            UserDefaults.standard.removeObject(forKey: "selectedQuestion")
-        }
+        let viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
+        viewModel.getQuestionsByDate()
+        
+        self.navigationController?.present(QuestionDetailFromWritingAnswerViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: self.questionID)), animated: true)
     }
 }
 
