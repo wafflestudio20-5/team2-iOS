@@ -31,6 +31,7 @@ struct QuestionListModel{
 }
 class QuestionListViewModel{
     var bag = DisposeBag()
+   
     var usecase:QuestionAnswerUsecase
     var questions = BehaviorRelay<[QuestionListModel]>(value:[])
     init(usecase:QuestionAnswerUsecase){
@@ -45,9 +46,15 @@ class QuestionListViewModel{
     func getQuestionsByLikes(){
         usecase.getQuestionsByLikes()
     }
+    func getMoreQuestionsByLikes(){
+        usecase.getMoreQuestionsByLikes()
+    }
 
     func getQuestionsByDate(){
         usecase.getQuestionsByDate()
+    }
+    func getMoreQUestionsByDate(){
+        usecase.getMoreQuestionsByDate()
     }
     
     func searchQuestions(keyword:String){

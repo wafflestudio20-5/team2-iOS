@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 
 class QuestionAnswerUsecase{
+    var page = 0
     let bag = DisposeBag()
     let questionRepo = QuestionRepository()
     let answerRepo = AnswerRepository()
@@ -17,15 +18,35 @@ class QuestionAnswerUsecase{
     var questionDetail = BehaviorRelay<QuestionDetailAPI?>(value:nil)
     var answerDetail = BehaviorRelay<[AnswerAPI]>(value:[])
     func getQuestionsByLikes(){
+        page = 0
         questionRepo.getQuestionsByLikes().subscribe(onSuccess: {
             result in
             self.questionSearch.accept(result)
         }).disposed(by: bag)
     }
+    func getMoreQuestionsByLikes(){
+        page += 1
+        questionRepo.getQuestionsByLikes(page:page).subscribe(onSuccess: {
+            result in
+            var value = self.questionSearch.value
+            value.append(contentsOf: result)
+            self.questionSearch.accept(value)
+        }).disposed(by: bag)
+    }
     func getQuestionsByDate(){
-        questionRepo.getQuestionsByDate().subscribe(onSuccess: {
+        page = 0
+        questionRepo.getQuestionsByDate(page:page).subscribe(onSuccess: {
             result in
             self.questionSearch.accept(result)
+        }).disposed(by: bag)
+    }
+    func getMoreQuestionsByDate(){
+        page += 1
+        questionRepo.getQuestionsByDate(page:page).subscribe(onSuccess: {
+            result in
+            var value = self.questionSearch.value
+            value.append(contentsOf: result)
+            self.questionSearch.accept(value)
         }).disposed(by: bag)
     }
     
