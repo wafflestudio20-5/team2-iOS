@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 //class KakaoButton: UIButton {
 //    let pointSize: CGFloat = 13
@@ -51,8 +52,7 @@ todos = try! PropertyListDecoder().decode([ToDo].self, from: data)
 //UserDefaults.standard.set(1, forKey: "isLogin")
 
 class MyViewController: UIViewController {
-    
-    
+    let bag = DisposeBag()
     
     let profilePhotoView = UIImageView()
     let modifyProfileBtn = UIButton()
@@ -72,56 +72,20 @@ class MyViewController: UIViewController {
         
         self.view.backgroundColor = .white
         
-        if isLogin{
-            viewModel.getProfile()
-        }
-        
         let profilePhotoSize = CGFloat(45)
-        //profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
         
         profilePhotoView.backgroundColor = .black
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
         profilePhotoView.layer.borderWidth = 3.0
-        if isLogin{
-            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
-            profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
-        }else{
-            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
-            profilePhotoView.layer.borderColor = .none
-        }
+        
         
         let tapGesture: UITapGestureRecognizer
-        if isLogin{
-            tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifyProfileBtn))
-        }else{
-            tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapLogInBtn))
-        }
-        profilePhotoView.addGestureRecognizer(tapGesture)
-        profilePhotoView.isUserInteractionEnabled = true
         
-        if isLogin{
-            let smallConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .regular, scale: .large)
-            
-            modifyProfileBtn.setImage(UIImage(systemName:"pencil.circle.fill", withConfiguration: smallConfig)!.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
-            modifyProfileBtn.addTarget(self, action: #selector(onTapModifyProfileBtn), for: .touchUpInside)
-            modifyProfileBtn.isHidden = false
-            modifyProfileBtn.isEnabled = true
-        }else{
-            modifyProfileBtn.removeTarget(nil, action: nil, for: .allEvents)
-            modifyProfileBtn.isHidden = true
-            modifyProfileBtn.isEnabled = false
-        }
-        
-        
-        if isLogin{
-            nickName.text = UserDefaults.standard.string(forKey: "username")
-        }else{
-            nickName.text = "로그인해주세요"
-        }
         
         nickName.font = .systemFont(ofSize: 30)
         nickName.textColor = .black
+        
         
         let largeConfig = UIImage.SymbolConfiguration(pointSize: 30, weight: .regular, scale: .large)
         
@@ -132,14 +96,6 @@ class MyViewController: UIViewController {
         QABtn.setTitle("나의 Q&A", for: .normal)
         QABtn.setTitleColor(.black, for: .normal)
         QABtn.setTitleColor(.black, for: .highlighted)
-        if isLogin{
-            QABtn.removeTarget(nil, action: nil, for: .allEvents)
-            QABtn.addTarget(self, action: #selector(onTapQABtn), for: .touchUpInside)
-        }else{
-            QABtn.removeTarget(nil, action: nil, for: .allEvents)
-            QABtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
-        }
-        
         
         
         heartedQBtn.configuration = .plain()
@@ -150,14 +106,6 @@ class MyViewController: UIViewController {
         heartedQBtn.setTitle("좋아요 누른 질문", for: .normal)
         heartedQBtn.setTitleColor(.black, for: .normal)
         heartedQBtn.setTitleColor(.black, for: .highlighted)
-        if isLogin{
-            heartedQBtn.removeTarget(nil, action: nil, for: .allEvents)
-            heartedQBtn.addTarget(self, action: #selector(onTapHeartedQBtn), for: .touchUpInside)
-        }else{
-            heartedQBtn.removeTarget(nil, action: nil, for: .allEvents)
-            heartedQBtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
-        }
-        
         
         
         logInOutBtn.configuration = .plain()
@@ -166,12 +114,69 @@ class MyViewController: UIViewController {
         
         logInOutBtn.setTitleColor(.black, for: .normal)
         logInOutBtn.setTitleColor(.black, for: .highlighted)
+        
+        
         if isLogin{
+            viewModel.getProfile()
+            viewModel.profile.subscribe(onNext: {[weak self]
+                profile in
+                if self==nil{return}
+                if let profile{
+                    profile.profileImage.subscribe(onNext:{[weak self] image in
+                        if let profileImage = image{
+                            self!.profilePhotoView.image = profileImage
+                        }else{
+                            self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+                        }
+                    })
+                    self!.nickName.text = profile.username
+                }
+            }).disposed(by: bag)
+            
+            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+            profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
+            
+            tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifyProfileBtn))
+            profilePhotoView.addGestureRecognizer(tapGesture)
+            profilePhotoView.isUserInteractionEnabled = true
+            
+            let smallConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .regular, scale: .large)
+            
+            modifyProfileBtn.setImage(UIImage(systemName:"pencil.circle.fill", withConfiguration: smallConfig)!.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
+            modifyProfileBtn.addTarget(self, action: #selector(onTapModifyProfileBtn), for: .touchUpInside)
+            modifyProfileBtn.isHidden = false
+            modifyProfileBtn.isEnabled = true
+            
+            QABtn.removeTarget(nil, action: nil, for: .allEvents)
+            QABtn.addTarget(self, action: #selector(onTapQABtn), for: .touchUpInside)
+            
+            heartedQBtn.removeTarget(nil, action: nil, for: .allEvents)
+            heartedQBtn.addTarget(self, action: #selector(onTapHeartedQBtn), for: .touchUpInside)
+            
             logInOutBtn.setImage(UIImage(systemName:"rectangle.portrait.and.arrow.right", withConfiguration: largeConfig)!.withTintColor(.darkText, renderingMode: .alwaysOriginal), for: .normal)
             logInOutBtn.setTitle("로그아웃", for: .normal)
             logInOutBtn.removeTarget(nil, action: nil, for: .allEvents)
             logInOutBtn.addTarget(self, action: #selector(onTapLogOutBtn), for: .touchUpInside)
         }else{
+            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+            profilePhotoView.layer.borderColor = .none
+            
+            tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapLogInBtn))
+            profilePhotoView.addGestureRecognizer(tapGesture)
+            profilePhotoView.isUserInteractionEnabled = true
+            
+            modifyProfileBtn.removeTarget(nil, action: nil, for: .allEvents)
+            modifyProfileBtn.isHidden = true
+            modifyProfileBtn.isEnabled = false
+            
+            nickName.text = "로그인해주세요"
+            
+            QABtn.removeTarget(nil, action: nil, for: .allEvents)
+            QABtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
+            
+            heartedQBtn.removeTarget(nil, action: nil, for: .allEvents)
+            heartedQBtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
+            
             logInOutBtn.setImage(UIImage(systemName:"rectangle.portrait.and.arrow.right", withConfiguration: largeConfig)!.withTintColor(.darkText, renderingMode: .alwaysOriginal), for: .normal)
             logInOutBtn.setTitle("로그인", for: .normal)
             logInOutBtn.removeTarget(nil, action: nil, for: .allEvents)

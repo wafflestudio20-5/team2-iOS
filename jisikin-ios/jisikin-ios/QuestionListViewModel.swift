@@ -49,7 +49,10 @@ class QuestionListViewModel{
     func getQuestionsByDate(){
         usecase.getQuestionsByDate()
     }
-
+    
+    func searchQuestions(keyword:String){
+        usecase.searchQuestions(keyword: keyword)
+    }
     
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         //let urlPhotos: [String] = UIImageToURL(photos: photos)

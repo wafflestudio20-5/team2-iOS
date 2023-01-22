@@ -10,35 +10,36 @@ import UIKit
 import RxSwift
 import RxCocoa
 struct ProfileModel{
-    var profileImage:UIImage?
+    var profileImage:BehaviorRelay<UIImage?>
     var username:String
     var isMale:Bool?
-//    static func requestToModel(request:ProfileRequest)->ProfileModel{
-//        usecase.profilePhoto.asObservable().subscribe(onNext: {[weak self]
-//            data in
-//            self!.profile.accept(QuestionDetailModel.fromQuestionAPI(questionAPI:data))
-//        }).disposed(by: bag)
-//        request
-//
-//
-//        return AnswerDetailModel(content: answerAPI.content,photos:answerAPI.photos, createdAt: answerAPI.createdAt, selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id,agree:answerAPI.interactionCount.agree,disagree:answerAPI.interactionCount.disagree)
-//    }
+    static func requestToModel(request:ProfileRequest)->ProfileModel{
+        var profileImage = BehaviorRelay<UIImage?>(value:nil)
+        ProfileUsecase().profilePhoto.asObservable().subscribe(onNext: {data in
+            if let value = data{
+                profileImage.accept(UIImage(data:value))
+            }
+        }).disposed(by: DisposeBag())
+        return ProfileModel(profileImage: profileImage, username:request.username, isMale:request.isMale)
+    }
 }
 class ProfileViewModel{
     var bag = DisposeBag()
     var usecase = ProfileUsecase()
     var profile = BehaviorRelay<ProfileModel?>(value:nil)
-//    init(usecase: ProfileUsecase) {
-//        self.usecase = usecase
-//        usecase.profile.asObservable().subscribe(onNext: {[weak self]
-//            data in
-//            self!.profile.accept(QuestionDetailModel.fromQuestionAPI(questionAPI:data))
-//        }).disposed(by: bag)
+    init() {
+        usecase.profile.asObservable().subscribe(onNext: {[weak self]
+            data in
+            if let value = data{
+                self!.profile.accept(ProfileModel.requestToModel(request: value))
+            }
+            
+        }).disposed(by: bag)
 //        usecase.profilePhoto.asObservable().subscribe(onNext: {[weak self]
 //            data in
 //            self!.profile.accept(QuestionDetailModel.fromQuestionAPI(questionAPI:data))
 //        }).disposed(by: bag)
-//    }
+    }
     func getProfile(){
         usecase.getProfile()
     }

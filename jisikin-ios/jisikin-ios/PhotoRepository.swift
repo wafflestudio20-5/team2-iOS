@@ -12,6 +12,51 @@ class PhotoRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
     
+    func uploadImage(photos: [UIImage], completionhandler: @escaping ([String]) -> Void) {
+        var strImages: [String] = []
+        
+        let fullURL = URL(string: baseURL + "/api/photo")
+        
+        var i: Int = 0
+        
+        if photos.count == 0 {
+            completionhandler([])
+            return
+        }
+        
+        for image in photos {
+            let queryString: Parameters = [
+                "image": image.jpegData(compressionQuality: 1)
+            ]
+            
+            AF.upload(multipartFormData: { multipartFormData in
+                for (key, value) in queryString {
+                    let uuidName = UUID().uuidString
+                    multipartFormData.append(value as! Data, withName: "\(key)", fileName: "\(uuidName).jpg", mimeType: "image/jpeg")
+                }
+                
+            }, to: fullURL!, usingThreshold: UInt64.init(), method: .post, interceptor:JWTInterceptor()).responseString { response in
+                switch(response.result) {
+                case .success(let data):
+                    print("이미지 성공")
+                    print(data)
+                    strImages.append(data)
+                    i += 1
+                    print("i = " + "\(i)")
+                    print("photos.count = " + "\(photos.count)")
+                    if i == photos.count {
+                        print("completionhandler")
+                        completionhandler(strImages)
+                    }
+                case .failure(let error):
+                    print("이미지 실패")
+                    print(error.localizedDescription)
+                }
+            }
+            
+        }
+    }
+    
 //    func uproadImage(imageData:UIImage?, completion: @escaping (NetworkResult<Any>) -> Void) -> Single<URL>{
 //        let fullURL = URL(string: baseURL + "/api/photo/")
 //
