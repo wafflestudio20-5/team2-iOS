@@ -20,7 +20,6 @@ class SearchViewController:UIViewController{
         self.view.backgroundColor = .white
         setLayout()
         binding()
-        addTapGesture()
         setConstraint()
     }
     func setLayout(){
@@ -36,6 +35,7 @@ class SearchViewController:UIViewController{
         searchResultTable.delegate = self
         searchResultTable.register(QuestionTableViewCell.self, forCellReuseIdentifier: QuestionTableViewCell.ID)
         searchResultTable.separatorStyle = .none
+        searchResultTable.keyboardDismissMode = .onDrag
         searchResultTable.translatesAutoresizingMaskIntoConstraints = false
         searchButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(searchButton)
