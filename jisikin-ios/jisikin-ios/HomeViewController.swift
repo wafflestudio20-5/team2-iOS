@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class HomeViewController: UIViewController {
     var randomBanner = UIImageView()
@@ -17,6 +19,12 @@ class HomeViewController: UIViewController {
     var myQuestionTitleLabel = UILabel()
     var myQuestionCountLabel = UILabel()
     var myQuestionButton = UIButton()
+    var loginLabel = UILabel()
+    var loginButton = UIButton()
+    
+    var myQuestionTable = UITableView()
+    var viewModel = MyRelatedQuestionListViewModel(usecase:MyRelatedQuestionUsecase())
+    var bag = DisposeBag()
     
     private let scrollView: UIScrollView = {
         let view: UIScrollView = UIScrollView()
@@ -26,13 +34,31 @@ class HomeViewController: UIViewController {
         return view
     }()
     
-    private let stackView: UIStackView = {
+    private let horizontalStackView: UIStackView = {
         let view: UIStackView = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.axis = .horizontal
         view.spacing = 7
         return view
     }()
+    
+    private let verticalStackView: UIStackView = {
+        let view: UIStackView = UIStackView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.axis = .vertical
+        view.spacing = 10
+        view.alignment = .center
+        return view
+    }()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        reloadQuestions()
+        resetView()
+        setMyQuestionView()
+        setConstraint()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,6 +71,29 @@ class HomeViewController: UIViewController {
         setImageView()
         setMyQuestionView()
         setConstraint()
+    }
+    
+    func reloadQuestions() {
+        if(UserDefaults.standard.bool(forKey: "isLogin")){
+            self.myQuestionTable.deselectSelectedRow(animated: false)
+            viewModel.getMyQuestions()
+        }
+    }
+    
+    func resetView() {
+        if(UserDefaults.standard.bool(forKey: "isLogin")){
+            verticalStackView.removeFromSuperview()
+            myQuestionView.addSubview(myQuestionCountLabel)
+            myQuestionView.addSubview(myQuestionButton)
+            myQuestionView.addSubview(myQuestionTable)
+        }
+        
+        else{
+            myQuestionView.addSubview(verticalStackView)
+            myQuestionCountLabel.removeFromSuperview()
+            myQuestionButton.removeFromSuperview()
+            myQuestionTable.removeFromSuperview()
+        }
     }
     
     func setBackButton() {
@@ -77,13 +126,16 @@ class HomeViewController: UIViewController {
     
     func setView() {
         view.addSubview(scrollView)
-        scrollView.addSubview(stackView)
+        scrollView.addSubview(horizontalStackView)
         
         view.addSubview(myQuestionView)
         myQuestionView.addSubview(myQuestionTitleLabel)
         myQuestionView.addSubview(myQuestionCountLabel)
         myQuestionView.addSubview(myQuestionButton)
-        view.bringSubviewToFront(myQuestionView)
+        myQuestionView.addSubview(myQuestionTable)
+        myQuestionView.addSubview(verticalStackView)
+        verticalStackView.addArrangedSubview(loginLabel)
+        verticalStackView.addArrangedSubview(loginButton)
     }
     
     func setImageView() {
@@ -103,10 +155,10 @@ class HomeViewController: UIViewController {
             devBanner.heightAnchor.constraint(equalToConstant: 200)
         ])
         
-        stackView.addArrangedSubview(randomBanner)
-        stackView.addArrangedSubview(newYearBanner)
-        stackView.addArrangedSubview(helpAnswerBanner)
-        stackView.addArrangedSubview(devBanner)
+        horizontalStackView.addArrangedSubview(randomBanner)
+        horizontalStackView.addArrangedSubview(newYearBanner)
+        horizontalStackView.addArrangedSubview(helpAnswerBanner)
+        horizontalStackView.addArrangedSubview(devBanner)
         
         randomBanner.layer.shadowOffset = CGSize(width: 5, height: 5)
         randomBanner.layer.shadowOpacity = 0.7
@@ -147,20 +199,22 @@ class HomeViewController: UIViewController {
     }
     
     func setMyQuestionView() {
-            myQuestionView.backgroundColor = .white
-            myQuestionView.layer.masksToBounds = false
-            myQuestionView.clipsToBounds = true
-            myQuestionView.layer.cornerRadius = 20
-            myQuestionView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-            myQuestionView.layer.shadowColor = UIColor.gray.cgColor
-            myQuestionView.layer.shadowOffset = CGSize(width: 0.0, height : -3.0)
-            myQuestionView.layer.shadowOpacity = 0.5
-            myQuestionView.layer.shadowRadius = 3
+        myQuestionView.backgroundColor = .white
+        myQuestionView.layer.masksToBounds = false
+        myQuestionView.clipsToBounds = true
+        myQuestionView.layer.cornerRadius = 20
+        myQuestionView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        myQuestionView.layer.shadowColor = UIColor.gray.cgColor
+        myQuestionView.layer.shadowOffset = CGSize(width: 0.0, height : -3.0)
+        myQuestionView.layer.shadowOpacity = 0.5
+        myQuestionView.layer.shadowRadius = 3
+        
+        myQuestionTitleLabel.text = "나의 질문"
+        myQuestionTitleLabel.textColor = .black
+        myQuestionTitleLabel.font = UIFont.boldSystemFont(ofSize: 20)
             
-            myQuestionTitleLabel.text = "나의 질문"
-            myQuestionTitleLabel.textColor = .black
-            myQuestionTitleLabel.font = UIFont.boldSystemFont(ofSize: 20)
-
+        if(UserDefaults.standard.bool(forKey: "isLogin")){
+            
             myQuestionCountLabel.text = "0"
             myQuestionCountLabel.textColor = UIColor(named: "MainColor")
             myQuestionCountLabel.font = UIFont.boldSystemFont(ofSize: 20)
@@ -169,9 +223,42 @@ class HomeViewController: UIViewController {
             myQuestionButton.setTitleColor(.gray, for: .normal)
             myQuestionButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
             myQuestionButton.addTarget(self, action: #selector(myQuestionButtonTapped), for: .touchUpInside)
-
+            
+            setMyQuestionTable()
+        }
+    
+        else {
+            loginLabel.text = "로그인 후 확인 가능합니다."
+            loginLabel.font = UIFont.systemFont(ofSize: 20)
+            loginLabel.textColor = .black
+            
+            loginButton.setTitle("로그인", for: .normal)
+            loginButton.setTitleColor(.white, for: .normal)
+            loginButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 25)
+            loginButton.backgroundColor = UIColor(named: "MainColor")
+            loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        }
     }
     
+    func setMyQuestionTable() {
+        myQuestionTable = UITableView()
+        myQuestionTable.delegate = self
+    
+        myQuestionTable.separatorStyle = UITableViewCell.SeparatorStyle.none
+        myQuestionTable.register(MyRelatedQuestionTableViewCell.self,forCellReuseIdentifier: MyRelatedQuestionTableViewCell.ID)
+        myQuestionTable.refreshControl = UIRefreshControl()
+        myQuestionTable.refreshControl?.addTarget(self, action: #selector(onQuestionRefresh), for: .valueChanged)
+        
+        viewModel.questions.asObservable().bind(to:myQuestionTable.rx.items(cellIdentifier: MyRelatedQuestionTableViewCell.ID)){index,model,cell in
+            (cell as! MyRelatedQuestionTableViewCell).configure(question:model)
+            self.myQuestionCountLabel.text = String(self.myQuestionTable.numberOfRows(inSection: 0))
+            self.myQuestionTable.refreshControl?.endRefreshing()
+        }.disposed(by: bag)
+        viewModel.getMyQuestions()
+        
+        myQuestionView.addSubview(myQuestionTable)
+        myQuestionTable.translatesAutoresizingMaskIntoConstraints = false
+    }
     
     func setConstraint() {
         NSLayoutConstraint.activate([
@@ -182,15 +269,15 @@ class HomeViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            stackView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
+            horizontalStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            horizontalStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            horizontalStackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            horizontalStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            horizontalStackView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
         ])
         
-        stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15)
+        horizontalStackView.isLayoutMarginsRelativeArrangement = true
+        horizontalStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15)
         
         NSLayoutConstraint.activate([
             myQuestionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -204,15 +291,35 @@ class HomeViewController: UIViewController {
             myQuestionTitleLabel.topAnchor.constraint(equalTo: myQuestionView.topAnchor, constant: 15)
         ])
         
-        NSLayoutConstraint.activate([
-            myQuestionCountLabel.leadingAnchor.constraint(equalTo: myQuestionTitleLabel.trailingAnchor, constant: 5),
-            myQuestionCountLabel.centerYAnchor.constraint(equalTo: myQuestionTitleLabel.centerYAnchor)
-        ])
+        if(UserDefaults.standard.bool(forKey: "isLogin")){
+            NSLayoutConstraint.activate([
+                myQuestionCountLabel.leadingAnchor.constraint(equalTo: myQuestionTitleLabel.trailingAnchor, constant: 5),
+                myQuestionCountLabel.centerYAnchor.constraint(equalTo: myQuestionTitleLabel.centerYAnchor)
+            ])
+            
+            NSLayoutConstraint.activate([
+                myQuestionButton.trailingAnchor.constraint(equalTo: myQuestionView.trailingAnchor, constant: -30),
+                myQuestionButton.centerYAnchor.constraint(equalTo: myQuestionTitleLabel.centerYAnchor)
+            ])
+            
+            
+            NSLayoutConstraint.activate([
+                myQuestionTable.topAnchor.constraint(equalTo: myQuestionTitleLabel.bottomAnchor, constant: 10),
+                myQuestionTable.bottomAnchor.constraint(equalTo: myQuestionView.bottomAnchor),
+                myQuestionTable.leftAnchor.constraint(equalTo: myQuestionTitleLabel.leftAnchor, constant: -20),
+                myQuestionTable.rightAnchor.constraint(equalTo: myQuestionButton.rightAnchor, constant: 20)
+            ])
+        }
         
-        NSLayoutConstraint.activate([
-            myQuestionButton.trailingAnchor.constraint(equalTo: myQuestionView.trailingAnchor, constant: -30),
-            myQuestionButton.centerYAnchor.constraint(equalTo: myQuestionTitleLabel.centerYAnchor)
-        ])
+        else {
+            NSLayoutConstraint.activate([
+                verticalStackView.centerXAnchor.constraint(equalTo: myQuestionView.centerXAnchor),
+                verticalStackView.centerYAnchor.constraint(equalTo: myQuestionView.centerYAnchor)
+            ])
+            NSLayoutConstraint.activate([
+                loginButton.leadingAnchor.constraint(equalTo: verticalStackView.leadingAnchor, constant: 20),
+            ])
+        }
     }
     
     @objc func onSearchButtonPressed(){
@@ -243,5 +350,22 @@ class HomeViewController: UIViewController {
     @objc func myQuestionButtonTapped() {
         let vc = MyQAViewController()
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func loginButtonTapped() {
+        let vc = LoginViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func onQuestionRefresh(){
+        viewModel.getMyQuestions()
+        
+        self.myQuestionTable.refreshControl?.endRefreshing()
+    }
+}
+
+extension HomeViewController:UITableViewDelegate{
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: QuestionAnswerUsecase(), questionID: viewModel.questions.value[indexPath.row].id)), animated: true)
     }
 }
