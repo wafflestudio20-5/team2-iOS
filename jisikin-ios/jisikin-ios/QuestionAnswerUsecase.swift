@@ -11,6 +11,8 @@ import RxCocoa
 
 class QuestionAnswerUsecase{
     var page = 0
+    var isPageEnded = false
+    let ITEM_IN_PAGE = 20
     let bag = DisposeBag()
     let questionRepo = QuestionRepository()
     let answerRepo = AnswerRepository()
@@ -21,13 +23,22 @@ class QuestionAnswerUsecase{
         page = 0
         questionRepo.getQuestionsByLikes().subscribe(onSuccess: {
             result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
             self.questionSearch.accept(result)
         }).disposed(by: bag)
     }
     func getMoreQuestionsByLikes(){
+        if isPageEnded{
+            return
+        }
         page += 1
         questionRepo.getQuestionsByLikes(page:page).subscribe(onSuccess: {
             result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
             var value = self.questionSearch.value
             value.append(contentsOf: result)
             self.questionSearch.accept(value)
@@ -37,13 +48,22 @@ class QuestionAnswerUsecase{
         page = 0
         questionRepo.getQuestionsByDate(page:page).subscribe(onSuccess: {
             result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
             self.questionSearch.accept(result)
         }).disposed(by: bag)
     }
     func getMoreQuestionsByDate(){
         page += 1
+        if isPageEnded{
+            return
+        }
         questionRepo.getQuestionsByDate(page:page).subscribe(onSuccess: {
             result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
             var value = self.questionSearch.value
             value.append(contentsOf: result)
             self.questionSearch.accept(value)
