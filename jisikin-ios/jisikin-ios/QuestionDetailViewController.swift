@@ -234,6 +234,15 @@ class QuestionView:UIView{
         }
         tags = question.tag
         tagView.reloadData()
+        setLikeButton(like: question.liked)
+    }
+    func setLikeButton(like:Bool){
+        if like{
+            likeButton.setImage(systemName: "heart.fill", color: .red)
+        }
+        else{
+            likeButton.setImage(systemName: "heart", color: .red)
+        }
     }
     
 }
@@ -603,6 +612,18 @@ class AnswerTableCell:UITableViewCell{
             if !answer.selected{
                 answerChoiceButton.isHidden = true
             }
+        }
+        if answer.userIsAgreed == nil{
+            likeButton.setImage(systemName: "hand.thumbsup", color: .black)
+            dislikeButton.setImage(systemName: "hand.thumbsdown", color: .black)
+        }
+        else if answer.userIsAgreed!{
+           likeButton.setImage(systemName: "hand.thumbsup", color: .red)
+           dislikeButton.setImage(systemName: "hand.thumbsdown", color: .black)
+        }
+        else {
+            likeButton.setImage(systemName: "hand.thumbsup", color: .black)
+            dislikeButton.setImage(systemName: "hand.thumbsdown", color: .blue)
         }
     }
     @objc func onSelect(){

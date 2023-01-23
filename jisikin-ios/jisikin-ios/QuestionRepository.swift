@@ -37,6 +37,9 @@ struct QuestionDetailAPI:Codable{
     var closedAt: String?
     var userQuestionLikeNumber:Int
 }
+struct QuestionIDAPI:Codable{
+    var id:Int
+}
 final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
@@ -305,6 +308,23 @@ final class QuestionRepository{
                     single(.failure(error))
                 }
             }
+            return Disposables.create()
+        }
+    }
+    func getLikedQuestionsID()->Single<[QuestionIDAPI]>{
+        let fullURL = URL(string:baseURL + "/api/user/myLikeQuestions")
+        return Single<[QuestionIDAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get,interceptor: JWTInterceptor())
+                .validate(statusCode: 200..<300).responseDecodable(of:[QuestionIDAPI].self){
+                    response in
+                    switch(response.result){
+                    case .success(let data):
+                        single(.success(data))
+                    case .failure(let error):
+                        single(.failure(error))
+                    }
+                }
             return Disposables.create()
         }
     }
