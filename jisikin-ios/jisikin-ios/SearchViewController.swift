@@ -20,10 +20,10 @@ class SearchViewController:UIViewController{
         self.view.backgroundColor = .white
         setLayout()
         binding()
-        addTapGesture()
         setConstraint()
     }
     func setLayout(){
+        searchBar.delegate = self
         navigationController?.isNavigationBarHidden = false
         navigationItem.titleView = searchBar
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchButton)
@@ -36,6 +36,7 @@ class SearchViewController:UIViewController{
         searchResultTable.delegate = self
         searchResultTable.register(QuestionTableViewCell.self, forCellReuseIdentifier: QuestionTableViewCell.ID)
         searchResultTable.separatorStyle = .none
+        searchResultTable.keyboardDismissMode = .onDrag
         searchResultTable.translatesAutoresizingMaskIntoConstraints = false
         searchButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(searchButton)
@@ -77,4 +78,11 @@ extension SearchViewController:UITableViewDelegate{
     }
     
     
+}
+extension SearchViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.searchQuestions(keyword: searchBar.text!)
+        dismissKeyboard()
+    }
 }

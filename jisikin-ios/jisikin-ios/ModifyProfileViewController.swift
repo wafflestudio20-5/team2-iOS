@@ -18,6 +18,8 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     }()
     
     let defaultProfilePhoto = UIImage(named:"DefaultProfilePhoto")
+    var profilePhotoIsExisted = false
+    var profilePhotoIsModified = false
     
     let profilePhotoLabel = UILabel()
     let profilePhotoView = UIImageView()
@@ -73,6 +75,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
             if let profile{
                 profile.profileImage.subscribe(onNext:{[weak self] image in
                     if let profileImage = image{
+                        self!.profilePhotoIsExisted = true
                         self!.profilePhotoView.image = profileImage
                     }else{
                         self!.profilePhotoView.image = self!.defaultProfilePhoto
@@ -193,12 +196,12 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         }
     //카메라나 앨범등 PickerController가 사용되고 이미지 촬영을 했을 때 발동 된다.
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-  
             if let image = info[.editedImage] as? UIImage {
                 profilePhotoView.image = image
+                profilePhotoIsModified = true
+                profilePhotoIsExisted = true
             }
          dismiss(animated: true, completion: nil)
-        
     }
     @objc
     func onTapModifyProfilePhotoBtn() {
@@ -224,20 +227,19 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     }
     @objc
     func onTapModifySaveBtn() {
-        if genderSegment.selectedSegmentIndex == 0{
-            if profilePhotoView.image != defaultProfilePhoto{
-                viewModel.modifyProfile(profileImage: profilePhotoView.image!, username: modifyNickNameField.text!, isMale: true)
-            }else{
-                viewModel.modifyProfile(profileImage: profilePhotoView.image!, username: modifyNickNameField.text!, isMale: true)
+        var isMale: Bool
+        
+        if genderSegment.selectedSegmentIndex == 0{isMale = true}
+        else{isMale = false}
+        
+        if profilePhotoIsModified{
+            if viewModel.usecase.profile.value?.profileImage != ""{
+                print("image must be deleted")
+                viewModel.deleteProfileImage(url: (viewModel.usecase.profile.value?.profileImage)!)
             }
-            
-        }
-        else{
-            if profilePhotoView.image != defaultProfilePhoto{
-                viewModel.modifyProfile(profileImage: profilePhotoView.image!, username: modifyNickNameField.text!, isMale: false)
-            }else{
-                viewModel.modifyProfile(profileImage: profilePhotoView.image!, username: modifyNickNameField.text!, isMale: false)
-            }
+            viewModel.modifyProfile(profileImage: profilePhotoView.image, username: modifyNickNameField.text!, isMale: isMale)
+        }else{
+            viewModel.modifyProfile(profileImage: nil, username: modifyNickNameField.text!, isMale: isMale)
         }
         
         self.navigationController?.popViewController(animated: true)
