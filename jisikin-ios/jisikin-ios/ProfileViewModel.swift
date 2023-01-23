@@ -14,9 +14,14 @@ struct ProfileModel{
     var username:String
     var isMale:Bool?
     static func requestToModel(request:ProfileRequest)->ProfileModel{
-        var profileImage = BehaviorRelay<UIImage?>(value:nil)
-        ProfileUsecase().profilePhoto.asObservable().subscribe(onNext: {data in
+        let profileImage = BehaviorRelay<UIImage?>(value:nil)
+        let usecase = ProfileUsecase()
+        if let imageURL = request.profileImage{
+            usecase.getProfileImage(url: imageURL)
+        }
+        usecase.profilePhoto.asObservable().subscribe(onNext: {data in
             if let value = data{
+                print("ProfileViewModel got the image")
                 profileImage.accept(UIImage(data:value))
             }
         }).disposed(by: DisposeBag())
@@ -28,6 +33,7 @@ class ProfileViewModel{
     var usecase = ProfileUsecase()
     var profile = BehaviorRelay<ProfileModel?>(value:nil)
     init() {
+        usecase.getProfile()
         usecase.profile.asObservable().subscribe(onNext: {[weak self]
             data in
             if let value = data{
@@ -35,30 +41,26 @@ class ProfileViewModel{
             }
             
         }).disposed(by: bag)
-//        usecase.profilePhoto.asObservable().subscribe(onNext: {[weak self]
-//            data in
-//            self!.profile.accept(QuestionDetailModel.fromQuestionAPI(questionAPI:data))
-//        }).disposed(by: bag)
     }
     func getProfile(){
         usecase.getProfile()
     }
     
-    func modifyProfile(profileImage: UIImage, username:String, isMale:Bool){
-        usecase.modifyProfile(photo: profileImage, username: username, isMale: isMale)
+    func modifyProfile(profileImage: UIImage?, username:String, isMale:Bool){
+        if let image = profileImage{
+            usecase.uploadImage(image: image){[self] photoPath in
+                self.usecase.modifyProfile(photoPath: photoPath, username: username, isMale: isMale)
+            }
+        }
+        else{
+            if let imageURL = usecase.profile.value?.profileImage{
+                self.usecase.modifyProfile(photoPath: imageURL, username: username, isMale: isMale)
+            }else{
+                self.usecase.modifyProfile(photoPath: "", username: username, isMale: isMale)
+            }
+        }
     }
-    
-//    func selectAnswer(index:Int)->Single<String>{
-//        return Single<String>.create{single in
-//            self.usecase.selectAnswer(questionID: self.questionID, answerID: self.answers.value[index].id).subscribe(onSuccess: {
-//                result in
-//                single(.success(result))
-//
-//            }, onFailure: {
-//                error in
-//                single(.failure(error))
-//            })
-//        }
-//
-//    }
+    func deleteProfileImage(url: String){
+        usecase.deleteProfileImage(url: url)
+    }
 }

@@ -122,10 +122,14 @@ class MyViewController: UIViewController {
                 profile in
                 if self==nil{return}
                 if let profile{
+                    
                     profile.profileImage.subscribe(onNext:{[weak self] image in
                         if let profileImage = image{
+                            print("profile image updated in VC")
                             self!.profilePhotoView.image = profileImage
-                        }else{
+                        }
+                        else{
+                            print("There is no profile image in VC")
                             self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
                         }
                     })
@@ -224,7 +228,7 @@ class MyViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        loadView()
         setBackButton()
         // Do any additional setup after loading the view.
     }
