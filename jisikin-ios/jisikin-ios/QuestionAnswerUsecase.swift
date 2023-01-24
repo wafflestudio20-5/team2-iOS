@@ -21,6 +21,7 @@ class QuestionAnswerUsecase{
     var answerDetail = BehaviorRelay<[AnswerAPI]>(value:[])
     func getQuestionsByLikes(){
         page = 0
+        isPageEnded = false
         questionRepo.getQuestionsByLikes().subscribe(onSuccess: {
             result in
             if result.count < self.ITEM_IN_PAGE{
@@ -46,6 +47,7 @@ class QuestionAnswerUsecase{
     }
     func getQuestionsByDate(){
         page = 0
+        isPageEnded = false
         questionRepo.getQuestionsByDate(page:page).subscribe(onSuccess: {
             result in
             if result.count < self.ITEM_IN_PAGE{
