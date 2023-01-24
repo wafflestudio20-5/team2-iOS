@@ -252,7 +252,7 @@ class HomeViewController: UIViewController {
         viewModel.questions.asObservable().bind(to:myQuestionTable.rx.items(cellIdentifier: MyRelatedQuestionTableViewCell.ID)){index,model,cell in
             (cell as! MyRelatedQuestionTableViewCell).configure(question:model)
             self.myQuestionCountLabel.text = String(self.myQuestionTable.numberOfRows(inSection: 0))
-            self.myQuestionTable.refreshControl?.endRefreshing()
+          
         }.disposed(by: bag)
         viewModel.getMyQuestions()
         
@@ -359,7 +359,7 @@ class HomeViewController: UIViewController {
     
     @objc func onQuestionRefresh(){
         viewModel.getMyQuestions()
-        
+       
         self.myQuestionTable.refreshControl?.endRefreshing()
     }
 }
