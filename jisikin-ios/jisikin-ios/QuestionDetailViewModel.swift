@@ -17,14 +17,14 @@ struct AnswerDetailModel{
     var createdAt:String
     var selected:Bool
     var username:String
-    var profileImagePath:String?
+    var profileImage:UIImage?
     var userRecentAnswerDate:String
     var id:Int
     var agree:Int
     var disagree:Int
     var userIsAgreed:Bool?
     static func fromAnswerAPI(answerAPI:AnswerAPI)->AnswerDetailModel{
-        return AnswerDetailModel(content: answerAPI.content,photos:answerAPI.photos, createdAt:convertTimeFormat(time: answerAPI.createdAt), selected: answerAPI.selected, username: answerAPI.username,profileImagePath:answerAPI.profileImagePath, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id,agree:answerAPI.interactionCount.agree,disagree:answerAPI.interactionCount.disagree,userIsAgreed: answerAPI.userIsAgreed)
+        return AnswerDetailModel(content: answerAPI.content,photos:answerAPI.photos, createdAt:convertTimeFormat(time: answerAPI.createdAt), selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id,agree:answerAPI.interactionCount.agree,disagree:answerAPI.interactionCount.disagree,userIsAgreed: answerAPI.userIsAgreed)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
