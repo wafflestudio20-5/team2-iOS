@@ -16,15 +16,13 @@ struct ProfileRequest:Codable{
 }
 class ProfileRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
-    var isError = false
+    struct ModifyError {
+        var usernameExists = false
+    }
+    var error = ModifyError()
     
     func getProfile()->Single<ProfileRequest>{
         let fullURL = URL(string: baseURL + "/api/user/myAllProfile/")
-        
-//        AF.request(fullURL!,method:.get, headers: header).responseJSON { response in
-//                    print(response)
-//                }
-        
         return Single<ProfileRequest>.create{
             single in
             AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).responseDecodable(of:ProfileRequest.self){
@@ -41,13 +39,13 @@ class ProfileRepository{
         }
     }
     
-    func putAccount(photoPath: String, username: String, isMale: Bool) ->Single<ProfileRequest> {
+    func putAccount(photoPath: String, username: String, isMale: Bool,completionHandler:@escaping (ModifyError)->Void) ->Single<ProfileRequest> {
         print(photoPath, username, isMale)
         let fullURL = URL(string: baseURL + "/api/user/putAccount")
         let queryString: Parameters = [
                 "profileImage": photoPath,
                 "username": username,
-                "isMale": isMale
+                "isMale": isMale,
             ]
         
         return Single<ProfileRequest>.create{
@@ -56,10 +54,17 @@ class ProfileRepository{
                 response in
                 switch(response.result){
                 case .success(let data):
+                    self.error.usernameExists = false
                     single(.success(data))
+                    completionHandler(self.error)
                 case .failure(let error):
-                    print(error)
+                    if response.response?.statusCode == 409{
+                        self.error.usernameExists = true
+                    }else{
+                        self.error.usernameExists = false
+                    }
                     single(.failure(error))
+                    completionHandler(self.error)
                 }
             }
             return Disposables.create()
