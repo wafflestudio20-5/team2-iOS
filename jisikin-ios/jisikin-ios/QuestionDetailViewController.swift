@@ -56,9 +56,9 @@ class QuestionLikeView:UIView{
             onLike?()
         }
     func configure(isLike:Bool,likeCount:Int){
-        likeNumber.text = String(150)
+        likeNumber.text = String(likeCount)
         if isLike{
-            likeButton.setImage(systemName:"heart.fill",color:.black)
+            likeButton.setImage(systemName:"heart.fill",color:.red)
         }
         else{
             likeButton.setImage(systemName:"heart",color:.black)
@@ -408,7 +408,9 @@ class AnswerProfileView:UIView{
     func configure(answer:AnswerDetailModel){
         answerUserView.text = answer.username
         recentAnswerTime.text = answer.userRecentAnswerDate
-        
+        if answer.profileImagePath != nil{
+            profilePicture.kf.setImage(with: URL(string:answer.profileImagePath!))
+        }
     }
 }
 class AnswerTableCell:UITableViewCell{
@@ -416,7 +418,7 @@ class AnswerTableCell:UITableViewCell{
     
     var imageURL:[String] = []
   
-    
+    var selectedLabel:UILabel!
     var lineAtTop:UIView!
     var profile:AnswerProfileView!
     var answerContentView:UILabel!
@@ -446,9 +448,10 @@ class AnswerTableCell:UITableViewCell{
     func setLayout(){
         lineAtTop = UIView()
         lineAtTop.backgroundColor = UIColor(red: 235/255.0, green: 235/255.0, blue: 235/255.0, alpha: 1)
-     
+        selectedLabel = UILabel()
+        selectedLabel.text = "질문자 채택"
         profile = AnswerProfileView()
-        
+        profile.addBottomShadow()
         answerContentView = UILabel()
         answerContentView.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         answerContentView.font = answerContentView.font.withSize(20)
@@ -524,6 +527,9 @@ class AnswerTableCell:UITableViewCell{
             lineAtTop.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             lineAtTop.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             lineAtTop.heightAnchor.constraint(equalToConstant: 2.0)
+        ])
+        NSLayoutConstraint.activate([
+            selectedLabel.topAnchor.constraint(equalTo: lineAtTop.bottomAnchor,constant:5.0)
         ])
         NSLayoutConstraint.activate([
             profile.topAnchor.constraint(equalTo: lineAtTop.bottomAnchor,constant: 5.0),
@@ -998,4 +1004,18 @@ extension UIStackView {
         removedSubviews.forEach({ $0.removeFromSuperview() })
     }
 
+}
+extension UIView {
+func addBottomShadow() {
+     layer.masksToBounds = false
+
+    let shadowLayer = CALayer()
+    shadowLayer.frame = bounds
+    shadowLayer.shadowOffset = CGSize(width: 0, height: 1.5);
+    shadowLayer.shadowRadius = 0.5
+    shadowLayer.shadowOpacity = 0.5;
+    shadowLayer.shadowColor = UIColor.lightGray.cgColor
+ layer.addSublayer(shadowLayer)
+  
+}
 }
