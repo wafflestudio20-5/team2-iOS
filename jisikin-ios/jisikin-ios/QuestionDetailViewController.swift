@@ -56,9 +56,9 @@ class QuestionLikeView:UIView{
             onLike?()
         }
     func configure(isLike:Bool,likeCount:Int){
-        likeNumber.text = String(150)
+        likeNumber.text = String(likeCount)
         if isLike{
-            likeButton.setImage(systemName:"heart.fill",color:.black)
+            likeButton.setImage(systemName:"heart.fill",color:.red)
         }
         else{
             likeButton.setImage(systemName:"heart",color:.black)
