@@ -16,6 +16,7 @@ struct QuestionListModel{
     var answerCount:Int
     var questionLikeCount:Int
     var createdAt:String
+    
     static func fromQuestionAPI(questionAPI:QuestionSearchAPI)->QuestionListModel{
         return QuestionListModel(questionId: questionAPI.questionId, title: questionAPI.title, content: questionAPI.content, answerContent: questionAPI.answerContent, answerCount: questionAPI.answerCount, questionLikeCount: questionAPI.questionLikeCount,createdAt:convertTimeFormat(time: questionAPI.questionCreatedAt))
     }

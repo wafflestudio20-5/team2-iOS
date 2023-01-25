@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "answerBtn.png",
+      "filename" : "답변하기정헌 3.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "answerBtn 1.png",
+      "filename" : "답변하기정헌 4.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "answerBtn 2.png",
+      "filename" : "답변하기정헌.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

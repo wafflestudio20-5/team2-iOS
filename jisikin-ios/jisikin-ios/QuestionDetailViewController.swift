@@ -10,17 +10,73 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Kingfisher
+class QuestionLikeView:UIView{
+    var likeButton:UIButton!
+    var likeNumber:UILabel!
+    var onLike:(()->())?
+    override init(frame:CGRect){
+        super.init(frame:frame)
+        setLayout()
+        setConstraint()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    func setLayout(){
+      
+      
+        
+        likeButton = UIButton()
+        likeButton.setImage(systemName: "heart", color: .black)
+        likeButton.contentMode = .center
+        likeButton.imageView?.contentMode = .scaleAspectFit
+        likeButton.addTarget( self, action:#selector(onLikeButtonClicked),for:.touchDown)
+        likeNumber = UILabel()
+        likeNumber.text = "10"
+        likeNumber.font = likeNumber.font.withSize(23)
+        likeButton.translatesAutoresizingMaskIntoConstraints = false
+        likeNumber.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(likeButton)
+        addSubview(likeNumber)
+    }
+    func setConstraint(){
+        NSLayoutConstraint.activate([
+            likeButton.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant:15.0),
+            likeButton.heightAnchor.constraint(equalTo: likeButton.widthAnchor),
+            likeNumber.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor,constant:5.0),
+            trailingAnchor.constraint(equalTo: likeButton.trailingAnchor,constant:60.0),
+            likeButton.topAnchor.constraint(equalTo: likeNumber.topAnchor),
+            likeNumber.topAnchor.constraint(equalTo: topAnchor,constant:10.0),
+            likeNumber.bottomAnchor.constraint(equalTo: bottomAnchor,constant:-10.0),
+            likeButton.heightAnchor.constraint(equalTo: likeNumber.heightAnchor)
+        ])
+    }
+    @objc func onLikeButtonClicked(){
+            onLike?()
+        }
+    func configure(isLike:Bool,likeCount:Int){
+        likeNumber.text = String(150)
+        if isLike{
+            likeButton.setImage(systemName:"heart.fill",color:.black)
+        }
+        else{
+            likeButton.setImage(systemName:"heart",color:.black)
+        }
+    }
+    
+}
 class QuestionView:UIView{
     var tags:[String] = []
-    
+    var lineOnTop:UIView!
     var questionTitleView:UILabel!
     var questionUserInfo:UILabel!
     var questionContentView:UILabel!
     var questionTimeView:UILabel!
     var questionEditButton:UIButton!
     var questionDeleteButton:UIButton!
-    var likeNumberView:UILabel!
-    var likeButton:UIButton!
+    
+   
     var answerButton:UIButton!
     var imageStackView:UIStackView!
     var tagView:SelfSizingCollectionView!
@@ -29,6 +85,7 @@ class QuestionView:UIView{
     var onImageLoaded:(()->())?
     var onDeleteButtonClicked:(()->())?
     var onLikeButtonClicked:(()->())?
+    var likeView:QuestionLikeView!
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -40,35 +97,31 @@ class QuestionView:UIView{
     }
     func setLayout(){
         
+        lineOnTop = UIView()
+        lineOnTop.backgroundColor = .init(red: 229/255, green: 229/255, blue: 229/255, alpha: 1)
         
         questionTitleView = UILabel()
-        questionTitleView.font = questionTitleView.font.withSize(30)
+        questionTitleView.font = questionTitleView.font.withSize(27)
         questionTitleView.textColor = .black
         questionTitleView.numberOfLines = 0
        
      
         questionUserInfo = UILabel()
-        questionUserInfo.textColor = .gray
-        
+        questionUserInfo.textColor = .init(red: 155/255, green: 155/255, blue: 155/255, alpha: 1)
+        questionUserInfo.font = questionUserInfo.font.withSize(15)
         
         questionContentView = UILabel()
         questionContentView.numberOfLines = 0
         questionContentView.lineBreakMode = .byWordWrapping
         questionContentView.font = questionTitleView.font.withSize(20)
         
-        likeButton = UIButton()
-        likeButton.setTitleColor(.black, for: .normal)
-        likeButton.setImage(systemName: "heart", color: UIColor.red)
-        
-        likeButton.addTarget(self, action: #selector(likeButtonClicked), for: .touchDown)
-        
-        likeNumberView = UILabel()
-        likeNumberView.font = likeNumberView.font.withSize(30)
+     
         questionTimeView = UILabel()
         questionTimeView.textColor = .lightGray
         questionEditButton = UIButton()
         questionEditButton.setTitle("수정", for: .normal)
         questionEditButton.setTitleColor(.gray, for: .normal)
+        questionTimeView.font = questionTimeView.font.withSize(15)
         
         questionDeleteButton = UIButton()
         questionDeleteButton.setTitle("삭제", for: .normal)
@@ -91,58 +144,59 @@ class QuestionView:UIView{
         imageStackView.distribution = .equalSpacing
         imageStackView.alignment = .leading
         imageStackView.spacing = 20
-     
         
+        likeView = QuestionLikeView()
+       
+        
+        lineOnTop.translatesAutoresizingMaskIntoConstraints = false
         questionTitleView.translatesAutoresizingMaskIntoConstraints = false
         questionUserInfo.translatesAutoresizingMaskIntoConstraints = false
         questionContentView.translatesAutoresizingMaskIntoConstraints = false
-        likeButton.translatesAutoresizingMaskIntoConstraints = false
+     
         imageStackView.translatesAutoresizingMaskIntoConstraints = false
         questionTimeView.translatesAutoresizingMaskIntoConstraints = false
         questionEditButton.translatesAutoresizingMaskIntoConstraints = false
         questionDeleteButton.translatesAutoresizingMaskIntoConstraints = false
         answerButton.translatesAutoresizingMaskIntoConstraints = false
-        likeNumberView.translatesAutoresizingMaskIntoConstraints = false
+      
         tagView.translatesAutoresizingMaskIntoConstraints = false
-        
+        likeView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(lineOnTop)
         addSubview(questionTitleView)
         addSubview(questionUserInfo)
         addSubview(questionContentView)
-        addSubview(likeButton)
-        addSubview(likeNumberView)
+     
         addSubview(imageStackView)
         addSubview(questionTimeView)
         addSubview(questionEditButton)
         addSubview(questionDeleteButton)
         addSubview(answerButton)
         addSubview(tagView)
-        
+        addSubview(likeView)
     }
     
     func setConstraint(){
         NSLayoutConstraint.activate([
-            questionTitleView.topAnchor.constraint(equalTo: self.topAnchor,constant: 0),
+            lineOnTop.topAnchor.constraint(equalTo: self.topAnchor,constant:10.0),
+            lineOnTop.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lineOnTop.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            lineOnTop.heightAnchor.constraint(equalToConstant: 2.0)
+        ])
+        NSLayoutConstraint.activate([
+            questionTitleView.topAnchor.constraint(equalTo: self.lineOnTop.bottomAnchor,constant: 20.0),
             questionTitleView.leadingAnchor.constraint(equalTo:  self.leadingAnchor,constant: 20.0),
             questionTitleView.trailingAnchor.constraint(equalTo:  self.trailingAnchor,constant: -20.0)
         ])
         NSLayoutConstraint.activate([
             questionUserInfo.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
-            questionUserInfo.topAnchor.constraint(equalTo: questionTitleView.bottomAnchor,constant: 15.0)
+            questionUserInfo.topAnchor.constraint(equalTo: questionTitleView.bottomAnchor,constant: 5.0)
         ])
-        NSLayoutConstraint.activate([
-            likeButton.centerYAnchor.constraint(equalTo: questionUserInfo.centerYAnchor),
-            likeButton.trailingAnchor.constraint(equalTo:  self.safeAreaLayoutGuide.trailingAnchor,constant: -40.0),
-            likeButton.heightAnchor.constraint(equalToConstant: 30),
-            likeButton.widthAnchor.constraint(equalToConstant: 30)
-        ])
-        NSLayoutConstraint.activate([
-            likeNumberView.centerYAnchor.constraint(equalTo: likeButton.centerYAnchor),
-            likeNumberView.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor)
-        ])
+
+    
        NSLayoutConstraint.activate([
             questionContentView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
             questionContentView.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor),
-            questionContentView.topAnchor.constraint(equalTo:likeButton.bottomAnchor,constant: 10.0)
+            questionContentView.topAnchor.constraint(equalTo:questionUserInfo.bottomAnchor,constant: 10.0)
         ])
         NSLayoutConstraint.activate([
             imageStackView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
@@ -151,7 +205,7 @@ class QuestionView:UIView{
         ])
         NSLayoutConstraint.activate([
             questionTimeView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
-            questionTimeView.topAnchor.constraint(equalTo: imageStackView.bottomAnchor,constant: 5.0),
+            questionTimeView.topAnchor.constraint(equalTo: imageStackView.bottomAnchor,constant: 10.0),
           
         ])
         NSLayoutConstraint.activate([
@@ -164,13 +218,18 @@ class QuestionView:UIView{
             
         ])
         NSLayoutConstraint.activate([
-            tagView.topAnchor.constraint(equalTo: questionTimeView.bottomAnchor,constant: 5.0),
+            tagView.topAnchor.constraint(equalTo: questionTimeView.bottomAnchor,constant: 20.0),
             tagView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
             tagView.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor),
        
         ])
         NSLayoutConstraint.activate([
-          answerButton.topAnchor.constraint(equalTo: tagView.bottomAnchor,constant: 10.0),
+            likeView.topAnchor.constraint(equalTo: tagView.bottomAnchor,constant:30.0),
+            likeView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor)
+        ])
+    
+        NSLayoutConstraint.activate([
+          answerButton.topAnchor.constraint(equalTo: likeView.bottomAnchor,constant: 15.0),
            answerButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
           answerButton.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant:-20.0),
           answerButton.widthAnchor.constraint(equalTo:self.widthAnchor,multiplier: 0.5),
@@ -189,6 +248,9 @@ class QuestionView:UIView{
     @objc func likeButtonClicked(){
         onLikeButtonClicked?()
     }
+    func setOnLikeButtonClicked(on:@escaping()->()){
+        likeView.onLike = on
+    }
     func configure(question:QuestionDetailModel,hasAnswers:Bool){
         
         questionTitleView.text = question.title
@@ -205,7 +267,7 @@ class QuestionView:UIView{
             answerButton.isEnabled = true
             answerButton.backgroundColor = BLUE_COLOR
         }
-        likeNumberView.text = String(question.likeNumber)
+    
         imageStackView.safelyRemoveArrangedSubviews()
         for image in question.photos{
             let imageView = UIImageView()
@@ -234,16 +296,17 @@ class QuestionView:UIView{
         }
         tags = question.tag
         tagView.reloadData()
-        setLikeButton(like: question.liked)
+        likeView.configure(isLike: question.liked, likeCount: question.likeNumber)
+        //setLikeButton(like: question.liked)
     }
-    func setLikeButton(like:Bool){
+  /*  func setLikeButton(like:Bool){
         if like{
             likeButton.setImage(systemName: "heart.fill", color: .red)
         }
         else{
             likeButton.setImage(systemName: "heart", color: .red)
         }
-    }
+    }*/
     
 }
 extension QuestionView:UICollectionViewDataSource{
@@ -299,7 +362,7 @@ class AnswerProfileView:UIView{
     }
     func setLayout(){
         
-        self.layer.borderColor = CGColor(gray: 242/255, alpha: 1)
+        self.layer.borderColor = UIColor.init(red:225/255,green:225/255,blue:225/255,alpha:1).cgColor
         self.layer.borderWidth = 2
         self.layer.cornerRadius = 10
        
@@ -785,7 +848,7 @@ class QuestionDetailViewController:UIViewController{
         
         answerTableView = UITableView(frame: .zero, style: .grouped)
         answerTableView.delegate = self
-     
+        
         answerTableView.register(AnswerTableCell.self, forCellReuseIdentifier: AnswerTableCell.ID)
         answerTableView.backgroundColor = .white
         answerTableView.sectionHeaderHeight = UITableView.automaticDimension
@@ -812,6 +875,8 @@ extension QuestionDetailViewController:UITableViewDelegate{
         questionView.onImageLoaded = {
             tableView.reloadData()
         }
+        questionView.likeView.layer.borderColor =  CGColor(gray: 225/255, alpha: 1)
+        questionView.likeView.layer.borderWidth = 2
         questionView.setOnAnswerButtonClicked(){[weak self] in
             if UserDefaults.standard.bool(forKey: "isLogin"){
                 var vc = WritingAnswerViewController()
@@ -828,7 +893,7 @@ extension QuestionDetailViewController:UITableViewDelegate{
                 }
             }
         }
-        questionView.onLikeButtonClicked = {
+        questionView.setOnLikeButtonClicked() {
             if UserDefaults.standard.bool(forKey: "isLogin"){
                 self.viewModel.likeQuestion().subscribe(onSuccess:{
                     _ in
@@ -841,6 +906,7 @@ extension QuestionDetailViewController:UITableViewDelegate{
                 }
             }
         }
+        
         questionView.onDeleteButtonClicked = {
             self.viewModel.deleteQuestion().subscribe(onSuccess:{[weak self]
                 _ in

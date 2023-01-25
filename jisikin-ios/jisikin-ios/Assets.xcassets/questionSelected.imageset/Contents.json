@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "체크채택완료배경 3.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -10,6 +11,7 @@
       "scale" : "2x"
     },
     {
+      "filename" : "체크채택완료배경 1.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
