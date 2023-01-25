@@ -20,6 +20,7 @@ struct QuestionSearchAPI:Codable{
     var content:String
     var answerContent:String?
     var answerCount:Int
+    var questionCreatedAt:String
     var questionLikeCount:Int
 }
 struct QuestionDetailAPI:Codable{
