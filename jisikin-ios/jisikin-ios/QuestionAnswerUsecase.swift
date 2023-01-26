@@ -19,6 +19,7 @@ class QuestionAnswerUsecase{
     var questionSearch = BehaviorRelay<[QuestionSearchAPI]>(value:[])
     var questionDetail = BehaviorRelay<QuestionDetailAPI?>(value:nil)
     var answerDetail = BehaviorRelay<[AnswerAPI]>(value:[])
+    var likeQuestionID = BehaviorRelay<[Int]>(value:[])
     func getQuestionsByLikes(){
         page = 0
         isPageEnded = false
@@ -164,5 +165,20 @@ class QuestionAnswerUsecase{
             })
         }
     }
+    func getLikeQuestionID(){
+        if UserDefaults.standard.string(forKey: "accessToken") != nil{
+            questionRepo.getLikedQuestionsID().subscribe(onSuccess: {
+                data in
+                self.likeQuestionID.accept(data.map{
+                    $0.id
+                })
+            }).disposed(by: bag)
+        }
+        else{
+            print("Not logged in")
+            likeQuestionID.accept([])
+        }
+    }
+
     
 }

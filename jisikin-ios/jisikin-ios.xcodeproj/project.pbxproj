@@ -223,12 +223,12 @@
 				4ECD064B29692C1900E848BF /* QuestionRepository.swift */,
 				4ECD0659296BFB2700E848BF /* QuestionDetailViewModel.swift */,
 				C03F3CE42976AA2F0046DDDF /* ProfileViewModel.swift */,
-				C03F3CE62976AB510046DDDF /* ProfileUsecase.swift */,
 				C03F3CF42977A4070046DDDF /* PhotoRepository.swift */,
 				C03F3CEA2976AD4A0046DDDF /* ProfileRepository.swift */,
 				4ECD06612977D76E00E848BF /* JWTInterceptor.swift */,
 				4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */,
 				4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */,
+				C03F3CE62976AB510046DDDF /* ProfileUsecase.swift */,
 			);
 			path = "jisikin-ios";
 			sourceTree = "<group>";
