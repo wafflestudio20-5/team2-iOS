@@ -667,7 +667,9 @@ class AnswerTableCell:UITableViewCell{
             let username = UserDefaults.standard.string(forKey: "username")!
             answerEditButton.isHidden =  username != answer.username || answer.selected
             answerDeleteButton.isHidden =  username != answer.username || answer.selected
-            answerChoiceButton.isHidden = username != question?.username && !answer.selected
+            if username != question?.username && !answer.selected{
+                answerChoiceButton.isHidden = true
+            }
         }
         else{
             answerEditButton.isHidden = true
