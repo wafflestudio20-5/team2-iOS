@@ -632,7 +632,7 @@ class AnswerTableCell:UITableViewCell{
         }*/
     }
     func configurePhotos(answer:AnswerDetailModel){
-        if answer.photos != imageURL{
+        
             imageURL = answer.photos
             imageStackView.safelyRemoveArrangedSubviews()
             
@@ -653,7 +653,7 @@ class AnswerTableCell:UITableViewCell{
                     
                 }
             }
-        }
+        
     }
     func configureButtons(question:QuestionDetailModel?,answer:AnswerDetailModel){
         setIsChosen(isChosen: answer.selected)
@@ -784,7 +784,8 @@ class QuestionDetailViewController:UIViewController{
        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
        
            (cell as! AnswerTableCell).onImageLoaded = {
-               self.answerTableView.reloadData()
+               self.answerTableView.beginUpdates()
+               self.answerTableView.endUpdates()
            }
            (cell as! AnswerTableCell).configure(answer:model,question:self.viewModel.question.value)
           
