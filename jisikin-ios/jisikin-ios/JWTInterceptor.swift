@@ -29,6 +29,7 @@ class JWTInterceptor:RequestInterceptor{
                  completion(.doNotRetryWithError(error))
                  return
              }
+           
         loginRepo.regenerateToken{ result in
           
             if result == "success"{

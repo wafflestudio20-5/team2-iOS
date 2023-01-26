@@ -12,7 +12,7 @@ let BLUE_COLOR = UIColor(red: 111/255.0, green:200/255.0, blue: 240/255.0, alpha
            
 class AnswerViewController: UIViewController {
     
-   
+    var loading = false
     var bag = DisposeBag()
     var titleView:UILabel!
     var searchButton:UIButton!
@@ -30,7 +30,9 @@ class AnswerViewController: UIViewController {
         // Do any additional setup after loading the view.
         viewModel.questions.asObservable().bind(to:questionTable.rx.items(cellIdentifier: QuestionTableViewCell.ID)){index,model,cell in
             (cell as! QuestionTableViewCell).configure(question:model)
-            
+
+            self.loading = false
+ 
         }.disposed(by: bag)
         viewModel.getQuestionsByDate()
         
@@ -61,19 +63,19 @@ class AnswerViewController: UIViewController {
         navigationItem.setRightBarButton(UIBarButtonItem(image:UIImage(systemName:"magnifyingglass")!.withTintColor(.black, renderingMode: .alwaysOriginal) , style: .plain, target: self, action: #selector(onSearchButtonPressed)), animated: true)
         
         
-        sortMethodSegment = PlainSegmentedControl(items:["최신순","공감순"])
+        sortMethodSegment = PlainSegmentedControl(items:["최신순","좋아요순"])
         sortMethodSegment.backgroundColor = UIColor(red: 248/255.0, green: 248/255.0, blue: 248/255.0, alpha: 1)
         sortMethodSegment.setTitleTextAttributes(
             [
                 NSAttributedString.Key.foregroundColor: UIColor(red: 129/255.0, green: 129/255.0, blue: 129/255.0, alpha: 1),
-                .font: UIFont.systemFont(ofSize: 20, weight:.regular)
+                .font: UIFont.systemFont(ofSize: 15, weight:.regular)
             ],
             for: .normal
           )
         sortMethodSegment.setTitleTextAttributes(
             [
               NSAttributedString.Key.foregroundColor: BLUE_COLOR,
-              .font: UIFont.systemFont(ofSize: 20, weight: .bold)
+              .font: UIFont.systemFont(ofSize: 15, weight: .bold)
             ],
             for: .selected
           )
@@ -102,10 +104,10 @@ class AnswerViewController: UIViewController {
     func setConstraint(){
        
         NSLayoutConstraint.activate([
-            sortMethodSegment.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,constant: 20.0),
-            sortMethodSegment.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant:-20.0),
+            sortMethodSegment.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,constant: 40.0),
+            sortMethodSegment.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant:-40.0),
             sortMethodSegment.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 10.0),
-            sortMethodSegment.heightAnchor.constraint(equalToConstant: 50.0)
+            sortMethodSegment.heightAnchor.constraint(equalToConstant: 45.0)
         ])
         NSLayoutConstraint.activate([
             questionTable.topAnchor.constraint(equalTo: sortMethodSegment.bottomAnchor,constant:10.0),
@@ -153,7 +155,17 @@ extension AnswerViewController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: viewModel.questions.value[indexPath.row].questionId)), animated: true)
     }
-    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 3 && !loading {
+            loading = true
+            if sortMethodSegment.selectedSegmentIndex == 0{
+                viewModel.getMoreQUestionsByDate()
+            }
+            else{
+                viewModel.getMoreQuestionsByLikes()
+            }
+        }
+    }
     
 }
 extension UITableView {

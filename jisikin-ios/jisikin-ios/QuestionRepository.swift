@@ -20,6 +20,7 @@ struct QuestionSearchAPI:Codable{
     var content:String
     var answerContent:String?
     var answerCount:Int
+    var questionCreatedAt:String
     var questionLikeCount:Int
 }
 struct QuestionDetailAPI:Codable{
@@ -36,6 +37,9 @@ struct QuestionDetailAPI:Codable{
     var close: Bool
     var closedAt: String?
     var userQuestionLikeNumber:Int
+}
+struct QuestionIDAPI:Codable{
+    var id:Int
 }
 final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
@@ -148,6 +152,60 @@ final class QuestionRepository{
         let parameters = [
             "order":"like"
         ]
+        return Single<[QuestionSearchAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get,parameters: parameters,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var val = data
+                  //  for (i,v) in val.photos.enumerated(){
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   // }
+                    single(.success(val))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    func getQuestionsByLikes(page:Int)->Single<[QuestionSearchAPI]>{
+        let fullURL = URL(string: baseURL + "/api/question/search")
+        let parameters = [
+            "order":"like",
+            "pageNum":page
+        ] as [String : Any]
+        return Single<[QuestionSearchAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get,parameters: parameters,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var val = data
+                  //  for (i,v) in val.photos.enumerated(){
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   // }
+                    single(.success(val))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    func getQuestionsByDate(page:Int)->Single<[QuestionSearchAPI]>{
+        let fullURL = URL(string: baseURL + "/api/question/search")
+        let parameters = [
+            "order":"date",
+            "pageNum":page
+        ] as [String : Any]
         return Single<[QuestionSearchAPI]>.create{
             single in
             AF.request(fullURL!,method:.get,parameters: parameters,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
@@ -305,6 +363,23 @@ final class QuestionRepository{
                     single(.failure(error))
                 }
             }
+            return Disposables.create()
+        }
+    }
+    func getLikedQuestionsID()->Single<[QuestionIDAPI]>{
+        let fullURL = URL(string:baseURL + "/api/user/myLikeQuestions")
+        return Single<[QuestionIDAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get,interceptor: JWTInterceptor())
+                .validate(statusCode: 200..<300).responseDecodable(of:[QuestionIDAPI].self){
+                    response in
+                    switch(response.result){
+                    case .success(let data):
+                        single(.success(data))
+                    case .failure(let error):
+                        single(.failure(error))
+                    }
+                }
             return Disposables.create()
         }
     }
