@@ -436,6 +436,7 @@ class AnswerTableCell:UITableViewCell{
     var onImageLoaded:(()->())?
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
         setLayout()
         setConstraints()
     }
@@ -632,7 +633,7 @@ class AnswerTableCell:UITableViewCell{
         }*/
     }
     func configurePhotos(answer:AnswerDetailModel){
-        if answer.photos != imageURL{
+        
             imageURL = answer.photos
             imageStackView.safelyRemoveArrangedSubviews()
             
@@ -653,7 +654,7 @@ class AnswerTableCell:UITableViewCell{
                     
                 }
             }
-        }
+        
     }
     func configureButtons(question:QuestionDetailModel?,answer:AnswerDetailModel){
         setIsChosen(isChosen: answer.selected)
@@ -667,7 +668,9 @@ class AnswerTableCell:UITableViewCell{
             let username = UserDefaults.standard.string(forKey: "username")!
             answerEditButton.isHidden =  username != answer.username || answer.selected
             answerDeleteButton.isHidden =  username != answer.username || answer.selected
-            answerChoiceButton.isHidden = username != question?.username && !answer.selected
+            if username != question?.username && !answer.selected{
+                answerChoiceButton.isHidden = true
+            }
         }
         else{
             answerEditButton.isHidden = true
@@ -784,7 +787,8 @@ class QuestionDetailViewController:UIViewController{
        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
        
            (cell as! AnswerTableCell).onImageLoaded = {
-               self.answerTableView.reloadData()
+               self.answerTableView.beginUpdates()
+               self.answerTableView.endUpdates()
            }
            (cell as! AnswerTableCell).configure(answer:model,question:self.viewModel.question.value)
           

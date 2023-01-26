@@ -16,6 +16,7 @@ class QuestionTableViewCell:UITableViewCell{
     var lineAtTop:UIView!
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
         setLayout()
         setConstraints()
     }
