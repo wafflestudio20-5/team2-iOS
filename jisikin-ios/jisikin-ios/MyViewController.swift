@@ -125,8 +125,11 @@ class MyViewController: UIViewController {
                     
                     profile.profileImage.subscribe(onNext:{[weak self] image in
                         if let profileImage = image{
-                            print("profile image updated in VC")
-                            self!.profilePhotoView.image = profileImage
+                            if UserDefaults.standard.bool(forKey: "isLogin"){
+                                print("profile image updated in VC")
+                                self!.profilePhotoView.image = profileImage
+                            }
+                            
                         }
                         else{
                             print("There is no profile image in VC")

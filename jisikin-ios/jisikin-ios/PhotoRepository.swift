@@ -38,41 +38,48 @@ class PhotoRepository{
         }
     }
     
-    func deleteImage(url: String) -> Single<String>{
+    func deleteImage(url: String){//} -> Single<String>{
         print("deleteImage에 들어옴")
-        return Single<String>.create{single in
-            AF.request(url, method:.delete).responseString{
-                response in
-                switch(response.result){
-                case .success(let data):
-                    print("Image Deleted")
-                    print(data)
-                    single(.success(data))
-                case .failure(let error):
-                    print("fail to delete image")
-                    single(.failure(error))
-                }
-            
+        AF.request(url, method:.delete).responseString{
+            response in
+            switch(response.result){
+            case .success(let data):
+                print("Image Deleted")
+            case .failure(let error):
+                print("fail to delete image")
             }
-            return Disposables.create()
         }
+        
+//        return Single<String>.create{single in
+//            AF.request(url, method:.delete).responseString{
+//                response in
+//                switch(response.result){
+//                case .success(let data):
+//                    print("Image Deleted")
+//                    print(data)
+//                    single(.success(data))
+//                case .failure(let error):
+//                    print("fail to delete image")
+//                    single(.failure(error))
+//                }
+//
+//            }
+//            return Disposables.create()
+//        }
     }
     
-    func getImageData(url: String) -> Single<Data> {
-        return Single.create { single in
-            AF.request(url).responseData { response in
-                switch response.result{
-                    case .success(let imageData):
-                        DispatchQueue.main.async {
-                            print("program got profile image successfully")
-                            single(.success(imageData))
-                        }
-                    case .failure(let err):
-                        print(err.localizedDescription)
-                        single(.success(Data()))
+    func getImageData(url: String, completionhandler: @escaping (Data) -> Void){
+        AF.request(url).responseData { response in
+            switch response.result{
+                case .success(let imageData):
+                    DispatchQueue.main.async {
+                        print("program got profile image successfully")
+                        completionhandler(imageData)
                     }
-            }
-            return Disposables.create()
+                case .failure(let err):
+                    print(err.localizedDescription)
+                    completionhandler(Data())
+                }
         }
     }
 }

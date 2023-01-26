@@ -17,7 +17,10 @@ struct ProfileModel{
         let profileImage = BehaviorRelay<UIImage?>(value:nil)
         let usecase = ProfileUsecase()
         if let imageURL = request.profileImage{
-            usecase.getProfileImage(url: imageURL)
+            print("User has profile image in server")
+            usecase.getProfileImage(url: imageURL){data in
+                profileImage.accept(UIImage(data:data))
+            }
         }
         usecase.profilePhoto.asObservable().subscribe(onNext: {data in
             if let value = data{
@@ -46,17 +49,23 @@ class ProfileViewModel{
         usecase.getProfile()
     }
     
-    func modifyProfile(profileImage: UIImage?, username:String, isMale:Bool){
+    func modifyProfile(profileImage: UIImage?, username:String, isMale:Bool, completionHandler:@escaping (ProfileRepository.ModifyError)->Void){
         if let image = profileImage{
             usecase.uploadImage(image: image){[self] photoPath in
-                self.usecase.modifyProfile(photoPath: photoPath, username: username, isMale: isMale)
+                self.usecase.modifyProfile(photoPath: photoPath, username: username, isMale: isMale){error in
+                    completionHandler(error)
+                }
             }
         }
         else{
             if let imageURL = usecase.profile.value?.profileImage{
-                self.usecase.modifyProfile(photoPath: imageURL, username: username, isMale: isMale)
+                self.usecase.modifyProfile(photoPath: imageURL, username: username, isMale: isMale){error in
+                    completionHandler(error)
+                }
             }else{
-                self.usecase.modifyProfile(photoPath: "", username: username, isMale: isMale)
+                self.usecase.modifyProfile(photoPath: "", username: username, isMale: isMale){error in
+                    completionHandler(error)
+                }
             }
         }
     }

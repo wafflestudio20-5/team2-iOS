@@ -18,7 +18,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     }()
     
     let defaultProfilePhoto = UIImage(named:"DefaultProfilePhoto")
-    var profilePhotoIsExisted = false
+    //var profilePhotoIsExisted = false
     var profilePhotoIsModified = false
     
     let profilePhotoLabel = UILabel()
@@ -26,6 +26,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     let modifyProfilePhotoBtn = UIButton()
     let nickNameLabel = UILabel()
     let modifyNickNameField = UITextField()
+    let nickNameCriteriaLabel = UILabel()
     let genderLabel = UILabel()
     let genderSegment = UISegmentedControl(items: ["남", "여"])
     let modifyCancelBtn = UILabel()
@@ -35,6 +36,10 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewLoad()
+    }
+    
+    func viewLoad(){
         self.view.backgroundColor = .white
         
         navigationItem.title = "프로필 수정"
@@ -65,6 +70,8 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         modifyNickNameField.backgroundColor = .lightGray
         modifyNickNameField.textColor = .white
 //        modifyNickNameField.text = UserDefaults.standard.string(forKey: "username")
+        nickNameCriteriaLabel.textColor = .red
+        nickNameCriteriaLabel.font = UIFont.systemFont(ofSize: 12)
         
         genderLabel.text = "성별"
         //genderSegment
@@ -74,11 +81,15 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
             if self==nil{return}
             if let profile{
                 profile.profileImage.subscribe(onNext:{[weak self] image in
-                    if let profileImage = image{
-                        self!.profilePhotoIsExisted = true
-                        self!.profilePhotoView.image = profileImage
-                    }else{
-                        self!.profilePhotoView.image = self!.defaultProfilePhoto
+                    if let self = self{
+                        if let profileImage = image{
+                            //self!.profilePhotoIsExisted = true
+                            if !self.profilePhotoIsModified{
+                                self.profilePhotoView.image = profileImage
+                            }
+                        }else{
+                            self.profilePhotoView.image = self.defaultProfilePhoto
+                        }
                     }
                 })
                 self!.modifyNickNameField.text = profile.username
@@ -115,6 +126,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         view.addSubview(modifyProfilePhotoBtn)
         view.addSubview(nickNameLabel)
         view.addSubview(modifyNickNameField)
+        view.addSubview(nickNameCriteriaLabel)
         view.addSubview(genderLabel)
         view.addSubview(genderSegment)
         view.addSubview(modifyCancelBtn)
@@ -124,6 +136,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         modifyProfilePhotoBtn.translatesAutoresizingMaskIntoConstraints = false
         nickNameLabel.translatesAutoresizingMaskIntoConstraints = false
         modifyNickNameField.translatesAutoresizingMaskIntoConstraints = false
+        nickNameCriteriaLabel.translatesAutoresizingMaskIntoConstraints = false
         genderLabel.translatesAutoresizingMaskIntoConstraints = false
         genderSegment.translatesAutoresizingMaskIntoConstraints = false
         modifyCancelBtn.translatesAutoresizingMaskIntoConstraints = false
@@ -148,6 +161,9 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
             modifyNickNameField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             modifyNickNameField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 195),
             modifyNickNameField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 240),
+            
+            nickNameCriteriaLabel.topAnchor.constraint(equalTo: modifyNickNameField.bottomAnchor, constant:  5),
+            nickNameCriteriaLabel.leadingAnchor.constraint(equalTo: modifyNickNameField.leadingAnchor),
             
             
             genderLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
@@ -199,7 +215,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
             if let image = info[.editedImage] as? UIImage {
                 profilePhotoView.image = image
                 profilePhotoIsModified = true
-                profilePhotoIsExisted = true
+                //profilePhotoIsExisted = true
             }
          dismiss(animated: true, completion: nil)
     }
@@ -233,15 +249,32 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         else{isMale = false}
         
         if profilePhotoIsModified{
-            if viewModel.usecase.profile.value?.profileImage != ""{
-                print("image must be deleted")
-                viewModel.deleteProfileImage(url: (viewModel.usecase.profile.value?.profileImage)!)
+            viewModel.modifyProfile(profileImage: profilePhotoView.image, username: modifyNickNameField.text!, isMale: isMale){ [self] error in
+                if !error.usernameExists{
+                    if viewModel.usecase.profile.value?.profileImage != ""{
+                        print("image must be deleted")
+                        if let url = viewModel.usecase.profile.value?.profileImage{
+                            viewModel.deleteProfileImage(url: url)
+                        }
+                        
+                    }
+                    self.success()
+                }else{
+                    self.nickNameCriteriaLabel.text = "중복된 닉네임입니다."
+                }
             }
-            viewModel.modifyProfile(profileImage: profilePhotoView.image, username: modifyNickNameField.text!, isMale: isMale)
         }else{
-            viewModel.modifyProfile(profileImage: nil, username: modifyNickNameField.text!, isMale: isMale)
+            viewModel.modifyProfile(profileImage: nil, username: modifyNickNameField.text!, isMale: isMale){error in
+                if !error.usernameExists{
+                    self.success()
+                }else{
+                    self.nickNameCriteriaLabel.text = "중복된 닉네임입니다."
+                }
+            }
         }
-        
+    }
+    
+    func success(){
         self.navigationController?.popViewController(animated: true)
     }
 
