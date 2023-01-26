@@ -12,7 +12,7 @@ let BLUE_COLOR = UIColor(red: 111/255.0, green:200/255.0, blue: 240/255.0, alpha
            
 class AnswerViewController: UIViewController {
     
-   
+    var loading = false
     var bag = DisposeBag()
     var titleView:UILabel!
     var searchButton:UIButton!
@@ -30,7 +30,9 @@ class AnswerViewController: UIViewController {
         // Do any additional setup after loading the view.
         viewModel.questions.asObservable().bind(to:questionTable.rx.items(cellIdentifier: QuestionTableViewCell.ID)){index,model,cell in
             (cell as! QuestionTableViewCell).configure(question:model)
-            
+
+            self.loading = false
+ 
         }.disposed(by: bag)
         viewModel.getQuestionsByDate()
         
@@ -153,7 +155,17 @@ extension AnswerViewController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: viewModel.questions.value[indexPath.row].questionId)), animated: true)
     }
-    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 3 && !loading {
+            loading = true
+            if sortMethodSegment.selectedSegmentIndex == 0{
+                viewModel.getMoreQUestionsByDate()
+            }
+            else{
+                viewModel.getMoreQuestionsByLikes()
+            }
+        }
+    }
     
 }
 extension UITableView {

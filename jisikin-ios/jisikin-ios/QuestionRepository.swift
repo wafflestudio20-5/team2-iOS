@@ -169,6 +169,60 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
+    func getQuestionsByLikes(page:Int)->Single<[QuestionSearchAPI]>{
+        let fullURL = URL(string: baseURL + "/api/question/search")
+        let parameters = [
+            "order":"like",
+            "pageNum":page
+        ] as [String : Any]
+        return Single<[QuestionSearchAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get,parameters: parameters,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var val = data
+                  //  for (i,v) in val.photos.enumerated(){
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   // }
+                    single(.success(val))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    func getQuestionsByDate(page:Int)->Single<[QuestionSearchAPI]>{
+        let fullURL = URL(string: baseURL + "/api/question/search")
+        let parameters = [
+            "order":"date",
+            "pageNum":page
+        ] as [String : Any]
+        return Single<[QuestionSearchAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get,parameters: parameters,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var val = data
+                  //  for (i,v) in val.photos.enumerated(){
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   // }
+                    single(.success(val))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
     func getQuestionByID(id:Int)->Single<QuestionDetailAPI>{
         let fullURL = URL(string: baseURL + "/api/question/\(id)")
         return Single<QuestionDetailAPI>.create{

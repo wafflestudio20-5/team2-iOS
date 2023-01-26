@@ -293,7 +293,7 @@ final class LoginRepository {
                    parameters: parameters,
                    encoder: JSONParameterEncoder.default,
                    headers: header
-        )
+        ).validate(statusCode: 200..<300)
         .responseData(){
             response in
             
@@ -304,6 +304,7 @@ final class LoginRepository {
                     
                     let JSON = JSON(data)
                     print(JSON)
+                 
                     UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
                     UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
                     

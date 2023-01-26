@@ -10,6 +10,9 @@ import RxSwift
 import RxCocoa
 
 class QuestionAnswerUsecase{
+    var page = 0
+    var isPageEnded = false
+    let ITEM_IN_PAGE = 20
     let bag = DisposeBag()
     let questionRepo = QuestionRepository()
     let answerRepo = AnswerRepository()
@@ -17,15 +20,55 @@ class QuestionAnswerUsecase{
     var questionDetail = BehaviorRelay<QuestionDetailAPI?>(value:nil)
     var answerDetail = BehaviorRelay<[AnswerAPI]>(value:[])
     func getQuestionsByLikes(){
+        page = 0
+        isPageEnded = false
         questionRepo.getQuestionsByLikes().subscribe(onSuccess: {
             result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
             self.questionSearch.accept(result)
         }).disposed(by: bag)
     }
-    func getQuestionsByDate(){
-        questionRepo.getQuestionsByDate().subscribe(onSuccess: {
+    func getMoreQuestionsByLikes(){
+        if isPageEnded{
+            return
+        }
+        page += 1
+        questionRepo.getQuestionsByLikes(page:page).subscribe(onSuccess: {
             result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            var value = self.questionSearch.value
+            value.append(contentsOf: result)
+            self.questionSearch.accept(value)
+        }).disposed(by: bag)
+    }
+    func getQuestionsByDate(){
+        page = 0
+        isPageEnded = false
+        questionRepo.getQuestionsByDate(page:page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
             self.questionSearch.accept(result)
+        }).disposed(by: bag)
+    }
+    func getMoreQuestionsByDate(){
+        page += 1
+        if isPageEnded{
+            return
+        }
+        questionRepo.getQuestionsByDate(page:page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            var value = self.questionSearch.value
+            value.append(contentsOf: result)
+            self.questionSearch.accept(value)
         }).disposed(by: bag)
     }
     
