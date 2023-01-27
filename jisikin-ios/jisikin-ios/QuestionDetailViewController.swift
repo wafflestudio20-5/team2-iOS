@@ -132,7 +132,7 @@ class QuestionView:UIView{
         answerButton.setImage(UIImage(named: "AnswerButton"), for: .normal)
         answerButton.addTarget(self, action: #selector(answerButtonClicked(_:)), for: .touchUpInside)
         answerButton.imageView?.contentMode = .scaleAspectFit
-        answerButton.backgroundColor = BLUE_COLOR
+       // answerButton.backgroundColor = BLUE_COLOR
         
         let layout = UICollectionViewFlowLayout()
         tagView = SelfSizingCollectionView(frame: .zero, collectionViewLayout: layout)
@@ -265,7 +265,7 @@ class QuestionView:UIView{
         else{
             answerButton.setImage(UIImage(named:"AnswerButton"), for: .normal)
             answerButton.isEnabled = true
-            answerButton.backgroundColor = BLUE_COLOR
+          //  answerButton.backgroundColor = BLUE_COLOR
         }
     
         imageStackView.safelyRemoveArrangedSubviews()
