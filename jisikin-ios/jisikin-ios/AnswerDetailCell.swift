@@ -23,15 +23,15 @@ class AnswerProfileView:UIView{
     }
     func setLayout(){
         
-        self.layer.borderColor = UIColor.init(red:225/255,green:225/255,blue:225/255,alpha:1).cgColor
-        self.layer.borderWidth = 2
-        self.layer.cornerRadius = 10
+//        self.layer.borderColor = UIColor.init(red:225/255,green:225/255,blue:225/255,alpha:1).cgColor
+//        self.layer.borderWidth = 2
+        self.layer.cornerRadius = 9
         
         self.layer.masksToBounds = false
         backgroundColor = .white
-        layer.shadowOffset = CGSize(width: 5, height: 5)
+        layer.shadowOffset = CGSize(width: 0, height: 0)
         layer.shadowOpacity = 0.3
-        layer.shadowRadius = 2
+        layer.shadowRadius = 4
         layer.shadowColor = UIColor.gray.cgColor
         answerUserView = UILabel()
         answerUserView.text = "impri"
@@ -233,7 +233,7 @@ class AnswerTableCell:UITableViewCell{
         ])
         
         NSLayoutConstraint.activate([
-            answerContentView.topAnchor.constraint(equalTo: profile.bottomAnchor,constant: 5.0),
+            answerContentView.topAnchor.constraint(equalTo: profile.bottomAnchor,constant: 13.0),
             answerContentView.leadingAnchor.constraint(equalTo: profile.leadingAnchor),
             answerContentView.trailingAnchor.constraint(equalTo: profile.trailingAnchor)
             
