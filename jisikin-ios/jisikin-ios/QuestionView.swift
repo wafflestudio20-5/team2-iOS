@@ -115,7 +115,7 @@ class QuestionView:UIView{
         
         questionContentView = UILabel()
         questionContentView.numberOfLines = 0
-        questionContentView.lineBreakMode = .byWordWrapping
+        questionContentView.lineBreakMode = .byCharWrapping
         questionContentView.font = questionTitleView.font.withSize(20)
         
      
