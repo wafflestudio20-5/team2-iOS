@@ -57,12 +57,12 @@ class AnswerProfileView:UIView{
     }
     func setConstraint(){
         NSLayoutConstraint.activate([
-            answerUserView.topAnchor.constraint(equalTo: self.topAnchor,constant:5.0),
-            answerUserView.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 5.0)
+            answerUserView.centerYAnchor.constraint(equalTo: self.centerYAnchor,constant:-13),
+            answerUserView.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 10)
         ])
         NSLayoutConstraint.activate([
-            recentAnswerTime.topAnchor.constraint(equalTo: answerUserView.bottomAnchor,constant: 5.0),
-            recentAnswerTime.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 5.0),
+            recentAnswerTime.centerYAnchor.constraint(equalTo: self.centerYAnchor,constant: 13),
+            recentAnswerTime.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 10),
             recentAnswerTime.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: -20.0)
         ])
         NSLayoutConstraint.activate([
@@ -75,7 +75,7 @@ class AnswerProfileView:UIView{
     }
     func configure(answer:AnswerDetailModel){
         answerUserView.text = answer.username
-        recentAnswerTime.text = answer.userRecentAnswerDate
+        recentAnswerTime.text = "최근답변 \(answer.userRecentAnswerDate)"
         if answer.profileImagePath != nil{
             print(answer.profileImagePath)
         
