@@ -34,12 +34,10 @@ class AnswerProfileView:UIView{
         layer.shadowRadius = 4
         layer.shadowColor = UIColor.gray.cgColor
         answerUserView = UILabel()
-        answerUserView.text = "impri"
         answerUserView.textColor = .black
         answerUserView.font = UIFont.boldSystemFont(ofSize: 20)
         
         recentAnswerTime = UILabel()
-        recentAnswerTime.text = "2022.12.28"
         recentAnswerTime.textColor = .gray
         
         profilePicture = UIImageView(image:UIColor.yellow.image(CGSize(width: 50, height: 50)))
