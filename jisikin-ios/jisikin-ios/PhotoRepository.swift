@@ -12,73 +12,81 @@ class PhotoRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
     
-//    func uproadImage(imageData:UIImage?, completion: @escaping (NetworkResult<Any>) -> Void) -> Single<URL>{
-//        let fullURL = URL(string: baseURL + "/api/photo/")
-//
-//        let header: HTTPHeaders = [
-//            "Content-Type": "multipart/form-data",
-//            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
-//            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
-//        ]
-//
-//        AF.upload(multipartFormData: { multipartFormData in
-//            if let image = imageData?.pngData() {
-//                multipartFormData.append(image, withName: "activityImage", fileName: "\(image).png", mimeType: "image/png")
-//            }
-//        }, to: URL as! URLConvertible, usingThreshold: UInt64.init(), method: .post, headers: header).response { response in
-//            guard let statusCode = response.response?.statusCode,
-//                  statusCode == 200
-//            else { return }
-//            completion(.success(statusCode))
-//        }
-//
-////        let image = UIImage.init(named: "myImage")
-////        let imgData = image!.jpegData(compressionQuality: 0.2)!
-////
-////        let parameters = ["name": rname] //Optional for extra parameter
-////
-////        Alamofire.upload(multipartFormData: { multipartFormData in
-////                multipartFormData.append(imgData, withName: "fileset",fileName: "file.jpg", mimeType: "image/jpg")
-////                for (key, value) in parameters {
-////                        multipartFormData.append(value.data(using: String.Encoding.utf8)!, withName: key)
-////                    } //Optional for extra parameters
-////            },
-////        to:"mysite/upload.php")
-////        { (result) in
-////            switch result {
-////            case .success(let upload, _, _):
-////
-////                upload.uploadProgress(closure: { (progress) in
-////                    print("Upload Progress: \(progress.fractionCompleted)")
-////                })
-////
-////                upload.responseJSON { response in
-////                     print(response.result.value)
-////                }
-////
-////            case .failure(let encodingError):
-////                print(encodingError)
-////            }
-////        }
-//    }
-    
-    func getImageData(url: String) -> Single<Data> {
-        return Single.create { [self] single in
-            let realURL = baseURL + url
-            AF.request(realURL).responseData { response in
-                switch response.result{
-                    case .success(let imageData):
-                        DispatchQueue.main.async {
-                            guard let image = UIImage(data: imageData) else {return}
-                            single(.success(imageData))
-                            //completionHandler(image)
-                        }
-                    case .failure(let err):
-                        print(err.localizedDescription)
-                        single(.success(Data()))
-                    }
+    func uploadImage(image: UIImage, completionhandler: @escaping (String) -> Void) {
+        let fullURL = URL(string: baseURL + "/api/photo")
+        
+        let queryString: Parameters = [
+            "image": image.jpegData(compressionQuality: 1)!
+        ]
+        
+        AF.upload(multipartFormData: { multipartFormData in
+            for (key, value) in queryString {
+                let uuidName = UUID().uuidString
+                multipartFormData.append(value as! Data, withName: "\(key)", fileName: "\(uuidName).jpg", mimeType: "image/jpeg")
             }
-            return Disposables.create()
+            
+        }, to: fullURL!, usingThreshold: UInt64.init(), method: .post, interceptor:JWTInterceptor()).responseString { response in
+            switch(response.result) {
+            case .success(let data):
+                print("이미지 업로드 성공")
+                print(data)
+                completionhandler(data)
+            case .failure(let error):
+                print("이미지 업로드 실패")
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func deleteImage(url: String){//} -> Single<String>{
+        print("deleteImage에 들어옴")
+        
+        let fullURL = URL(string: baseURL + "/api/photo")
+        
+        let queryString: Parameters = [
+            "url": url
+        ]
+        
+        AF.request(fullURL!, method:.delete, parameters: queryString, interceptor:JWTInterceptor()).responseString{
+            response in
+            switch(response.result){
+            case .success(let data):
+                print("Image Deleted")
+            case .failure(let error):
+                print("fail to delete image")
+            }
+        }
+        
+//        return Single<String>.create{single in
+//            AF.request(url, method:.delete).responseString{
+//                response in
+//                switch(response.result){
+//                case .success(let data):
+//                    print("Image Deleted")
+//                    print(data)
+//                    single(.success(data))
+//                case .failure(let error):
+//                    print("fail to delete image")
+//                    single(.failure(error))
+//                }
+//
+//            }
+//            return Disposables.create()
+//        }
+    }
+    
+    func getImageData(url: String, completionhandler: @escaping (Data) -> Void){
+        AF.request(url).responseData { response in
+            switch response.result{
+                case .success(let imageData):
+                    DispatchQueue.main.async {
+                        print("program got profile image successfully")
+                        completionhandler(imageData)
+                    }
+                case .failure(let err):
+                    print(err.localizedDescription)
+                    completionhandler(Data())
+                }
         }
     }
 }

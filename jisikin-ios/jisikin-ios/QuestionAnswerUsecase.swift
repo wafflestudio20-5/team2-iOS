@@ -10,22 +10,66 @@ import RxSwift
 import RxCocoa
 
 class QuestionAnswerUsecase{
+    var page = 0
+    var isPageEnded = false
+    let ITEM_IN_PAGE = 20
     let bag = DisposeBag()
     let questionRepo = QuestionRepository()
     let answerRepo = AnswerRepository()
     var questionSearch = BehaviorRelay<[QuestionSearchAPI]>(value:[])
     var questionDetail = BehaviorRelay<QuestionDetailAPI?>(value:nil)
     var answerDetail = BehaviorRelay<[AnswerAPI]>(value:[])
+    var likeQuestionID = BehaviorRelay<[Int]>(value:[])
     func getQuestionsByLikes(){
+        page = 0
+        isPageEnded = false
         questionRepo.getQuestionsByLikes().subscribe(onSuccess: {
             result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
             self.questionSearch.accept(result)
         }).disposed(by: bag)
     }
-    func getQuestionsByDate(){
-        questionRepo.getQuestionsByDate().subscribe(onSuccess: {
+    func getMoreQuestionsByLikes(){
+        if isPageEnded{
+            return
+        }
+        page += 1
+        questionRepo.getQuestionsByLikes(page:page).subscribe(onSuccess: {
             result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            var value = self.questionSearch.value
+            value.append(contentsOf: result)
+            self.questionSearch.accept(value)
+        }).disposed(by: bag)
+    }
+    func getQuestionsByDate(){
+        page = 0
+        isPageEnded = false
+        questionRepo.getQuestionsByDate(page:page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
             self.questionSearch.accept(result)
+        }).disposed(by: bag)
+    }
+    func getMoreQuestionsByDate(){
+        page += 1
+        if isPageEnded{
+            return
+        }
+        questionRepo.getQuestionsByDate(page:page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            var value = self.questionSearch.value
+            value.append(contentsOf: result)
+            self.questionSearch.accept(value)
         }).disposed(by: bag)
     }
     
@@ -40,14 +84,22 @@ class QuestionAnswerUsecase{
             self.answerDetail.accept(data)
         })
     }
+    
+    func searchQuestions(keyword:String){
+        questionRepo.searchQuestions(keyword:keyword).subscribe(onSuccess: {
+            result in
+            self.questionSearch.accept(result)
+        }).disposed(by: bag)
+    }
    
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         questionRepo.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag, photos: photos)
     }
     
-    func postNewAnswer(id: Int, contentText: String,handler:@escaping(()->())) {
-        answerRepo.postNewAnswer(id: id, contentText: contentText){
-            handler()
+    func postNewAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        answerRepo.postNewAnswer(id: id, contentText: contentText, photos: photos){
+            result in
+            completionhandler(result)
         }
     }
     func selectAnswer(questionID:Int,answerID:Int)->Single<String>{
@@ -113,5 +165,20 @@ class QuestionAnswerUsecase{
             })
         }
     }
+    func getLikeQuestionID(){
+        if UserDefaults.standard.string(forKey: "accessToken") != nil{
+            questionRepo.getLikedQuestionsID().subscribe(onSuccess: {
+                data in
+                self.likeQuestionID.accept(data.map{
+                    $0.id
+                })
+            }).disposed(by: bag)
+        }
+        else{
+            print("Not logged in")
+            likeQuestionID.accept([])
+        }
+    }
+
     
 }

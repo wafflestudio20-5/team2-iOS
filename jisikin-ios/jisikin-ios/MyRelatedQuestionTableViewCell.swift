@@ -16,6 +16,7 @@ class MyRelatedQuestionTableViewCell:UITableViewCell{
     var lineAtBottom:UIView!
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
         setLayout()
         setConstraints()
     }
@@ -69,7 +70,7 @@ class MyRelatedQuestionTableViewCell:UITableViewCell{
    
     func configure(question:MyRelatedQuestionListModel){
         questionTitleView.text = question.title
-        postedTimeAndAnswerNumberView.text = question.createdAt! + " | " + (question.answerNumber != nil ? "답변 \(question.answerNumber!)" : "답변")
+        postedTimeAndAnswerNumberView.text = question.createdAt! + " | " + (question.answerCount != nil ? "답변 \(question.answerCount!)" : "공감")
     }
     
 }

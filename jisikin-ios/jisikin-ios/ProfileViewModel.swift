@@ -10,54 +10,69 @@ import UIKit
 import RxSwift
 import RxCocoa
 struct ProfileModel{
-    var profileImage:UIImage?
+    var profileImage:BehaviorRelay<UIImage?>
     var username:String
     var isMale:Bool?
-//    static func requestToModel(request:ProfileRequest)->ProfileModel{
-//        usecase.profilePhoto.asObservable().subscribe(onNext: {[weak self]
-//            data in
-//            self!.profile.accept(QuestionDetailModel.fromQuestionAPI(questionAPI:data))
-//        }).disposed(by: bag)
-//        request
-//
-//
-//        return AnswerDetailModel(content: answerAPI.content,photos:answerAPI.photos, createdAt: answerAPI.createdAt, selected: answerAPI.selected, username: answerAPI.username, userRecentAnswerDate:convertTimeFormat(time: answerAPI.userRecentAnswerDate),id:answerAPI.id,agree:answerAPI.interactionCount.agree,disagree:answerAPI.interactionCount.disagree)
-//    }
+    static func requestToModel(request:ProfileRequest)->ProfileModel{
+        let profileImage = BehaviorRelay<UIImage?>(value:nil)
+        let usecase = ProfileUsecase()
+        if let imageURL = request.profileImage{
+            print("User has profile image in server")
+            usecase.getProfileImage(url: imageURL){data in
+                profileImage.accept(UIImage(data:data))
+            }
+        }
+        usecase.profilePhoto.asObservable().subscribe(onNext: {data in
+            if let value = data{
+                print("ProfileViewModel got the image")
+                profileImage.accept(UIImage(data:value))
+            }
+        }).disposed(by: DisposeBag())
+        return ProfileModel(profileImage: profileImage, username:request.username, isMale:request.isMale)
+    }
 }
 class ProfileViewModel{
     var bag = DisposeBag()
     var usecase = ProfileUsecase()
     var profile = BehaviorRelay<ProfileModel?>(value:nil)
-//    init(usecase: ProfileUsecase) {
-//        self.usecase = usecase
-//        usecase.profile.asObservable().subscribe(onNext: {[weak self]
-//            data in
-//            self!.profile.accept(QuestionDetailModel.fromQuestionAPI(questionAPI:data))
-//        }).disposed(by: bag)
-//        usecase.profilePhoto.asObservable().subscribe(onNext: {[weak self]
-//            data in
-//            self!.profile.accept(QuestionDetailModel.fromQuestionAPI(questionAPI:data))
-//        }).disposed(by: bag)
-//    }
+    init() {
+        usecase.getProfile()
+        usecase.profile.asObservable().subscribe(onNext: {[weak self]
+            data in
+            if let value = data{
+                self!.profile.accept(ProfileModel.requestToModel(request: value))
+            }
+            
+        }).disposed(by: bag)
+    }
     func getProfile(){
         usecase.getProfile()
     }
     
-    func modifyProfile(profileImage: UIImage, username:String, isMale:Bool){
-        usecase.modifyProfile(photo: profileImage, username: username, isMale: isMale)
+    func modifyProfile(profileImage: UIImage?, username:String, isMale:Bool, completionHandler:@escaping (ProfileRepository.ModifyError)->Void){
+        if let image = profileImage{
+            usecase.uploadImage(image: image){[self] photoPath in
+                self.usecase.modifyProfile(photoPath: photoPath, username: username, isMale: isMale){error in
+                    if !error.hadError{
+                        UserDefaults.standard.set(image.jpegData(compressionQuality: 1.0), forKey: "profileImage")
+                    }
+                    completionHandler(error)
+                }
+            }
+        }
+        else{
+            if let imageURL = usecase.profile.value?.profileImage{
+                self.usecase.modifyProfile(photoPath: imageURL, username: username, isMale: isMale){error in
+                    completionHandler(error)
+                }
+            }else{
+                self.usecase.modifyProfile(photoPath: "", username: username, isMale: isMale){error in
+                    completionHandler(error)
+                }
+            }
+        }
     }
-    
-//    func selectAnswer(index:Int)->Single<String>{
-//        return Single<String>.create{single in
-//            self.usecase.selectAnswer(questionID: self.questionID, answerID: self.answers.value[index].id).subscribe(onSuccess: {
-//                result in
-//                single(.success(result))
-//
-//            }, onFailure: {
-//                error in
-//                single(.failure(error))
-//            })
-//        }
-//
-//    }
+    func deleteProfileImage(url: String){
+        usecase.deleteProfileImage(url: url)
+    }
 }

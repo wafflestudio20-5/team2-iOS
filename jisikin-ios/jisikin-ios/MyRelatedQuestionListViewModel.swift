@@ -10,12 +10,11 @@ import RxSwift
 import RxCocoa
 struct MyRelatedQuestionListModel{
     var title:String
-    var content:String
-    var answerNumber:Int?
+    var answerCount:Int?
     var createdAt:String?
     var id:Int
     static func fromQuestionAPI(questionAPI:MyRelatedQuestionResponse)->MyRelatedQuestionListModel{
-        return MyRelatedQuestionListModel(title:questionAPI.title,content:questionAPI.content,answerNumber:nil, createdAt: convertTimeFormat(time: questionAPI.createdAt),id:questionAPI.id)
+        return MyRelatedQuestionListModel(title:questionAPI.title, answerCount:questionAPI.answerCount, createdAt: convertTimeFormat(time: questionAPI.createdAt),id:questionAPI.id)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
@@ -38,21 +37,13 @@ class MyRelatedQuestionListViewModel{
             if self == nil{return}
             self!.questions.accept(data.map{ questionAPI in
                 var question = MyRelatedQuestionListModel.fromQuestionAPI(questionAPI: questionAPI)
-                question.answerNumber = usecase.answersByQuestionID.value[question.id]?.count
                 return question
                 
             })
         }).disposed(by: bag)
         usecase.answersByQuestionID.asObservable().subscribe(onNext:{[weak self]
             data in
-            if self == nil{return}
             var value = self!.questions.value
-            if value.count == 0{
-                return
-            }
-            for i in 0...value.count-1{
-                value[i].answerNumber = data[value[i].id]?.count
-            }
             self!.questions.accept(value)
         })
         }

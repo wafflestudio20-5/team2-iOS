@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import RxSwift
 
 class ModifyProfileViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    let bag = DisposeBag()
     
     lazy var backBtn: UIBarButtonItem = {
         let btn = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(onTapModifyCancelBtn))
@@ -15,11 +17,15 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         return btn
     }()
     
+    let defaultProfilePhoto = UIImage(named:"DefaultProfilePhoto")
+    var profilePhotoIsModified = false
+    
     let profilePhotoLabel = UILabel()
     let profilePhotoView = UIImageView()
     let modifyProfilePhotoBtn = UIButton()
     let nickNameLabel = UILabel()
     let modifyNickNameField = UITextField()
+    let nickNameCriteriaLabel = UILabel()
     let genderLabel = UILabel()
     let genderSegment = UISegmentedControl(items: ["남", "여"])
     let modifyCancelBtn = UILabel()
@@ -29,6 +35,10 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewLoad()
+    }
+    
+    func viewLoad(){
         self.view.backgroundColor = .white
         
         navigationItem.title = "프로필 수정"
@@ -38,7 +48,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         profilePhotoLabel.text = "프로필 사진"
         
         let profilePhotoSize = CGFloat(45)
-        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+//        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
         profilePhotoView.backgroundColor = .systemGray
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
@@ -58,11 +68,38 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         nickNameLabel.text = "닉네임"
         modifyNickNameField.backgroundColor = .lightGray
         modifyNickNameField.textColor = .white
-        modifyNickNameField.text = UserDefaults.standard.string(forKey: "username")
+        nickNameCriteriaLabel.textColor = .red
+        nickNameCriteriaLabel.font = UIFont.systemFont(ofSize: 12)
         
         genderLabel.text = "성별"
-        //genderSegment
-        
+        viewModel.getProfile()
+        viewModel.profile.subscribe(onNext: {[weak self]
+            profile in
+            if self==nil{return}
+            if let profile{
+                profile.profileImage.subscribe(onNext:{[weak self] image in
+                    if let self = self{
+                        if let profileImage = image{
+                            if !self.profilePhotoIsModified{
+                                self.profilePhotoView.image = profileImage
+                            }
+                        }else{
+                            if let data = UserDefaults.standard.data(forKey: "profileImage"){
+                                self.profilePhotoView.image = UIImage(data: data)
+                            }else{
+                                self.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+                            }
+                        }
+                    }
+                })
+                self!.modifyNickNameField.text = profile.username
+                if profile.isMale!{
+                    self!.genderSegment.selectedSegmentIndex = 0
+                }else{
+                    self!.genderSegment.selectedSegmentIndex = 1
+                }
+            }
+        }).disposed(by: bag)
         
         modifyCancelBtn.text = "취소하기"
         modifyCancelBtn.textAlignment = .center
@@ -77,9 +114,6 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         modifySaveBtn.textAlignment = .center
         modifySaveBtn.backgroundColor = BLUE_COLOR
         modifySaveBtn.textColor = .white
-        //modifySaveBtn.layer.borderWidth = 2.0
-        //modifySaveBtn.layer.borderColor = UIColor.systemGray.cgColor
-        //modifySaveBtn.layer.cornerRadius = 8
         let tapModifySaveGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifySaveBtn))
         modifySaveBtn.addGestureRecognizer(tapModifySaveGesture)
         modifySaveBtn.isUserInteractionEnabled = true
@@ -89,6 +123,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         view.addSubview(modifyProfilePhotoBtn)
         view.addSubview(nickNameLabel)
         view.addSubview(modifyNickNameField)
+        view.addSubview(nickNameCriteriaLabel)
         view.addSubview(genderLabel)
         view.addSubview(genderSegment)
         view.addSubview(modifyCancelBtn)
@@ -98,6 +133,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         modifyProfilePhotoBtn.translatesAutoresizingMaskIntoConstraints = false
         nickNameLabel.translatesAutoresizingMaskIntoConstraints = false
         modifyNickNameField.translatesAutoresizingMaskIntoConstraints = false
+        nickNameCriteriaLabel.translatesAutoresizingMaskIntoConstraints = false
         genderLabel.translatesAutoresizingMaskIntoConstraints = false
         genderSegment.translatesAutoresizingMaskIntoConstraints = false
         modifyCancelBtn.translatesAutoresizingMaskIntoConstraints = false
@@ -108,11 +144,11 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
             profilePhotoView.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor),
             profilePhotoView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor, constant: -profilePhotoSize),
             profilePhotoView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor, constant: profilePhotoSize),
-            profilePhotoView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80-profilePhotoSize),//20
-            profilePhotoView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80+profilePhotoSize),//20
+            profilePhotoView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80-profilePhotoSize),
+            profilePhotoView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80+profilePhotoSize),
             
             modifyProfilePhotoBtn.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor,constant: profilePhotoSize/1.414),
-            modifyProfilePhotoBtn.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80+profilePhotoSize/1.414),//20
+            modifyProfilePhotoBtn.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80+profilePhotoSize/1.414),
             
             
             nickNameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
@@ -122,6 +158,9 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
             modifyNickNameField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             modifyNickNameField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 195),
             modifyNickNameField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 240),
+            
+            nickNameCriteriaLabel.topAnchor.constraint(equalTo: modifyNickNameField.bottomAnchor, constant:  5),
+            nickNameCriteriaLabel.leadingAnchor.constraint(equalTo: modifyNickNameField.leadingAnchor),
             
             
             genderLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
@@ -170,12 +209,12 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         }
     //카메라나 앨범등 PickerController가 사용되고 이미지 촬영을 했을 때 발동 된다.
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-  
             if let image = info[.editedImage] as? UIImage {
                 profilePhotoView.image = image
+                profilePhotoIsModified = true
+                //profilePhotoIsExisted = true
             }
          dismiss(animated: true, completion: nil)
-        
     }
     @objc
     func onTapModifyProfilePhotoBtn() {
@@ -201,13 +240,38 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     }
     @objc
     func onTapModifySaveBtn() {
-        if genderSegment.selectedSegmentIndex == 0{
-            viewModel.modifyProfile(profileImage: UIImage(), username: modifyNickNameField.text!, isMale: true)
-        }
-        else{
-            viewModel.modifyProfile(profileImage: UIImage(), username: modifyNickNameField.text!, isMale: false)
-        }
+        var isMale: Bool
         
+        if genderSegment.selectedSegmentIndex == 0{isMale = true}
+        else{isMale = false}
+        
+        if profilePhotoIsModified{
+            viewModel.modifyProfile(profileImage: profilePhotoView.image, username: modifyNickNameField.text!, isMale: isMale){ [self] error in
+                if !error.usernameExists{
+                    if viewModel.usecase.profile.value?.profileImage != ""{
+                        print("image must be deleted")
+                        if let url = viewModel.usecase.profile.value?.profileImage{
+                            viewModel.deleteProfileImage(url: url)
+                        }
+                        
+                    }
+                    self.success()
+                }else{
+                    self.nickNameCriteriaLabel.text = "중복된 닉네임입니다."
+                }
+            }
+        }else{
+            viewModel.modifyProfile(profileImage: nil, username: modifyNickNameField.text!, isMale: isMale){error in
+                if !error.usernameExists{
+                    self.success()
+                }else{
+                    self.nickNameCriteriaLabel.text = "중복된 닉네임입니다."
+                }
+            }
+        }
+    }
+    
+    func success(){
         self.navigationController?.popViewController(animated: true)
     }
 

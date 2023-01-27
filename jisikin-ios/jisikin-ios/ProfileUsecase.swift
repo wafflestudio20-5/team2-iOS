@@ -22,34 +22,30 @@ class ProfileUsecase{
         }).disposed(by: bag)
     }
     
-    func getProfileImage(url: String){
-        PhotoRepo.getImageData(url: url).subscribe(onSuccess:{[weak self]
+    func getProfileImage(url: String, completionhandler: @escaping ((Data) -> Void)){
+        PhotoRepo.getImageData(url: url){
             data in
-            self!.profilePhoto.accept(data)
-        }).disposed(by: bag)
+            print("usecase got image successfully")
+            UserDefaults.standard.set(data, forKey: "profileImage")
+            completionhandler(data)
+        }
     }
     
-    func modifyProfile(photo: UIImage, username: String, isMale: Bool){//->Single<String>{
-//        photoPath = self.PhotoRepo.uploadImage(imageData: photo).subscribe(onSuccess: {
-//            result in
-//            single(.success(result))
-//
-//        }, onError: {
-//            error in
-//            single(.failure(error))
-//        })
-//
-//        return Single<String>.create{single in
-//            self.ProfileRepo.putAccount(photoPath: photoPath, username: username, isMale: isMale).subscribe(onSuccess: {
-//                result in
-//                single(.success(result))
-//
-//            }, onError: {
-//                error in
-//                single(.failure(error))
-//            })
-//        }
-        ProfileRepo.putAccount(username: username, isMale: isMale).subscribe(onSuccess: {[weak self] data in
+    func uploadImage(image: UIImage, completionhandler: @escaping ((String) -> Void)) {
+        PhotoRepo.uploadImage(image: image){
+            result in
+            completionhandler(result)
+        }
+    }
+    
+    func deleteProfileImage(url: String){
+        PhotoRepo.deleteImage(url: url)
+    }
+    
+    func modifyProfile(photoPath: String, username: String, isMale: Bool,completionHandler:@escaping (ProfileRepository.ModifyError)->Void){
+        ProfileRepo.putAccount(photoPath: photoPath,username: username, isMale: isMale, completionHandler: {error in
+            completionHandler(error)
+        }).subscribe(onSuccess: {[weak self] data in
             if(self == nil){
                 return
             }

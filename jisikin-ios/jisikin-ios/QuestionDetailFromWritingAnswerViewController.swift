@@ -7,14 +7,21 @@
 
 import Foundation
 import UIKit
+import RxSwift
+import RxCocoa
+import Kingfisher
 
-class SimpleQuestionView:UIView{
+class SimpleQuestionView:UIView {
+    var tags:[String] = []
+
     var questionTitleView:UILabel!
     var questionUserInfo:UILabel!
     var questionContentView:UILabel!
     var questionTimeView:UILabel!
     var imageStackView:UIStackView!
     var questionImages:[UIImage] = []
+    var tagView:SelfSizingCollectionView!
+    var onImageLoaded:(()->())?
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -38,44 +45,40 @@ class SimpleQuestionView:UIView{
         questionUserInfo.text = "impri 질문수 10"
         
         questionContentView = UILabel()
-        questionContentView.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean porta lacus vel justo interdum, ac mollis est blandit. Praesent et leo tempus, imperdiet mi sed, molestie tellus. Etiam faucibus velit at massa vestibulum, nec vestibulum nunc pretium. Duis ut diam at lectus elementum egestas. Integer gravida rutrum elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc aliquet sapien vel tortor dignissim, sit amet tempor felis eleifend. Proin in arcu condimentum, cursus ipsum sit amet, tristique neque. Etiam nec purus dignissim, sodales felis vitae, pharetra elit. Donec malesuada sed lacus nec consequat. Phasellus nec tortor gravida, porttitor mauris id, placerat magna. Proin sodales interdum turpis, ac scelerisque ipsum elementum tempus. Quisque eu felis elit. Nam et scelerisque purus. Suspendisse maximus nunc dolor. Praesent diam tortor, venenatis non libero eget, egestas sodales odio."
+        questionContentView.text = ""
         questionContentView.numberOfLines = 0
         questionContentView.lineBreakMode = .byWordWrapping
         questionContentView.font = questionTitleView.font.withSize(20)
         
         questionTimeView = UILabel()
         questionTimeView.text = "2022.12.16"
-        questionTimeView.textColor = .black
+        questionTimeView.textColor = .lightGray
+
         
-        questionImages = [UIColor.yellow.image(CGSize(width: 100, height: 100)),UIColor.orange.image(CGSize(width: 100, height: 100)),UIColor.blue.image(CGSize(width: 1200, height: 800))]
-        
+        let layout = UICollectionViewFlowLayout()
+        tagView = SelfSizingCollectionView(frame: .zero, collectionViewLayout: layout)
+        tagView.dataSource = self
+        tagView.delegate = self
+        tagView.register(DetailTagViewCell.self, forCellWithReuseIdentifier: DetailTagViewCell.identifier)
+
         imageStackView = UIStackView()
         imageStackView.axis = .vertical
         imageStackView.distribution = .equalSpacing
         imageStackView.alignment = .leading
         imageStackView.spacing = 20
-        for image in questionImages{
-            let imageView = UIImageView(image: image)
-            imageView.contentMode = .scaleAspectFit
-            imageStackView.addArrangedSubview(imageView)
-            NSLayoutConstraint.activate([
-                imageView.widthAnchor.constraint(lessThanOrEqualTo:imageStackView.widthAnchor),
-                imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: image.size.width/image.size.height)
-            ])
-        }
-        
         
         questionTitleView.translatesAutoresizingMaskIntoConstraints = false
         questionUserInfo.translatesAutoresizingMaskIntoConstraints = false
         questionContentView.translatesAutoresizingMaskIntoConstraints = false
         imageStackView.translatesAutoresizingMaskIntoConstraints = false
         questionTimeView.translatesAutoresizingMaskIntoConstraints = false
+        tagView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(questionTitleView)
         addSubview(questionUserInfo)
         addSubview(questionContentView)
         addSubview(imageStackView)
         addSubview(questionTimeView)
-        
+        addSubview(tagView)
     }
     
     func setConstraint(){
@@ -86,12 +89,12 @@ class SimpleQuestionView:UIView{
         ])
         NSLayoutConstraint.activate([
             questionUserInfo.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
-            questionUserInfo.topAnchor.constraint(equalTo: questionTitleView.bottomAnchor,constant: 20.0)
+            questionUserInfo.topAnchor.constraint(equalTo: questionTitleView.bottomAnchor,constant: 10.0)
         ])
        NSLayoutConstraint.activate([
             questionContentView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
             questionContentView.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor),
-            questionContentView.topAnchor.constraint(equalTo: questionUserInfo.bottomAnchor,constant: 5.0)
+            questionContentView.topAnchor.constraint(equalTo: questionUserInfo.bottomAnchor,constant: 20.0)
         ])
         NSLayoutConstraint.activate([
             imageStackView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
@@ -102,46 +105,131 @@ class SimpleQuestionView:UIView{
             questionTimeView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
             questionTimeView.topAnchor.constraint(equalTo: imageStackView.bottomAnchor,constant: 5.0),
         ])
+        
+        NSLayoutConstraint.activate([
+            tagView.topAnchor.constraint(equalTo: questionTimeView.bottomAnchor,constant: 5.0),
+            tagView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
+            tagView.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor),
+        ])
     }
-    func configure(question:QuestionModelForAnswerVC){
+    func configure(question:QuestionDetailModel){
         questionTitleView.text = question.title
         questionTimeView.text = question.createdAt
         questionContentView.text = question.content
         questionUserInfo.text = question.username
+        
+        for image in question.photos{
+            let imageView = UIImageView()
+           
+            imageStackView.addArrangedSubview(imageView)
+            imageView.kf.setImage(with:URL(string:image)!){ [self]result in
+                imageView.contentMode = .scaleAspectFit
+               
+                NSLayoutConstraint.activate([
+                    imageView.widthAnchor.constraint(lessThanOrEqualToConstant: imageStackView.frame.width),
+                    imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
+                ])
+                onImageLoaded?()
+                layoutIfNeeded()
+            }
+        }
+        
+        tags = question.tag
+        tagView.reloadData()
+    }
+}
+
+extension SimpleQuestionView:UICollectionViewDataSource{
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print(tags.count)
+        return tags.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailTagViewCell.identifier, for: indexPath) as? DetailTagViewCell else {
+            return UICollectionViewCell()
+        }
+        print("cell")
+        cell.tagLabel.text = "#" + self.tags[indexPath.row]
+        return cell
+    }
+    
+    
+}
+extension SimpleQuestionView:UICollectionViewDelegate{
+    
+}
+extension SimpleQuestionView:UICollectionViewDelegateFlowLayout{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+      
+            let label = UILabel()
+            label.text = "#" + self.tags[indexPath.row]
+            label.font = .systemFont(ofSize: 18)
+            label.sizeToFit()
+            let cellWidth = label.frame.width
+            print("width")
+            return CGSize(width: cellWidth, height: 22)
+        
+        
     }
 }
 
 class QuestionDetailFromWritingAnswerViewController:UIViewController{
+    var bag = DisposeBag()
     var questionView = SimpleQuestionView()
-    var headerView : UITableViewHeaderFooterView!
-    var question:QuestionModelForAnswerVC
-    init(question:QuestionModelForAnswerVC){
-        self.question = question
+    var scrollView : UIScrollView! = UIScrollView()
+    var viewModel:QuestionDetailViewModel
+    init(viewModel:QuestionDetailViewModel){
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
+        viewModel.refresh()
         setLayout()
         setConstraint()
+        
+        viewModel.question.subscribe(onNext: {[weak self]
+            question in
+            if self==nil{return}
+            if let question{
+                self!.questionView.configure(question:question)
+            }
+            self?.scrollView.updateContentSize()
+        }).disposed(by: bag)
+        
+        let insets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+    
+        scrollView.contentInset = insets
+        scrollView.scrollIndicatorInsets = insets
     }
 
     func setLayout(){
-        questionView.configure(question:question)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         questionView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(questionView)
+        scrollView.addSubview(questionView)
+        view.addSubview(scrollView)
     }
+    
     func setConstraint(){
         NSLayoutConstraint.activate([
-            questionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            questionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            questionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            questionView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            questionView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            questionView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            questionView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
         ])
     }
 }

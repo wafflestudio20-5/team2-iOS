@@ -6,42 +6,7 @@
 //
 
 import UIKit
-
-//class KakaoButton: UIButton {
-//    let pointSize: CGFloat = 13
-//    let imagePadding: CGFloat = 15
-//
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//
-//        tintColor = .white
-//
-//        let imageConfig = UIImage.SymbolConfiguration(pointSize: pointSize)
-//        // imageSize == fontSize 일때 가능
-//        guard let image = self.imageView?.image else { return }
-//        guard let titleLabel = self.titleLabel else { return }
-//        guard let titleText = titleLabel.text else { return }
-//        let titleSize = titleText.size(withAttributes: [
-//            NSAttributedString.Key.font: titleLabel.font as Any
-//        ])
-//        titleEdgeInsets = UIEdgeInsets(top: imagePadding, left: -image.size.width, bottom: -image.size.height, right: 0)
-//        imageEdgeInsets = UIEdgeInsets(top: -(titleSize.height + imagePadding), left: 0, bottom: 0, right: -titleSize.width)
-//
-//        setPreferredSymbolConfiguration(imageConfig, forImageIn: .normal)
-//    }
-//
-//    override func setTitle(_ title: String?, for state: UIControl.State) {
-//        super.setTitle(title, for: state)
-//        guard let text = title else { return }
-//        let attribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: pointSize)]
-//        let attributedTitle = NSAttributedString(string: text, attributes: attribute)
-//        self.setAttributedTitle(attributedTitle, for: .normal)
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//}
+import RxSwift
 
 //UserDefaults.standard.setValue(try? PropertyListEncoder().encode(todos), forKey: "ToDos") //save code
 /*if let data = UserDefaults.standard.data(forKey: "ToDos") {
@@ -51,8 +16,7 @@ todos = try! PropertyListDecoder().decode([ToDo].self, from: data)
 //UserDefaults.standard.set(1, forKey: "isLogin")
 
 class MyViewController: UIViewController {
-    
-    
+    let bag = DisposeBag()
     
     let profilePhotoView = UIImageView()
     let modifyProfileBtn = UIButton()
@@ -72,56 +36,20 @@ class MyViewController: UIViewController {
         
         self.view.backgroundColor = .white
         
-        if isLogin{
-            viewModel.getProfile()
-        }
-        
         let profilePhotoSize = CGFloat(45)
-        //profilePhotoView.image = UIImage(systemName: "person.fill")!.withTintColor(.white, renderingMode: .alwaysOriginal)
         
         profilePhotoView.backgroundColor = .black
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
         profilePhotoView.layer.borderWidth = 3.0
-        if isLogin{
-            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
-            profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
-        }else{
-            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
-            profilePhotoView.layer.borderColor = .none
-        }
+        
         
         let tapGesture: UITapGestureRecognizer
-        if isLogin{
-            tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifyProfileBtn))
-        }else{
-            tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapLogInBtn))
-        }
-        profilePhotoView.addGestureRecognizer(tapGesture)
-        profilePhotoView.isUserInteractionEnabled = true
         
-        if isLogin{
-            let smallConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .regular, scale: .large)
-            
-            modifyProfileBtn.setImage(UIImage(systemName:"pencil.circle.fill", withConfiguration: smallConfig)!.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
-            modifyProfileBtn.addTarget(self, action: #selector(onTapModifyProfileBtn), for: .touchUpInside)
-            modifyProfileBtn.isHidden = false
-            modifyProfileBtn.isEnabled = true
-        }else{
-            modifyProfileBtn.removeTarget(nil, action: nil, for: .allEvents)
-            modifyProfileBtn.isHidden = true
-            modifyProfileBtn.isEnabled = false
-        }
-        
-        
-        if isLogin{
-            nickName.text = UserDefaults.standard.string(forKey: "username")
-        }else{
-            nickName.text = "로그인해주세요"
-        }
         
         nickName.font = .systemFont(ofSize: 30)
         nickName.textColor = .black
+        
         
         let largeConfig = UIImage.SymbolConfiguration(pointSize: 30, weight: .regular, scale: .large)
         
@@ -132,14 +60,6 @@ class MyViewController: UIViewController {
         QABtn.setTitle("나의 Q&A", for: .normal)
         QABtn.setTitleColor(.black, for: .normal)
         QABtn.setTitleColor(.black, for: .highlighted)
-        if isLogin{
-            QABtn.removeTarget(nil, action: nil, for: .allEvents)
-            QABtn.addTarget(self, action: #selector(onTapQABtn), for: .touchUpInside)
-        }else{
-            QABtn.removeTarget(nil, action: nil, for: .allEvents)
-            QABtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
-        }
-        
         
         
         heartedQBtn.configuration = .plain()
@@ -150,14 +70,6 @@ class MyViewController: UIViewController {
         heartedQBtn.setTitle("좋아요 누른 질문", for: .normal)
         heartedQBtn.setTitleColor(.black, for: .normal)
         heartedQBtn.setTitleColor(.black, for: .highlighted)
-        if isLogin{
-            heartedQBtn.removeTarget(nil, action: nil, for: .allEvents)
-            heartedQBtn.addTarget(self, action: #selector(onTapHeartedQBtn), for: .touchUpInside)
-        }else{
-            heartedQBtn.removeTarget(nil, action: nil, for: .allEvents)
-            heartedQBtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
-        }
-        
         
         
         logInOutBtn.configuration = .plain()
@@ -166,12 +78,86 @@ class MyViewController: UIViewController {
         
         logInOutBtn.setTitleColor(.black, for: .normal)
         logInOutBtn.setTitleColor(.black, for: .highlighted)
+        
+        
         if isLogin{
+            viewModel.getProfile()
+            viewModel.profile.subscribe(onNext: {[weak self]
+                profile in
+                if self==nil{return}
+                if let profile{
+                    
+                    profile.profileImage.subscribe(onNext:{[weak self] image in
+                        if let profileImage = image{
+                            if UserDefaults.standard.bool(forKey: "isLogin"){
+                                print("profile image updated in VC")
+                                self!.profilePhotoView.image = profileImage
+                            }
+                            
+                        }
+                        else{
+                            if UserDefaults.standard.bool(forKey: "isLogin"){
+                                if let data = UserDefaults.standard.data(forKey: "profileImage"){
+                                    self!.profilePhotoView.image = UIImage(data: data)
+                                }else{
+                                    print("There is no profile image in VC")
+                                    self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+                                }
+                            }else{
+                                self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+                            }
+                            
+                            
+                        }
+                    })
+                    self!.nickName.text = profile.username
+                }
+            }).disposed(by: bag)
+            
+            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+            profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
+            
+            tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifyProfileBtn))
+            profilePhotoView.addGestureRecognizer(tapGesture)
+            profilePhotoView.isUserInteractionEnabled = true
+            
+            let smallConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .regular, scale: .large)
+            
+            modifyProfileBtn.setImage(UIImage(systemName:"pencil.circle.fill", withConfiguration: smallConfig)!.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
+            modifyProfileBtn.addTarget(self, action: #selector(onTapModifyProfileBtn), for: .touchUpInside)
+            modifyProfileBtn.isHidden = false
+            modifyProfileBtn.isEnabled = true
+            
+            QABtn.removeTarget(nil, action: nil, for: .allEvents)
+            QABtn.addTarget(self, action: #selector(onTapQABtn), for: .touchUpInside)
+            
+            heartedQBtn.removeTarget(nil, action: nil, for: .allEvents)
+            heartedQBtn.addTarget(self, action: #selector(onTapHeartedQBtn), for: .touchUpInside)
+            
             logInOutBtn.setImage(UIImage(systemName:"rectangle.portrait.and.arrow.right", withConfiguration: largeConfig)!.withTintColor(.darkText, renderingMode: .alwaysOriginal), for: .normal)
             logInOutBtn.setTitle("로그아웃", for: .normal)
             logInOutBtn.removeTarget(nil, action: nil, for: .allEvents)
             logInOutBtn.addTarget(self, action: #selector(onTapLogOutBtn), for: .touchUpInside)
         }else{
+            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+            profilePhotoView.layer.borderColor = .none
+            
+            tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapLogInBtn))
+            profilePhotoView.addGestureRecognizer(tapGesture)
+            profilePhotoView.isUserInteractionEnabled = true
+            
+            modifyProfileBtn.removeTarget(nil, action: nil, for: .allEvents)
+            modifyProfileBtn.isHidden = true
+            modifyProfileBtn.isEnabled = false
+            
+            nickName.text = "로그인해주세요"
+            
+            QABtn.removeTarget(nil, action: nil, for: .allEvents)
+            QABtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
+            
+            heartedQBtn.removeTarget(nil, action: nil, for: .allEvents)
+            heartedQBtn.addTarget(self, action: #selector(onTapLogInBtn), for: .touchUpInside)
+            
             logInOutBtn.setImage(UIImage(systemName:"rectangle.portrait.and.arrow.right", withConfiguration: largeConfig)!.withTintColor(.darkText, renderingMode: .alwaysOriginal), for: .normal)
             logInOutBtn.setTitle("로그인", for: .normal)
             logInOutBtn.removeTarget(nil, action: nil, for: .allEvents)
@@ -219,7 +205,7 @@ class MyViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        loadView()
         setBackButton()
         // Do any additional setup after loading the view.
     }
@@ -250,6 +236,7 @@ class MyViewController: UIViewController {
         LoginRepo.logout(completionHandler: { completionHandler in
             if(completionHandler == "success"){
                 UserDefaults.standard.set(false, forKey: "isLogin")
+                UserDefaults.standard.removeObject(forKey: "profileImage")
             }
             
             else {

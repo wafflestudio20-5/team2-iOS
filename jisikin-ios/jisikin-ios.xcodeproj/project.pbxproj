@@ -34,6 +34,8 @@
 		4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */; };
 		4ED26AC8295F0D670034F1A7 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */; };
 		4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */; };
+		4EFEB6F5297B84DA00A45392 /* detailTagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */; };
+		4EFEB6F7297B8B5900A45392 /* selfsizingcollectionview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */; };
 		6669E963AA0FE71A0C45E7EE /* Pods_jisikin_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489CD149E57C0EA9C5D9B4C4 /* Pods_jisikin_iosTests.framework */; };
 		8EAA9FD4F818743CC10321BD /* Pods_jisikin_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5748C32360EEF24721FF4D75 /* Pods_jisikin_ios.framework */; };
 		C002B11E295AE1DA003303B7 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B11D295AE1DA003303B7 /* TabBarViewController.swift */; };
@@ -104,6 +106,8 @@
 		4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
+		4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detailTagViewCell.swift; sourceTree = "<group>"; };
+		4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = selfsizingcollectionview.swift; sourceTree = "<group>"; };
 		5541333EDBCB937116F222C7 /* Pods-jisikin-iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jisikin-iosTests.release.xcconfig"; path = "Target Support Files/Pods-jisikin-iosTests/Pods-jisikin-iosTests.release.xcconfig"; sourceTree = "<group>"; };
 		5748C32360EEF24721FF4D75 /* Pods_jisikin_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_jisikin_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C4A7C809D4CC5C4A465821B /* Pods-jisikin-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jisikin-ios.debug.xcconfig"; path = "Target Support Files/Pods-jisikin-ios/Pods-jisikin-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -213,16 +217,18 @@
 				4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */,
 				4ECD064D296933BE00E848BF /* QuestionListViewModel.swift */,
 				C03F3CFA297A95490046DDDF /* MyRelatedQuestionListViewModel.swift */,
+				4ECD06512969567900E848BF /* AnswerRepository.swift */,
 				4ECD0657296BE7B100E848BF /* QuestionAnswerUsecase.swift */,
 				C03F3CF8297A94480046DDDF /* MyRelatedQuestionUsecase.swift */,
 				4ECD064B29692C1900E848BF /* QuestionRepository.swift */,
-				4ECD06512969567900E848BF /* AnswerRepository.swift */,
 				4ECD0659296BFB2700E848BF /* QuestionDetailViewModel.swift */,
 				C03F3CE42976AA2F0046DDDF /* ProfileViewModel.swift */,
 				C03F3CE62976AB510046DDDF /* ProfileUsecase.swift */,
 				C03F3CF42977A4070046DDDF /* PhotoRepository.swift */,
 				C03F3CEA2976AD4A0046DDDF /* ProfileRepository.swift */,
 				4ECD06612977D76E00E848BF /* JWTInterceptor.swift */,
+				4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */,
+				4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */,
 			);
 			path = "jisikin-ios";
 			sourceTree = "<group>";
@@ -519,6 +525,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E610E972976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift in Sources */,
+				4EFEB6F7297B8B5900A45392 /* selfsizingcollectionview.swift in Sources */,
 				4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */,
 				C03F3CF52977A4070046DDDF /* PhotoRepository.swift in Sources */,
 				4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */,
@@ -538,6 +545,7 @@
 				4E01E17E296D23C300B8EFD2 /* HomeViewController.swift in Sources */,
 				C03F3CF9297A94480046DDDF /* MyRelatedQuestionUsecase.swift in Sources */,
 				4ECD064C29692C1900E848BF /* QuestionRepository.swift in Sources */,
+				4EFEB6F5297B84DA00A45392 /* detailTagViewCell.swift in Sources */,
 				C03F3CE72976AB510046DDDF /* ProfileUsecase.swift in Sources */,
 				C0D6FC15295F319A00FF0A0C /* MyQAViewController.swift in Sources */,
 				4ECD065A296BFB2700E848BF /* QuestionDetailViewModel.swift in Sources */,
@@ -722,17 +730,19 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 접근 권한을 허용해주세요";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "앨범 접근 권한을 허용해주세요";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "앨범 접근 권한을 허용해주세요";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "wafflestudio20-5.team2.jisikin-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -758,17 +768,19 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 접근 권한을 허용해주세요";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "앨범 접근 권한을 허용해주세요";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "앨범 접근 권한을 허용해주세요";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "wafflestudio20-5.team2.jisikin-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

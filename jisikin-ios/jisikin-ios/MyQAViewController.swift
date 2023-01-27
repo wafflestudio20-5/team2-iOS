@@ -75,10 +75,10 @@ class MyQAViewController: UIViewController{
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         questionTable.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            segmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),//80
-            segmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),//-80
-            segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            segmentedControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),//30
+            segmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,constant: 40.0),
+            segmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant:-40.0),
+            segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 10.0),
+            segmentedControl.heightAnchor.constraint(equalToConstant: 45.0),
             
             questionTable.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor),
             questionTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),

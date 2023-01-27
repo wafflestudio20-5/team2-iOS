@@ -11,13 +11,8 @@ import RxSwift
 struct MyRelatedQuestionResponse:Codable{
     var id:Int
     var title:String
-    var content:String
     var createdAt:String
-    var modifiedAt:String
-    var close:Bool
-    var username:String
-    var photos:[String]
-    
+    var answerCount:Int?
 }
 struct QuestionSearchAPI:Codable{
     var questionId:Int
@@ -25,6 +20,7 @@ struct QuestionSearchAPI:Codable{
     var content:String
     var answerContent:String?
     var answerCount:Int
+    var questionCreatedAt:String
     var questionLikeCount:Int
 }
 struct QuestionDetailAPI:Codable{
@@ -42,24 +38,24 @@ struct QuestionDetailAPI:Codable{
     var closedAt: String?
     var userQuestionLikeNumber:Int
 }
+struct QuestionIDAPI:Codable{
+    var id:Int
+}
 final class QuestionRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     var isError = false
     
-    private func postImage(photos: [UIImage]) -> [String] {
-        let fullURL = URL(string: baseURL + "/api/photo")
+    func postImage(photos: [UIImage], completionhandler: @escaping ([String]) -> Void) {
+        var strImages: [String] = []
         
-        let header: HTTPHeaders = [
-            "Content-Type": "multipart/form-data",
-            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
-            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
-        ]
+        let fullURL2 = URL(string: baseURL + "/api/photo")
+        
+        var i: Int = 0
         
         if photos.count == 0 {
-            return []
+            completionhandler([])
+            return
         }
-        
-        var strImage: [String] = []
         
         for image in photos {
             let queryString: Parameters = [
@@ -72,53 +68,54 @@ final class QuestionRepository{
                     multipartFormData.append(value as! Data, withName: "\(key)", fileName: "\(uuidName).jpg", mimeType: "image/jpeg")
                 }
                 
-            }, to: fullURL!, usingThreshold: UInt64.init(), method: .post, headers: header).responseString { response in
+            }, to: fullURL2!, usingThreshold: UInt64.init(), method: .post, interceptor:JWTInterceptor()).responseString { response in
                 switch(response.result) {
                 case .success(let data):
                     print("이미지 성공")
                     print(data)
-                    strImage.append(data)
-                    break
+                    strImages.append(data)
+                    i += 1
+                    print("i = " + "\(i)")
+                    print("photos.count = " + "\(photos.count)")
+                    if i == photos.count {
+                        print("completionhandler")
+                        completionhandler(strImages)
+                    }
                 case .failure(let error):
                     print("이미지 실패")
                     print(error.localizedDescription)
-                    break
                 }
             }
+            
         }
-        
-        return strImage
     }
     
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         let fullURL = URL(string: baseURL + "/api/question/")
-        
-        let strImage: [String] = postImage(photos: photos)
-        
-        let queryString: Parameters = [
-            "title": titleText,
-            "content": contentText,
-            "tag": tag,
-            "photos": strImage
-        ]
-        
-        let header: HTTPHeaders = [
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!,
-            "RefreshToken": "Bearer " + UserDefaults.standard.string(forKey: "refreshToken")!
-        ]
-        
-        AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
-            response in
-            switch(response.result) {
-            case .success(let data):
-                print("성공")
-                print(String(data: data, encoding: .utf8)!)
-                break
-            case .failure(let error):
-                print("실패")
-                print(error.localizedDescription)
-                break
+    
+        postImage(photos: photos) { [weak self] strImages in
+            guard let self = self else { return }
+            print("strImage = " + "\(strImages)")
+            
+            let queryString: Parameters = [
+                "title": titleText,
+                "content": contentText,
+                "tag": tag,
+                "photos": strImages
+            ]
+            
+            AF.request(fullURL!, method: .post, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
+                response in
+                switch(response.result) {
+                case .success(let data):
+                    print("성공")
+                    print(String(data: data, encoding: .utf8)!)
+                    break
+                case .failure(let error):
+                    print("실패")
+                    print(error.localizedDescription)
+                    break
+                }
             }
         }
     }
@@ -176,6 +173,60 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
+    func getQuestionsByLikes(page:Int)->Single<[QuestionSearchAPI]>{
+        let fullURL = URL(string: baseURL + "/api/question/search")
+        let parameters = [
+            "order":"like",
+            "pageNum":page
+        ] as [String : Any]
+        return Single<[QuestionSearchAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get,parameters: parameters,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var val = data
+                  //  for (i,v) in val.photos.enumerated(){
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   // }
+                    single(.success(val))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    func getQuestionsByDate(page:Int)->Single<[QuestionSearchAPI]>{
+        let fullURL = URL(string: baseURL + "/api/question/search")
+        let parameters = [
+            "order":"date",
+            "pageNum":page
+        ] as [String : Any]
+        return Single<[QuestionSearchAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get,parameters: parameters,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var val = data
+                  //  for (i,v) in val.photos.enumerated(){
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   // }
+                    single(.success(val))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
     func getQuestionByID(id:Int)->Single<QuestionDetailAPI>{
         let fullURL = URL(string: baseURL + "/api/question/\(id)")
         return Single<QuestionDetailAPI>.create{
@@ -198,6 +249,34 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
+    func searchQuestions(keyword:String)->Single<[QuestionSearchAPI]>{
+        let fullURL = URL(string: baseURL + "/api/question/search")
+        let parameters = [
+            "order":"date",
+            "keyword":keyword
+        ]
+        return Single<[QuestionSearchAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get,parameters: parameters,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var val = data
+                  //  for (i,v) in val.photos.enumerated(){
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   //     val[i].photos.append("https://via.placeholder.com/150")
+                   // }
+                    single(.success(val))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    
     func getMyQuestions()->Single<[MyRelatedQuestionResponse]>{
         let fullURL = URL(string: baseURL + "/api/user/myQuestions")
 //        let header: HTTPHeaders = [
@@ -238,7 +317,7 @@ final class QuestionRepository{
         }
     }
     func getMyHeartedQuestions()->Single<[MyRelatedQuestionResponse]>{
-        let fullURL = URL(string: baseURL + "/api/questionLike")
+        let fullURL = URL(string: baseURL + "/api/user/myLikeQuestions")
         return Single<[MyRelatedQuestionResponse]>.create{
             single in
             AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
@@ -284,6 +363,23 @@ final class QuestionRepository{
                     single(.failure(error))
                 }
             }
+            return Disposables.create()
+        }
+    }
+    func getLikedQuestionsID()->Single<[QuestionIDAPI]>{
+        let fullURL = URL(string:baseURL + "/api/user/myLikeQuestions")
+        return Single<[QuestionIDAPI]>.create{
+            single in
+            AF.request(fullURL!,method:.get,interceptor: JWTInterceptor())
+                .validate(statusCode: 200..<300).responseDecodable(of:[QuestionIDAPI].self){
+                    response in
+                    switch(response.result){
+                    case .success(let data):
+                        single(.success(data))
+                    case .failure(let error):
+                        single(.failure(error))
+                    }
+                }
             return Disposables.create()
         }
     }
