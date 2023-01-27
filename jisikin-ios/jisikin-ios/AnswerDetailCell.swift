@@ -78,8 +78,10 @@ class AnswerProfileView:UIView{
     func configure(answer:AnswerDetailModel){
         answerUserView.text = answer.username
         recentAnswerTime.text = answer.userRecentAnswerDate
-        if answer.profileImage != nil{
-            //  profilePicture.kf.setImage(with: URL(string:a)!)
+        if answer.profileImagePath != nil{
+            print(answer.profileImagePath)
+        
+            profilePicture.kf.setImage(with:URL(string:answer.profileImagePath!)!)
         }
     }
 }
@@ -91,7 +93,7 @@ class AnswerTableCell:UITableViewCell{
     var disagreeNumber = 0
     var agreed:Bool? = nil
     
-    var imageLoadCount = 0
+   
     var imageURL:[String] = []
     
     var lineAtTop:UIView!
@@ -326,10 +328,8 @@ class AnswerTableCell:UITableViewCell{
                 if case .failure = result{
                     return
                 }
-                self!.imageLoadCount += 1
-                if answer.photos.count == self!.imageLoadCount{
-                    self!.onImageLoaded?()
-                }
+              
+                
                 imageView.contentMode = .scaleAspectFit
                 
                 NSLayoutConstraint.activate([
@@ -337,7 +337,7 @@ class AnswerTableCell:UITableViewCell{
                     imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
                 ])
                 print("image loaded")
-                self!.imageLoadCount += 1
+             
                 
                 self!.onImageLoaded?()
                 

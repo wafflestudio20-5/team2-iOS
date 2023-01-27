@@ -25,13 +25,18 @@ class QuestionDetailViewController:UIViewController{
         super.viewWillAppear(animated)
       
       viewModel.refresh()
+        answerTableView.reloadData()
         
    }
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//
-        
-//    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        UIView.performWithoutAnimation{[weak self] in
+            self?.answerTableView.beginUpdates()
+            self?.answerTableView.endUpdates()
+            
+        }
+    }
     
     /*  override func viewDidLayoutSubviews() {
      super.viewDidLayoutSubviews()
@@ -87,7 +92,7 @@ class QuestionDetailViewController:UIViewController{
         
         viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){ [weak self] index,model,cell in
             if self == nil{return}
-            (cell as! AnswerTableCell).imageLoadCount = 0
+          
             (cell as! AnswerTableCell).onImageLoaded = {
                 UIView.performWithoutAnimation{
                     self?.answerTableView.beginUpdates()
