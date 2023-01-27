@@ -8,42 +8,6 @@
 import UIKit
 import RxSwift
 
-//class KakaoButton: UIButton {
-//    let pointSize: CGFloat = 13
-//    let imagePadding: CGFloat = 15
-//
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//
-//        tintColor = .white
-//
-//        let imageConfig = UIImage.SymbolConfiguration(pointSize: pointSize)
-//        // imageSize == fontSize 일때 가능
-//        guard let image = self.imageView?.image else { return }
-//        guard let titleLabel = self.titleLabel else { return }
-//        guard let titleText = titleLabel.text else { return }
-//        let titleSize = titleText.size(withAttributes: [
-//            NSAttributedString.Key.font: titleLabel.font as Any
-//        ])
-//        titleEdgeInsets = UIEdgeInsets(top: imagePadding, left: -image.size.width, bottom: -image.size.height, right: 0)
-//        imageEdgeInsets = UIEdgeInsets(top: -(titleSize.height + imagePadding), left: 0, bottom: 0, right: -titleSize.width)
-//
-//        setPreferredSymbolConfiguration(imageConfig, forImageIn: .normal)
-//    }
-//
-//    override func setTitle(_ title: String?, for state: UIControl.State) {
-//        super.setTitle(title, for: state)
-//        guard let text = title else { return }
-//        let attribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: pointSize)]
-//        let attributedTitle = NSAttributedString(string: text, attributes: attribute)
-//        self.setAttributedTitle(attributedTitle, for: .normal)
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//}
-
 //UserDefaults.standard.setValue(try? PropertyListEncoder().encode(todos), forKey: "ToDos") //save code
 /*if let data = UserDefaults.standard.data(forKey: "ToDos") {
 todos = try! PropertyListDecoder().decode([ToDo].self, from: data)
@@ -132,8 +96,18 @@ class MyViewController: UIViewController {
                             
                         }
                         else{
-                            print("There is no profile image in VC")
-                            self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+                            if UserDefaults.standard.bool(forKey: "isLogin"){
+                                if let data = UserDefaults.standard.data(forKey: "profileImage"){
+                                    self!.profilePhotoView.image = UIImage(data: data)
+                                }else{
+                                    print("There is no profile image in VC")
+                                    self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+                                }
+                            }else{
+                                self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+                            }
+                            
+                            
                         }
                     })
                     self!.nickName.text = profile.username
@@ -262,6 +236,7 @@ class MyViewController: UIViewController {
         LoginRepo.logout(completionHandler: { completionHandler in
             if(completionHandler == "success"){
                 UserDefaults.standard.set(false, forKey: "isLogin")
+                UserDefaults.standard.removeObject(forKey: "profileImage")
             }
             
             else {
