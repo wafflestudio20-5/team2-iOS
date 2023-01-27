@@ -25,7 +25,8 @@ class ProfileUsecase{
     func getProfileImage(url: String, completionhandler: @escaping ((Data) -> Void)){
         PhotoRepo.getImageData(url: url){
             data in
-            print("usecase got image successfully")// 여기서부터 안됨
+            print("usecase got image successfully")
+            UserDefaults.standard.set(data, forKey: "profileImage")
             completionhandler(data)
         }
     }

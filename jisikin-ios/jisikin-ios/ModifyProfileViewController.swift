@@ -84,7 +84,11 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
                                 self.profilePhotoView.image = profileImage
                             }
                         }else{
-                            self.profilePhotoView.image = self.defaultProfilePhoto
+                            if let data = UserDefaults.standard.data(forKey: "profileImage"){
+                                self.profilePhotoView.image = UIImage(data: data)
+                            }else{
+                                self.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+                            }
                         }
                     }
                 })
