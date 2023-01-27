@@ -155,6 +155,7 @@ class QuestionDetailViewModel{
         return Single<String>.create{single in
             self.usecase.likeQuestion(id:self.questionID).subscribe(onSuccess: {
                 result in
+                
                 single(.success(result))
                 
             }, onFailure: {
