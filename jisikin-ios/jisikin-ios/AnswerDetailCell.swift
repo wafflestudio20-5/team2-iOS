@@ -86,10 +86,12 @@ class AnswerProfileView:UIView{
 class AnswerTableCell:UITableViewCell{
     static let ID = "AnswerTableCell"
     
+    
     var agreeNumber = 0
     var disagreeNumber = 0
     var agreed:Bool? = nil
     
+    var imageLoadCount = 0
     var imageURL:[String] = []
     
     var lineAtTop:UIView!
@@ -309,57 +311,66 @@ class AnswerTableCell:UITableViewCell{
         
     }
     func configurePhotos(answer:AnswerDetailModel){
-      
-            imageURL = answer.photos
-            imageStackView.safelyRemoveArrangedSubviews()
+        
+        imageURL = answer.photos
+        imageStackView.safelyRemoveArrangedSubviews()
+        
+        for image in answer.photos{
+            let imageView = UIImageView()
             
-            for image in answer.photos{
-                let imageView = UIImageView()
+            imageStackView.addArrangedSubview(imageView)
+            
+            imageView.kf.setImage(with:URL(string:image)!){ [weak self]result in
                 
-                imageStackView.addArrangedSubview(imageView)
-                
-                imageView.kf.setImage(with:URL(string:image)!){ [self]result in
-                    
-                    imageView.contentMode = .scaleAspectFit
-                    
-                    NSLayoutConstraint.activate([
-                        imageView.widthAnchor.constraint(lessThanOrEqualToConstant: imageStackView.frame.width),
-                        imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
-                    ])
-                    print("image loaded")
-                    onImageLoaded?()
-                    
+                if self == nil{return}
+                if case .failure = result{
+                    return
                 }
+                self!.imageLoadCount += 1
+                if answer.photos.count == self!.imageLoadCount{
+                    self!.onImageLoaded?()
+                }
+                imageView.contentMode = .scaleAspectFit
+                
+                NSLayoutConstraint.activate([
+                    imageView.widthAnchor.constraint(lessThanOrEqualToConstant: self!.imageStackView.frame.width),
+                    imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
+                ])
+                print("image loaded")
+                self!.imageLoadCount += 1
+                
+                self!.onImageLoaded?()
+                
+                
             }
+        }
+        
+        
         
     }
     
     func configureButtons(question:QuestionDetailModel?,answer:AnswerDetailModel){
         
         if question == nil{
+            answerEditButton.isHidden = true
+            answerDeleteButton.isHidden = true
             answerChoiceButton.isHidden = true
             return
         }
         
-        answerChoiceButton.isHidden = question!.close
+        
         answerSelectedImage.isHidden = !answer.selected
         
         if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
             let username = UserDefaults.standard.string(forKey: "username")!
             answerEditButton.isHidden =  username != answer.username || answer.selected
             answerDeleteButton.isHidden =  username != answer.username || answer.selected
-            if username == question!.username{
-                answerChoiceButton.isHidden = false
-                answerEditButton.isHidden = false
-                answerDeleteButton.isHidden = false
-            }
-            else{
-                answerEditButton.isHidden = true
-                answerDeleteButton.isHidden = true
-                
-                answerChoiceButton.isHidden = true
-                
-            }
+            answerChoiceButton.isHidden = question!.close || username != question!.username
+        }
+        else{
+            answerEditButton.isHidden = true
+            answerDeleteButton.isHidden = true
+            answerChoiceButton.isHidden = true
         }
     }
     

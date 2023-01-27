@@ -10,8 +10,10 @@ class QuestionDetailViewController:UIViewController{
     var questionView = QuestionView()
     var headerView : UITableViewHeaderFooterView!
     var viewModel:QuestionDetailViewModel
+    var username:String? = nil
     init(viewModel:QuestionDetailViewModel){
         self.viewModel = viewModel
+    //    viewModel.refresh()
         super.init(nibName: nil, bundle: nil)
         
     }
@@ -21,17 +23,15 @@ class QuestionDetailViewController:UIViewController{
     }
     override func viewWillAppear(_ animated: Bool){
         super.viewWillAppear(animated)
-       //self.viewModel.refresh()
-        self.answerTableView.reloadData()
+      
+      viewModel.refresh()
         
-    }
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+   }
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//
         
-     //   self.viewModel.refresh()
-    //    self.answerTableView.reloadData()
-        
-    }
+//    }
     
     /*  override func viewDidLayoutSubviews() {
      super.viewDidLayoutSubviews()
@@ -60,7 +60,7 @@ class QuestionDetailViewController:UIViewController{
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = true
         self.view.backgroundColor = .white
-        viewModel.refresh()
+     //   viewModel.refresh()
         setLayout()
         setConstraint()
         
@@ -85,53 +85,76 @@ class QuestionDetailViewController:UIViewController{
             
         }).disposed(by: bag)
         
-        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){index,model,cell in
-            
+        viewModel.answers.bind(to:answerTableView.rx.items(cellIdentifier: AnswerTableCell.ID)){ [weak self] index,model,cell in
+            if self == nil{return}
+            (cell as! AnswerTableCell).imageLoadCount = 0
             (cell as! AnswerTableCell).onImageLoaded = {
                 UIView.performWithoutAnimation{
-                    self.answerTableView.beginUpdates()
-                    self.answerTableView.endUpdates()
+                    self?.answerTableView.beginUpdates()
+                    self?.answerTableView.endUpdates()
+                    print("ID print:")
                 }
             }
             
-            (cell as! AnswerTableCell).configure(answer:model,question:self.viewModel.question.value)
+            (cell as! AnswerTableCell).configure(answer:model,question:self!.viewModel.question.value)
             
-            self.viewModel.question.subscribe(onNext: {
+            self!.viewModel.question.subscribe(onNext: {
                 question in
                 if let question{
                     
                     (cell as! AnswerTableCell).configure(answer:model,question:question)
                 }
-            }).disposed(by: self.bag)
-            (cell as! AnswerTableCell).onSelectButtonPressed = { [self] in
+            }).disposed(by: self!.bag)
+            (cell as! AnswerTableCell).onSelectButtonPressed = { [weak self] in
                 print("pressed")
-                self.viewModel.selectAnswer(index: index).subscribe(onSuccess: {_ in
-                    
+                if self == nil{return}
+                self!.viewModel.selectAnswer(index: index).subscribe(onSuccess: {[weak self] _ in
+                    self!.viewModel.refresh()
                 },onError:{
                     _ in
                     print("채택 실패")
                 })
                 
             }
-            
-            (cell as! AnswerTableCell).setOnAgreeButtonClicked(){
-                self.viewModel.agreeAnswer(index: index, isAgree: true).subscribe(onSuccess: { _ in
-                    (cell as! AnswerTableCell).pressAgree()
-                } )
+          
+            (cell as! AnswerTableCell).setOnAgreeButtonClicked(){ [weak self] in
+                if UserDefaults.standard.bool(forKey: "isLogin"){
+                    self!.viewModel.agreeAnswer(index: index, isAgree: true).subscribe(onSuccess: {[weak self] _ in
+                        (cell as! AnswerTableCell).pressAgree()
+                    } ).disposed(by: self!.bag)
+                }
+                else{
+                    self!.showLoginAlert{[weak self] in
+                        self!.tabBarController?.navigationController?.popViewController(animated: true)
+                    }
+                }
             }
-            (cell as! AnswerTableCell).setOnDisAgreeButtonClicked(){
-                self.viewModel.agreeAnswer(index: index, isAgree: false).subscribe(onSuccess: { _ in
-                    (cell as! AnswerTableCell).pressDisagree()
-                } )
+            (cell as! AnswerTableCell).setOnDisAgreeButtonClicked(){ [weak self] in
+                if UserDefaults.standard.bool(forKey: "isLogin"){
+                    self!.viewModel.agreeAnswer(index: index, isAgree: false).subscribe(onSuccess: {[weak self] _ in
+                        (cell as! AnswerTableCell).pressDisagree()
+                    } ).disposed(by: self!.bag)
+                }
+                else{
+                    self!.showLoginAlert{[weak self] in
+                        self!.tabBarController?.navigationController?.popViewController(animated: true)
+                    }
+                }
             }
             (cell as! AnswerTableCell).onDeleteButtonPressed = {
-                [self]
-                self.viewModel.deleteAnswer(index: index).subscribe(onSuccess: { _ in
-                    self.viewModel.refresh()
-                }).disposed(by: self.bag)
+                [weak self] in
+                self!.viewModel.deleteAnswer(index: index).subscribe(onSuccess: { _ in
+                    self!.viewModel.refresh()
+                }).disposed(by: self!.bag)
             }
             
         }.disposed(by: bag)
+  /*     UserDefaults.standard.rx.observe(String.self,"username").subscribe(onNext: {
+          [weak self]  _ in
+            print("username change")
+           print("ID print:\(self!.viewModel.questionID)")
+            self!.viewModel.refresh()
+        }).disposed(by: bag)*/
         
     }
     func setLayout(){
@@ -171,9 +194,18 @@ extension QuestionDetailViewController:UITableViewDelegate{
         
         questionView.setOnAnswerButtonClicked(){[weak self] in
             if UserDefaults.standard.bool(forKey: "isLogin"){
+                let username = UserDefaults.standard.string(forKey: "username")
+                if let idx =  self!.viewModel.answers.value.firstIndex(where: {$0.username == username}){
+                    self!.showToast(message: "동일한 질문에는 하나의 답변 작성이 가능합니다.")
+                    return
+                }
+                if username == self!.viewModel.question.value?.username{
+                    self!.showToast(message: "자신의 질문에는 답할 수 없습니다.")
+                    return
+                }
                 var vc = WritingAnswerViewController()
                 vc.questionID = (self?.viewModel.questionID)!
-                vc.detailViewModel = self!.viewModel
+            
                 self?.navigationController?.pushViewController(vc, animated: true)
             }
             else{
@@ -181,31 +213,33 @@ extension QuestionDetailViewController:UITableViewDelegate{
                     self?.tabBarController?.navigationController?.popViewController(animated: false){
                         var vc = WritingAnswerViewController()
                         vc.questionID = (self?.viewModel.questionID)!
-                        vc.detailViewModel = self!.viewModel
+                  
                         self?.navigationController?.pushViewController(vc, animated: true)
                     }
                 }
             }
         }
-        questionView.setOnLikeButtonClicked() {
+        questionView.setOnLikeButtonClicked() {[weak self] in
+            if self == nil{return}
             if UserDefaults.standard.bool(forKey: "isLogin"){
-                self.viewModel.likeQuestion().subscribe(onSuccess:{
+                self!.viewModel.likeQuestion().subscribe(onSuccess:{
                     _ in
-                    self.questionView.likeButtonPressed()
-                })
+                    self!.questionView.likeButtonPressed()
+                }).disposed(by: self!.bag)
             }
             else{
-                self.showLoginAlert{
-                    self.tabBarController?.navigationController?.popViewController(animated: true)
+                self!.showLoginAlert{
+                    self!.tabBarController?.navigationController?.popViewController(animated: true)
                 }
             }
         }
         
-        questionView.onDeleteButtonClicked = {
-            self.viewModel.deleteQuestion().subscribe(onSuccess:{[weak self]
+        questionView.onDeleteButtonClicked = {[weak self] in
+            if self == nil{return}
+            self!.viewModel.deleteQuestion().subscribe(onSuccess:{[weak self]
                 _ in
                 self?.navigationController?.popViewController(animated: true)
-            })
+            }).disposed(by: self!.bag)
         }
         questionView.translatesAutoresizingMaskIntoConstraints = false
         let headerView = UITableViewHeaderFooterView()
@@ -297,4 +331,30 @@ extension UIStackView {
         removedSubviews.forEach({ $0.removeFromSuperview() })
     }
     
+}
+extension UIViewController{
+    func showToast(message : String, font: UIFont = UIFont.systemFont(ofSize: 20.0)) {
+        let toastLabel = UILabel(frame: CGRect(x: self.view.frame.size.width/2 - 200, y: self.view.frame.size.height-200, width: 400, height: 50))
+        toastLabel.backgroundColor = UIColor.white
+        toastLabel.textColor = UIColor(red: 1, green: 111/255, blue: 15/255, alpha: 1)
+        toastLabel.font = font
+        toastLabel.textAlignment = .center;
+        toastLabel.text = message
+        toastLabel.alpha = 1.0
+        toastLabel.layer.borderWidth = 1
+        toastLabel.layer.borderColor = UIColor(red: 1, green: 111/255, blue: 15/255, alpha: 1).cgColor
+        toastLabel.layer.shadowOffset = CGSize(width: 2, height: 2)
+        toastLabel.layer.shadowOpacity = 0.3
+        toastLabel.layer.shadowRadius = 2
+        toastLabel.layer.shadowColor = UIColor(red: 1, green: 111/255, blue: 15/255, alpha: 1).cgColor
+        
+        toastLabel.layer.cornerRadius = 10;
+        toastLabel.clipsToBounds  =  true
+        self.view.addSubview(toastLabel)
+        UIView.animate(withDuration: 1.5, delay: 0.1, options: .curveEaseOut, animations: {
+             toastLabel.alpha = 0.0
+        }, completion: {(isCompleted) in
+            toastLabel.removeFromSuperview()
+        })
+    }
 }
