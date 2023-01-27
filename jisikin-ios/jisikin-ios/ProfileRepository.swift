@@ -17,6 +17,7 @@ struct ProfileRequest:Codable{
 class ProfileRepository{
     let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
     struct ModifyError {
+        var hadError = false
         var usernameExists = false
     }
     var error = ModifyError()
@@ -58,6 +59,7 @@ class ProfileRepository{
                     single(.success(data))
                     completionHandler(self.error)
                 case .failure(let error):
+                    self.error.hadError = true
                     if response.response?.statusCode == 409{
                         self.error.usernameExists = true
                     }else{

@@ -18,7 +18,6 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     }()
     
     let defaultProfilePhoto = UIImage(named:"DefaultProfilePhoto")
-    //var profilePhotoIsExisted = false
     var profilePhotoIsModified = false
     
     let profilePhotoLabel = UILabel()
@@ -69,12 +68,10 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         nickNameLabel.text = "닉네임"
         modifyNickNameField.backgroundColor = .lightGray
         modifyNickNameField.textColor = .white
-//        modifyNickNameField.text = UserDefaults.standard.string(forKey: "username")
         nickNameCriteriaLabel.textColor = .red
         nickNameCriteriaLabel.font = UIFont.systemFont(ofSize: 12)
         
         genderLabel.text = "성별"
-        //genderSegment
         viewModel.getProfile()
         viewModel.profile.subscribe(onNext: {[weak self]
             profile in
@@ -83,12 +80,15 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
                 profile.profileImage.subscribe(onNext:{[weak self] image in
                     if let self = self{
                         if let profileImage = image{
-                            //self!.profilePhotoIsExisted = true
                             if !self.profilePhotoIsModified{
                                 self.profilePhotoView.image = profileImage
                             }
                         }else{
-                            self.profilePhotoView.image = self.defaultProfilePhoto
+                            if let data = UserDefaults.standard.data(forKey: "profileImage"){
+                                self.profilePhotoView.image = UIImage(data: data)
+                            }else{
+                                self.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+                            }
                         }
                     }
                 })
@@ -114,9 +114,6 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         modifySaveBtn.textAlignment = .center
         modifySaveBtn.backgroundColor = BLUE_COLOR
         modifySaveBtn.textColor = .white
-        //modifySaveBtn.layer.borderWidth = 2.0
-        //modifySaveBtn.layer.borderColor = UIColor.systemGray.cgColor
-        //modifySaveBtn.layer.cornerRadius = 8
         let tapModifySaveGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifySaveBtn))
         modifySaveBtn.addGestureRecognizer(tapModifySaveGesture)
         modifySaveBtn.isUserInteractionEnabled = true
@@ -147,11 +144,11 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
             profilePhotoView.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor),
             profilePhotoView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor, constant: -profilePhotoSize),
             profilePhotoView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor, constant: profilePhotoSize),
-            profilePhotoView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80-profilePhotoSize),//20
-            profilePhotoView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80+profilePhotoSize),//20
+            profilePhotoView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80-profilePhotoSize),
+            profilePhotoView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80+profilePhotoSize),
             
             modifyProfilePhotoBtn.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor,constant: profilePhotoSize/1.414),
-            modifyProfilePhotoBtn.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80+profilePhotoSize/1.414),//20
+            modifyProfilePhotoBtn.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80+profilePhotoSize/1.414),
             
             
             nickNameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
