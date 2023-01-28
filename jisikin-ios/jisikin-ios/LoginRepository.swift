@@ -12,9 +12,11 @@ import KakaoSDKAuth
 import KakaoSDKUser
 
 final class LoginRepository {
-    let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
+    let baseURL = "https://jisik2n.store"
     var fullURL : URL?
     struct Error {
+        var hadError = false
+        var deletedUser = false
         var uidWrong = false
         var passwordWrong = false
         var usernameExists = false
@@ -50,6 +52,8 @@ final class LoginRepository {
             switch response.result {
             case .success(let data):
                 do {
+                    self.error.hadError = false
+                    self.error.deletedUser = false
                     self.error.uidWrong = false
                     self.error.passwordWrong = false
                     
@@ -63,17 +67,26 @@ final class LoginRepository {
                     
                     completionHandler("success")
                     } catch {
+                        self.error.hadError = true
                         self.errorMessage = String(data: data, encoding: .utf8)
                         
                         let errorCode = Int(response.response!.statusCode)
                         
                         if(errorCode == 401){
+                            self.error.deletedUser = false
                             self.error.uidWrong = false
                             self.error.passwordWrong = true
                         }
                         
                         if(errorCode == 404){
+                            self.error.deletedUser = false
                             self.error.uidWrong = true
+                            self.error.passwordWrong = false
+                        }
+                        
+                        if(errorCode == 400){
+                            self.error.deletedUser = true
+                            self.error.uidWrong = false
                             self.error.passwordWrong = false
                         }
                         
@@ -81,6 +94,7 @@ final class LoginRepository {
                     }
                 
             case .failure(let error):
+                self.error.hadError = true
                 print(error)
             }
         }
@@ -92,8 +106,10 @@ final class LoginRepository {
             UserApi.shared.logout {(error) in
                 if let error = error {
                     print(error)
+                    self.error.hadError = true
                 }
                 else {
+                    self.error.hadError = false
                     UserDefaults.standard.set(false, forKey: "kakaoLogin")
                     UserDefaults.standard.removeObject(forKey: "username")
                 }
@@ -121,12 +137,14 @@ final class LoginRepository {
             
             switch response.result {
             case .success(_):
+                self.error.hadError = false
                 UserDefaults.standard.removeObject(forKey: "accessToken")
                 UserDefaults.standard.removeObject(forKey: "refreshToken")
                 UserDefaults.standard.removeObject(forKey: "username")
                 completionHandler("success")
             case .failure(let error):
                 print(error)
+                self.error.hadError = true
                 completionHandler("failure")
             }
         }
@@ -140,17 +158,20 @@ final class LoginRepository {
                 if let error = error {
                     print(error)
                     self.kakaoError = true
+                    self.error.hadError = true
                     completionHandler("error")
                 } else {
                     let kakaoAccessToken = oauthToken?.accessToken
                     self.sendKakaoToken(token: kakaoAccessToken!, completionHandler: { completion in
                         
                         if(completion == "success"){
+                            self.error.hadError = false
                             UserDefaults.standard.set(true, forKey: "kakaoLogin")
                             completionHandler("success")
                         }
                         
                         else{
+                            self.error.hadError = true
                             completionHandler("failure")
                         }
                     })
@@ -164,6 +185,7 @@ final class LoginRepository {
                 if let error = error {
                     print(error)
                     self.kakaoError = true
+                    self.error.hadError = true
                     completionHandler("error")
                 } else {
                     let kakaoAccessToken = oauthToken?.accessToken
@@ -171,10 +193,12 @@ final class LoginRepository {
                         
                         if(completion == "success"){
                             UserDefaults.standard.set(true, forKey: "kakaoLogin")
+                            self.error.hadError = false
                             completionHandler("success")
                         }
                         
                         else{
+                            self.error.hadError = true
                             completionHandler("failure")
                         }
                     })
@@ -204,6 +228,7 @@ final class LoginRepository {
                     UserDefaults.standard.set(JSON["accessToken"].string!, forKey: "accessToken")
                     UserDefaults.standard.set(JSON["refreshToken"].string!, forKey: "refreshToken")
                     
+                    self.error.hadError = false
                     completionHandler("success")
                     } catch {
                         self.errorMessage = String(data: data, encoding: .utf8)
@@ -211,13 +236,13 @@ final class LoginRepository {
                         print(self.errorMessage!)
                         
                         self.kakaoError = true
-                        
+                        self.error.hadError = true
                         completionHandler("error")
                     }
                 
             case .failure(let error):
                 print(error)
-                
+                self.error.hadError = true
                 completionHandler("error")
             }
         }
@@ -241,6 +266,8 @@ final class LoginRepository {
             switch response.result {
             case .success(let data):
                 do {
+                    self.error.hadError = false
+                    self.error.deletedUser = false
                     self.error.uidExists = false
                     self.error.usernameExists = false
                     
@@ -259,24 +286,61 @@ final class LoginRepository {
                         
                         if(errorCode == 409){
                             if(self.errorMessage == "이미 생성된 별명입니다."){
+                                self.error.deletedUser = false
                                 self.error.usernameExists = true
                                 self.error.uidExists = false
                             }
                             
                             if(self.errorMessage == "이미 가입한 아이디입니다."){
+                                self.error.deletedUser = false
                                 self.error.usernameExists = false
                                 self.error.uidExists = true
                             }
                         }
-                        
+                        self.error.hadError = true
                         completionHandler("error")
                     }
                 
             case .failure(let error):
                 print(error)
+                self.error.hadError = true
             }
         }
         
+    }
+    
+    func signOut(completionHandler:@escaping (String)->Void){
+        let fullURL = URL(string: baseURL + "/api/user/deleteAccount")
+        
+        if(UserDefaults.standard.bool(forKey: "kakaoLogin") == true){
+            UserApi.shared.unlink {(error) in
+                if let error = error {
+                    print(error)
+                    self.error.hadError = true
+                }
+                else {
+                    self.error.hadError = false
+                    UserDefaults.standard.set(false, forKey: "kakaoLogin")
+                    UserDefaults.standard.removeObject(forKey: "username")
+                }
+            }
+        }
+        
+        AF.request(fullURL!, method:.delete, interceptor:JWTInterceptor()).responseData(){
+            response in
+            switch response.result {
+            case .success(_):
+                self.error.hadError = false
+                UserDefaults.standard.removeObject(forKey: "accessToken")
+                UserDefaults.standard.removeObject(forKey: "refreshToken")
+                UserDefaults.standard.removeObject(forKey: "username")
+                completionHandler("success")
+            case .failure(let error):
+                print(error)
+                self.error.hadError = true
+                completionHandler("failure")
+            }
+        }
     }
     
     func regenerateToken(completionHandler:@escaping (String)->Void) {
@@ -310,9 +374,10 @@ final class LoginRepository {
                     UserDefaults.standard.set(JSON["accessToken"].string ?? "", forKey: "accessToken")
                     UserDefaults.standard.set(JSON["refreshToken"].string ?? "", forKey: "refreshToken")
 
-                    
+                    self.error.hadError = false
                     completionHandler("success")
                     } catch {
+                        self.error.hadError = true
                         self.errorMessage = String(data: data, encoding: .utf8)
                         print(self.errorMessage)
                         

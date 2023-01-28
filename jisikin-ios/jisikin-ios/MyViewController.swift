@@ -25,6 +25,7 @@ class MyViewController: UIViewController {
     let QABtn = UIButton()
     let heartedQBtn = UIButton()
     let logInOutBtn = UIButton()
+    let signOutBtn = UIButton()
     
     var viewModel = ProfileViewModel()
     
@@ -79,6 +80,12 @@ class MyViewController: UIViewController {
         logInOutBtn.setTitleColor(.black, for: .normal)
         logInOutBtn.setTitleColor(.black, for: .highlighted)
         
+        signOutBtn.setTitle("회원탈퇴", for: .normal)
+        signOutBtn.setTitleColor(.red, for: .normal)
+        signOutBtn.layer.borderColor = UIColor.gray.cgColor
+        signOutBtn.layer.borderWidth = 1
+        signOutBtn.addTarget(self, action: #selector(showSignOutAlert), for: .touchUpInside)
+        signOutBtn.layer.cornerRadius = 3
         
         if isLogin{
             viewModel.getProfile()
@@ -194,6 +201,16 @@ class MyViewController: UIViewController {
             logInOutBtn.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor, constant: 120),
             logInOutBtn.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 180),//180
         ])
+        
+        if isLogin{
+            view.addSubview(signOutBtn)
+            signOutBtn.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                signOutBtn.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                signOutBtn.leftAnchor.constraint(equalTo: QABtn.leftAnchor),
+                signOutBtn.rightAnchor.constraint(equalTo: logInOutBtn.rightAnchor)
+            ])
+        }
     }
 
     
@@ -232,11 +249,9 @@ class MyViewController: UIViewController {
     }
     @objc
     func onTapLogOutBtn() {
-        
-        LoginRepo.logout(completionHandler: { completionHandler in
+        LoginRepo.logout(completionHandler: { [weak self] completionHandler in
             if(completionHandler == "success"){
-                UserDefaults.standard.set(false, forKey: "isLogin")
-                UserDefaults.standard.removeObject(forKey: "profileImage")
+                self!.logOut()
             }
             
             else {
@@ -245,16 +260,47 @@ class MyViewController: UIViewController {
                 
                 errorAlert.addAction(errorAction)
                 
-                self.present(errorAlert, animated: false)
+                self!.present(errorAlert, animated: false)
             }
             
-            self.loadView()
+            self!.loadView()
         })
     }
     @objc
     func onTapLogInBtn() {
         let vc = LoginViewController()
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+    @objc
+    func showSignOutAlert(){
+         let signOutAction = UIAlertAction(title:"탈퇴",style: .default,handler: {[weak self]
+             setAction in
+             self!.LoginRepo.signOut(completionHandler: { [weak self] completionHandler in
+                 if(completionHandler == "success"){
+                     self!.logOut()
+                 }
+                 
+                 else {
+                     let errorAlert = UIAlertController(title: nil, message: "회원탈퇴 실패", preferredStyle: .alert)
+                     let errorAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default)
+                     
+                     errorAlert.addAction(errorAction)
+                     
+                     self!.present(errorAlert, animated: false)
+                 }
+                 
+                 self!.loadView()
+             })
+         })
+        let cancelAction = UIAlertAction(title:"취소",style:.default)
+        let alert = UIAlertController(title:nil,message: "회원탈퇴하시겠습니까?",preferredStyle: .alert)
+        alert.addAction(cancelAction)
+        alert.addAction(signOutAction)
+        self.present(alert,animated: false)
+      }
+    func logOut(){
+        UserDefaults.standard.set(false, forKey: "isLogin")
+        UserDefaults.standard.removeObject(forKey: "profileImage")
     }
     
 

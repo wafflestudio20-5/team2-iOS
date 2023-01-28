@@ -27,7 +27,7 @@ struct InteractionCount:Codable{
     var disagree:Int
 }
 class AnswerRepository{
-    let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
+    let baseURL = "https://jisik2n.store"
     var isError = false
     
     func getAnswersByQuestionID(id:Int,onCompleted:@escaping([AnswerAPI])->()){

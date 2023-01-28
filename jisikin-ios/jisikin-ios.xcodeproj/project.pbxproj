@@ -233,7 +233,6 @@
 				4ECD06612977D76E00E848BF /* JWTInterceptor.swift */,
 				4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */,
 				4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */,
-				C03F3CE62976AB510046DDDF /* ProfileUsecase.swift */,
 				4EFEB6F82982ACA600A45392 /* QuestionView.swift */,
 				4EFEB6FA2982AD0B00A45392 /* AnswerDetailCell.swift */,
 			);
