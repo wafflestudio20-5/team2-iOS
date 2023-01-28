@@ -61,6 +61,9 @@ class QuestionListViewModel{
     func searchQuestions(keyword:String){
         usecase.searchQuestions(keyword: keyword)
     }
+    func searchMoreQuestions(keyword:String){
+        usecase.searchMoreQuestions(keyword: keyword)
+    }
     
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         //let urlPhotos: [String] = UIImageToURL(photos: photos)
