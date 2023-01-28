@@ -20,6 +20,7 @@ class LoginViewController: UIViewController {
     
     let LoginRepo = LoginRepository()
     
+    var activeTextField = UITextField()
    
     var onLogin: (()->())?
     override func viewDidLoad() {
@@ -30,6 +31,15 @@ class LoginViewController: UIViewController {
     
     func viewInit() {
         self.view.backgroundColor = UIColor(named: "BackgroundColor")
+        
+        usernameTextfield.delegate = self
+        passwordTextfield.delegate = self
+        
+        usernameTextfield.enableInputAccessoryView()
+        passwordTextfield.enableInputAccessoryView()
+        
+        usernameTextfield.customTextFieldDelegate = self
+        passwordTextfield.customTextFieldDelegate = self
     }
     
     func setLayout() {
@@ -76,8 +86,8 @@ class LoginViewController: UIViewController {
         passwordCriteriaLabel.topAnchor.constraint(equalTo: passwordTextfield.bottomAnchor, constant: 5).isActive = true
         loginButton.topAnchor.constraint(equalTo: passwordCriteriaLabel.bottomAnchor, constant: 20).isActive = true
         loginButton.bottomAnchor.constraint(equalTo: loginButton.topAnchor, constant: 60).isActive = true
-        signupButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 20).isActive = true
-        kakaoLoginButton.topAnchor.constraint(equalTo: signupButton.bottomAnchor, constant: 30).isActive = true
+        signupButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 15).isActive = true
+        kakaoLoginButton.topAnchor.constraint(equalTo: signupButton.bottomAnchor, constant: 20).isActive = true
         kakaoLoginButton.bottomAnchor.constraint(equalTo: kakaoLoginButton.topAnchor, constant: 50).isActive = true
     }
     
@@ -148,6 +158,14 @@ class LoginViewController: UIViewController {
                     self.passwordCriteriaLabel.text = self.LoginRepo.errorMessage
                 }
                 
+                else if(self.LoginRepo.error.deletedUser == true){
+                    self.usernameCriteriaLabel.text = self.LoginRepo.errorMessage
+                }
+                
+                else if(self.LoginRepo.error.hadError == true){
+                    self.usernameCriteriaLabel.text = "error"
+                }
+                
                 else {
                     UserDefaults.standard.set(true, forKey: "isLogin")
                     
@@ -200,9 +218,53 @@ class LoginViewController: UIViewController {
     }
 }
 
+extension LoginViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.activeTextField = textField
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
+
+extension LoginViewController: LoginTextFieldDelegate {
+    func doneButtonPressed() {
+        //
+    }
+    
+    func arrowDownPressed() {
+        switch activeTextField{
+        case usernameTextfield:
+            passwordTextfield.becomeFirstResponder()
+        default:
+            break
+        }
+    }
+    
+    func arrowUpPressed() {
+        switch activeTextField{
+        case passwordTextfield:
+            usernameTextfield.becomeFirstResponder()
+        default:
+            break
+        }
+    }
+}
+
+protocol LoginTextFieldDelegate: AnyObject {
+    func doneButtonPressed()
+    func arrowDownPressed()
+    func arrowUpPressed()
+}
 
 class TextFieldWithPadding: UITextField {
-    weak var customTextFieldDelegate: MyCustomTextFieldDelegate?
+    weak var customTextFieldDelegate: LoginTextFieldDelegate?
     
     var textPadding = UIEdgeInsets(
         top: 10,
@@ -219,5 +281,41 @@ class TextFieldWithPadding: UITextField {
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         let rect = super.editingRect(forBounds: bounds)
         return rect.inset(by: textPadding)
+    }
+    
+    func enableInputAccessoryView() {
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        toolBar.barStyle = UIBarStyle.default
+        toolBar.isTranslucent = true
+        let space = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+
+        let doneButton = UIBarButtonItem(title: "완료", style: .done, target: self,
+                                         action: #selector(textFieldDonePressed))
+        doneButton.tintColor = UIColor(named: "MainColor")
+
+        let arrowUp = UIBarButtonItem(image: UIImage(systemName: "chevron.up"), style: .plain, target: nil, action: #selector(arrowUpPressed))
+        arrowUp.tintColor = UIColor(named: "MainColor")
+
+        let arrowDown = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .plain, target: nil, action: #selector(arrowDownPressed))
+        arrowDown.tintColor = UIColor(named: "MainColor")
+
+        toolBar.setItems([arrowUp, arrowDown, space, doneButton], animated: false)
+        toolBar.isUserInteractionEnabled = true
+        toolBar.sizeToFit()
+
+        inputAccessoryView = toolBar
+    }
+
+    @objc private func textFieldDonePressed() {
+        endEditing(true)
+        customTextFieldDelegate?.doneButtonPressed()
+    }
+
+    @objc private func arrowDownPressed() {
+        customTextFieldDelegate?.arrowDownPressed()
+    }
+
+    @objc private func arrowUpPressed() {
+        customTextFieldDelegate?.arrowUpPressed()
     }
 }

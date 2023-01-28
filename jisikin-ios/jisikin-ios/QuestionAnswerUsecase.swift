@@ -86,9 +86,29 @@ class QuestionAnswerUsecase{
     }
     
     func searchQuestions(keyword:String){
-        questionRepo.searchQuestions(keyword:keyword).subscribe(onSuccess: {
+        isPageEnded = false
+        page = 0
+        questionRepo.searchQuestions(keyword: keyword, page:page).subscribe(onSuccess: {
             result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
             self.questionSearch.accept(result)
+        }).disposed(by: bag)
+    }
+    func searchMoreQuestions(keyword:String){
+        page += 1
+        if isPageEnded{
+            return
+        }
+        questionRepo.searchQuestions(keyword: keyword, page:page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            var value = self.questionSearch.value
+            value.append(contentsOf: result)
+            self.questionSearch.accept(value)
         }).disposed(by: bag)
     }
    
