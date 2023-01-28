@@ -147,6 +147,37 @@ class AnswerRepository{
         }
     }
     
+    func editAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        
+        let fullURL = URL(string: baseURL + "/api/answer/\(id)")
+    
+        postImage(photos: photos) { [weak self] strImages in
+            guard let self = self else { return }
+            print("strImage = " + "\(strImages)")
+            
+            let queryString: Parameters = [
+                "content": contentText,
+                "photos": strImages
+            ]
+            
+            AF.request(fullURL!, method: .put, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
+                response in
+                switch(response.result) {
+                case .success(let data):
+                    print("성공")
+                    print(String(data: data, encoding: .utf8)!)
+                    completionhandler("success")
+                    break
+                case .failure(let error):
+                    print("실패")
+                    print(error.localizedDescription)
+                    completionhandler("failure")
+                    break
+                }
+            }
+        }
+    }
+    
     func selectAnswer(id:Int)->Single<String>{
         let header: HTTPHeaders = [
             "Content-Type": "application/json",

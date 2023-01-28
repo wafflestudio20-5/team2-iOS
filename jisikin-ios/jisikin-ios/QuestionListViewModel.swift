@@ -67,10 +67,21 @@ class QuestionListViewModel{
         usecase.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag, photos: photos)
     }
     
+    func editQuestion(questionID: Int, titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
+        usecase.editQuestion(questionID: questionID, titleText: titleText, contentText: contentText, tag: tag, photos: photos)
+    }
+    
     func postNewAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
         usecase.postNewAnswer(id: id, contentText: contentText, photos: photos){
             result in
           completionhandler(result)
+        }
+    }
+    
+    func editAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        usecase.editAnswer(id: id, contentText: contentText, photos: photos){
+            result in
+            completionhandler(result)
         }
     }
 }
