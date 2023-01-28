@@ -15,6 +15,8 @@ class WritingAnswerViewController: UIViewController {
   
     var questionID: Int = -1
     
+    var answerID: Int = -1
+    
     var photos: [UIImage] = []
     var content:String? = ""
     var isEdit = false
@@ -176,7 +178,7 @@ class WritingAnswerViewController: UIViewController {
                     }
                 }
             } else {
-                viewModel.editAnswer(id: questionID, contentText: contentText, photos: self.photos){
+                viewModel.editAnswer(id: answerID, contentText: contentText, photos: self.photos){
                     result in
                     if result == "success"{
                         self.navigationController?.popViewController(animated: false)

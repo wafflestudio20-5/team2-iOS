@@ -162,8 +162,8 @@ class QuestionDetailViewController:UIViewController{
                 let vc = WritingAnswerViewController()
                 vc.isEdit = true
                 vc.questionID = (self?.viewModel.questionID)!
+                vc.answerID = self!.viewModel.answers.value[index].id
                 vc.content = (cell as! AnswerTableCell).answerContentView.text
-                                  
                 vc.photos = photos
                                   self!.navigationController?.pushViewController(vc, animated: true)
             }
