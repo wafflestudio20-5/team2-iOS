@@ -38,7 +38,9 @@ extension UITextField {
 class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
-    
+    var isEdit:Bool = false
+    var questionTitle:String? = ""
+    var questionContent:String? = ""
     var tags: [String] = []
     
     var photos: [UIImage] = []
@@ -156,6 +158,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setNavigationBar()
         self.titleField.resignFirstResponder()
         self.contentView.becomeFirstResponder()
     }
@@ -176,10 +179,10 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         let image = UIImage(named: "QuestionLogo")
         imageView.image = image
         navigationItem.titleView = imageView
-        
-        navigationController?.isNavigationBarHidden = false
-        navigationController?.navigationBar.topItem?.leftBarButtonItem = leftButton
-        navigationController?.navigationBar.topItem?.rightBarButtonItem = rightButton
+        navigationItem.leftBarButtonItem = leftButton
+        navigationItem.rightBarButtonItem = rightButton
+        self.navigationController?.isNavigationBarHidden = false
+       
     }
     
     private func setLayout() {
