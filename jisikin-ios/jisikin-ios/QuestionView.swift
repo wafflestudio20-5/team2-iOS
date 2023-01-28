@@ -88,6 +88,7 @@ class QuestionView:UIView{
     var onImageLoaded:(()->())?
     var onDeleteButtonClicked:(()->())?
     var onLikeButtonClicked:(()->())?
+    var onEditButtonClicked:(()->())?
     var likeView:QuestionLikeView!
     override init(frame:CGRect){
         super.init(frame:frame)
@@ -124,6 +125,7 @@ class QuestionView:UIView{
         questionEditButton = UIButton()
         questionEditButton.setTitle("수정", for: .normal)
         questionEditButton.setTitleColor(.gray, for: .normal)
+        questionEditButton.addTarget(self, action: #selector(editButtonClicked), for: .touchDown)
         questionTimeView.font = questionTimeView.font.withSize(15)
         
         questionDeleteButton = UIButton()
@@ -250,6 +252,9 @@ class QuestionView:UIView{
     }
     @objc func likeButtonClicked(){
         onLikeButtonClicked?()
+    }
+    @objc func editButtonClicked(){
+        onEditButtonClicked?()
     }
     func setOnLikeButtonClicked(on:@escaping()->()){
         likeView.onLike = on

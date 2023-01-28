@@ -112,6 +112,7 @@ class AnswerTableCell:UITableViewCell{
     var onAgreeButtonPressed:(()->())?
     var onDisagreeButtonPressed:(()->())?
     var onDeleteButtonPressed:(()->())?
+    var onEditButtonPressed:(()->())?
     var onImageLoaded:(()->())?
     
     var lineAtTopHeightConstraint:NSLayoutConstraint!
@@ -194,6 +195,7 @@ class AnswerTableCell:UITableViewCell{
         answerChoiceButton.addTarget(self, action: #selector(onSelect), for: .touchDown)
         
         answerDeleteButton.addTarget(self, action: #selector(onDelete), for: .touchDown)
+        answerEditButton.addTarget(self, action: #selector(onEdit), for: .touchDown)
         contentView.addSubview(lineAtTop)
         contentView.addSubview(selectedLabel)
         contentView.addSubview(profile)
@@ -390,6 +392,9 @@ class AnswerTableCell:UITableViewCell{
     }
     @objc func onDelete(){
         onDeleteButtonPressed?()
+    }
+    @objc func onEdit(){
+        onEditButtonPressed?()
     }
     func pressAgree(){
         if agreed == true{

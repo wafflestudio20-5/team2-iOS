@@ -16,7 +16,8 @@ class WritingAnswerViewController: UIViewController {
     var questionID: Int = -1
     
     var photos: [UIImage] = []
-    
+    var content:String? = ""
+    var isEdit = false
     var cnt: Int = 0
     
     var imageCollectionView: UICollectionView = {
