@@ -168,9 +168,9 @@ class AnswerRepository{
                     print(String(data: data, encoding: .utf8)!)
                     completionhandler("success")
                     break
-                case .failure(let error):
+                case .failure(let data):
                     print("실패")
-                    print(error.localizedDescription)
+                    print(String(data: response.data!, encoding: .utf8)!)
                     completionhandler("failure")
                     break
                 }
