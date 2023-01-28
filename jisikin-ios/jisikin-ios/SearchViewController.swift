@@ -11,6 +11,8 @@ import RxSwift
 
 class SearchViewController:UIViewController{
     var bag = DisposeBag()
+    var loading = false
+    var keyword = ""
     var viewModel = QuestionListViewModel(usecase: QuestionAnswerUsecase())
     let searchBar = UISearchBar()
     let searchButton = UIButton()
@@ -28,7 +30,7 @@ class SearchViewController:UIViewController{
         navigationItem.titleView = searchBar
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchButton)
         
-        searchButton.addTarget(self, action: #selector(onTapButton), for: .touchUpInside)
+        searchButton.addTarget(self, action: #selector(search), for: .touchUpInside)
         searchButton.setTitle("search", for: .normal)
         searchButton.setTitleColor(.systemBlue, for: .normal)
         
@@ -61,8 +63,10 @@ class SearchViewController:UIViewController{
     }
     
     @objc
-    func onTapButton() {
-        viewModel.searchQuestions(keyword: searchBar.text!)
+    func search() {
+        loading = false
+        keyword = searchBar.text ?? ""
+        viewModel.searchQuestions(keyword: keyword)
         dismissKeyboard()
     }
     @objc func dismissKeyboard() {
@@ -72,17 +76,21 @@ class SearchViewController:UIViewController{
 }
 
 extension SearchViewController:UITableViewDelegate{
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: viewModel.questions.value[indexPath.row].questionId)), animated: true)
+        let detailViewModel = QuestionDetailViewModel(usecase: viewModel.usecase, questionID: viewModel.questions.value[indexPath.row].questionId)
+        detailViewModel.refresh()
+        navigationController?.pushViewController(QuestionDetailViewController(viewModel: detailViewModel), animated: true)
     }
-    
-    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 3 && !loading {
+            loading = true
+            viewModel.searchMoreQuestions(keyword: keyword)
+        }
+    }
 }
 extension SearchViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.searchQuestions(keyword: searchBar.text!)
-        dismissKeyboard()
+        search()
     }
 }

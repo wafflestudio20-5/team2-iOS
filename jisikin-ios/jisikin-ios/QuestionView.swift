@@ -88,6 +88,7 @@ class QuestionView:UIView{
     var onImageLoaded:(()->())?
     var onDeleteButtonClicked:(()->())?
     var onLikeButtonClicked:(()->())?
+    var onEditButtonClicked:(()->())?
     var likeView:QuestionLikeView!
     override init(frame:CGRect){
         super.init(frame:frame)
@@ -124,6 +125,7 @@ class QuestionView:UIView{
         questionEditButton = UIButton()
         questionEditButton.setTitle("수정", for: .normal)
         questionEditButton.setTitleColor(.gray, for: .normal)
+        questionEditButton.addTarget(self, action: #selector(editButtonClicked), for: .touchDown)
         questionTimeView.font = questionTimeView.font.withSize(15)
         
         questionDeleteButton = UIButton()
@@ -251,6 +253,9 @@ class QuestionView:UIView{
     @objc func likeButtonClicked(){
         onLikeButtonClicked?()
     }
+    @objc func editButtonClicked(){
+        onEditButtonClicked?()
+    }
     func setOnLikeButtonClicked(on:@escaping()->()){
         likeView.onLike = on
     }
@@ -261,6 +266,7 @@ class QuestionView:UIView{
         questionTitleView.text = question.title
         questionTimeView.text = question.createdAt
         questionContentView.text = question.content
+        questionContentView.setLineSpacing(spacing: 4.0)
         questionUserInfo.text = question.username
         if question.close{
             answerButton.setImage(UIImage(named:"questionSelected"),for:.normal)
@@ -279,14 +285,16 @@ class QuestionView:UIView{
            
             imageStackView.addArrangedSubview(imageView)
             imageView.kf.setImage(with:URL(string:image)!){ [self]result in
-                imageView.contentMode = .scaleAspectFit
-               
-                NSLayoutConstraint.activate([
-                    imageView.widthAnchor.constraint(lessThanOrEqualToConstant: imageStackView.frame.width),
-                    imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
-                ])
-                onImageLoaded?()
-                layoutIfNeeded()
+                if case .success = result{
+                    imageView.contentMode = .scaleAspectFit
+                    
+                    NSLayoutConstraint.activate([
+                        imageView.widthAnchor.constraint(lessThanOrEqualToConstant: imageStackView.frame.width),
+                        imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
+                    ])
+                    onImageLoaded?()
+                    layoutIfNeeded()
+                }
             }
             
         }
@@ -349,5 +357,18 @@ extension QuestionView:UICollectionViewDelegateFlowLayout{
             return CGSize(width: cellWidth, height: 22)
         
         
+    }
+}
+extension UILabel {
+    func setLineSpacing(spacing: CGFloat) {
+        guard let text = text else { return }
+
+        let attributeString = NSMutableAttributedString(string: text)
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing = spacing
+        attributeString.addAttribute(.paragraphStyle,
+                                     value: style,
+                                     range: NSRange(location: 0, length: attributeString.length))
+        attributedText = attributeString
     }
 }

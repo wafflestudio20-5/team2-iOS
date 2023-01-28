@@ -23,10 +23,10 @@ class QuestionDetailViewController:UIViewController{
     }
     override func viewWillAppear(_ animated: Bool){
         super.viewWillAppear(animated)
-      
+       setBackButton()
       viewModel.refresh()
         answerTableView.reloadData()
-        
+       
    }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -152,6 +152,19 @@ class QuestionDetailViewController:UIViewController{
                     self!.viewModel.refresh()
                 }).disposed(by: self!.bag)
             }
+            (cell as! AnswerTableCell).onEditButtonPressed = {
+                [weak self] in
+                var photos: [UIImage] = []
+                for imageView in (cell as! AnswerTableCell).imageStackView.subviews{
+                    photos.append((imageView as! UIImageView).image ?? UIImage())
+                }
+                let vc = WritingAnswerViewController()
+                vc.isEdit = true
+                vc.content = (cell as! AnswerTableCell).answerContentView.text
+                                  
+                vc.photos = photos
+                                  self!.navigationController?.pushViewController(vc, animated: true)
+            }
             
         }.disposed(by: bag)
   /*     UserDefaults.standard.rx.observe(String.self,"username").subscribe(onNext: {
@@ -189,6 +202,20 @@ class QuestionDetailViewController:UIViewController{
             answerTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+    
+    func setBackButton() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .clear
+        appearance.shadowColor = .clear
+        self.navigationController?.navigationBar.standardAppearance = appearance
+        self.navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = UIColor(named: "MainColor")
+        self.navigationItem.leftBarButtonItem = nil
+        self.navigationItem.rightBarButtonItem = nil
+        self.navigationItem.backBarButtonItem = backBarButtonItem
+    }
 }
 extension QuestionDetailViewController:UITableViewDelegate{
     
@@ -196,7 +223,19 @@ extension QuestionDetailViewController:UITableViewDelegate{
         questionView.onImageLoaded = {
             tableView.reloadData()
         }
-        
+        questionView.onEditButtonClicked = {[weak self] in
+            var photos:[UIImage] = []
+            for imageView in self!.questionView.imageStackView.subviews {
+                photos.append((imageView as! UIImageView).image ?? UIImage())
+            }
+            let vc = QuestionViewController()
+            vc.isEdit = true
+            vc.questionTitle = self!.viewModel.question.value!.title
+            vc.questionContent = self!.viewModel.question.value!.content
+            vc.photos = photos
+            vc.tags = self!.viewModel.question.value!.tag
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
         questionView.setOnAnswerButtonClicked(){[weak self] in
             if UserDefaults.standard.bool(forKey: "isLogin"){
                 let username = UserDefaults.standard.string(forKey: "username")
