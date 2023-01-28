@@ -160,6 +160,7 @@ class QuestionDetailViewController:UIViewController{
                 }
                 let vc = WritingAnswerViewController()
                 vc.isEdit = true
+                vc.questionID = (self?.viewModel.questionID)!
                 vc.content = (cell as! AnswerTableCell).answerContentView.text
                                   
                 vc.photos = photos
@@ -229,6 +230,7 @@ extension QuestionDetailViewController:UITableViewDelegate{
                 photos.append((imageView as! UIImageView).image ?? UIImage())
             }
             let vc = QuestionViewController()
+            vc.questionID = (self?.viewModel.questionID)!
             vc.isEdit = true
             vc.questionTitle = self!.viewModel.question.value!.title
             vc.questionContent = self!.viewModel.question.value!.content
