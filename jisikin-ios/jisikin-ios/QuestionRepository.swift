@@ -90,7 +90,7 @@ final class QuestionRepository{
         }
     }
     
-    func editQuestion(questionID: Int, titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
+    func editQuestion(questionID: Int, titleText: String, contentText: String, tag: [String], photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
         let fullURL = URL(string: baseURL + "/api/question/\(questionID)")
         
         postImage(photos: photos) { [weak self] strImages in
@@ -110,10 +110,12 @@ final class QuestionRepository{
                 case .success(let data):
                     print("성공")
                     print(String(data: data, encoding: .utf8)!)
+                    completionhandler("success")
                     break
                 case .failure(let error):
                     print("실패")
                     print(error.localizedDescription)
+                    completionhandler("failure")
                     break
                 }
             }

@@ -96,8 +96,11 @@ class QuestionAnswerUsecase{
         questionRepo.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag, photos: photos)
     }
     
-    func editQuestion(questionID: Int, titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
-        questionRepo.editQuestion(questionID: questionID, titleText: titleText, contentText: contentText, tag: tag, photos: photos)
+    func editQuestion(questionID: Int, titleText: String, contentText: String, tag: [String], photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        questionRepo.editQuestion(questionID: questionID, titleText: titleText, contentText: contentText, tag: tag, photos: photos) {
+            result in
+            completionhandler(result)
+        }
     }
     
     func postNewAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {

@@ -176,7 +176,7 @@ class WritingAnswerViewController: UIViewController {
                     }
                 }
             } else {
-                viewModel.editAnswer(id: questionID, contentText: contentText, photos: self.photos) {
+                viewModel.editAnswer(id: questionID, contentText: contentText, photos: self.photos){
                     result in
                     if result == "success"{
                         self.navigationController?.popViewController(animated: false)

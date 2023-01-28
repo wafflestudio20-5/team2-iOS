@@ -282,7 +282,12 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
                 viewModel.postNewQuestion(titleText: titleText, contentText: contentText, tag: self.tags, photos: self.photos)
             } else {
                 // 수정할 때
-                viewModel.editQuestion(questionID: self.questionID, titleText: titleText, contentText: contentText, tag: self.tags, photos: self.photos)
+                viewModel.editQuestion(questionID: self.questionID, titleText: titleText, contentText: contentText, tag: self.tags, photos: self.photos){
+                    result in
+                    if result == "success"{
+                        self.navigationController?.popViewController(animated: false)
+                    }
+                }
             }
         }
         
