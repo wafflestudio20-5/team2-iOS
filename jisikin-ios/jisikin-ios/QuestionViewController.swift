@@ -50,6 +50,8 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     var cnt: Int = 0
     
+    var onEdit:(()->())?
+    
     var tagCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -285,7 +287,9 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
                 viewModel.editQuestion(questionID: self.questionID, titleText: titleText, contentText: contentText, tag: self.tags, photos: self.photos){
                     result in
                     if result == "success"{
+                        self.onEdit?()
                         self.navigationController?.popViewController(animated: false)
+                       
                     }
                 }
             }

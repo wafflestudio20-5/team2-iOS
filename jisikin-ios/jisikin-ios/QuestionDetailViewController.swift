@@ -23,8 +23,9 @@ class QuestionDetailViewController:UIViewController{
     }
     override func viewWillAppear(_ animated: Bool){
         super.viewWillAppear(animated)
+        print("viewwillappear")
        setBackButton()
-      viewModel.refresh()
+        viewModel.refresh()
         answerTableView.reloadData()
        
    }
@@ -236,6 +237,10 @@ extension QuestionDetailViewController:UITableViewDelegate{
             vc.questionContent = self!.viewModel.question.value!.content
             vc.photos = photos
             vc.tags = self!.viewModel.question.value!.tag
+            vc.onEdit = {
+                [weak self] in
+                self?.viewModel.refresh()
+            }
             self?.navigationController?.pushViewController(vc, animated: true)
         }
         questionView.setOnAnswerButtonClicked(){[weak self] in
