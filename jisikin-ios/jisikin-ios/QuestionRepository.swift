@@ -42,7 +42,7 @@ struct QuestionIDAPI:Codable{
     var id:Int
 }
 final class QuestionRepository{
-    let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
+    let baseURL = "https://jisik2n.store"
     var isError = false
     
     func postImage(photos: [UIImage], completionhandler: @escaping ([String]) -> Void) {

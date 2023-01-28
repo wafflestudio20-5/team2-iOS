@@ -70,7 +70,7 @@ class MyRelatedQuestionTableViewCell:UITableViewCell{
    
     func configure(question:MyRelatedQuestionListModel){
         questionTitleView.text = question.title
-        postedTimeAndAnswerNumberView.text = question.createdAt! + " | " + (question.answerCount != nil ? "답변 \(question.answerCount!)" : "공감")
+        postedTimeAndAnswerNumberView.text = "\(question.createdAt!)\(question.answerCount != nil ? " | 답변 \(question.answerCount!)" : "")"
     }
     
 }

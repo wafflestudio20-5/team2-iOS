@@ -148,6 +148,14 @@ class LoginViewController: UIViewController {
                     self.passwordCriteriaLabel.text = self.LoginRepo.errorMessage
                 }
                 
+                else if(self.LoginRepo.error.deletedUser == true){
+                    self.usernameCriteriaLabel.text = self.LoginRepo.errorMessage
+                }
+                
+                else if(self.LoginRepo.error.hadError == true){
+                    self.usernameCriteriaLabel.text = "error"
+                }
+                
                 else {
                     UserDefaults.standard.set(true, forKey: "isLogin")
                     

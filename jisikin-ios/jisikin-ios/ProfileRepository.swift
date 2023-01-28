@@ -15,7 +15,7 @@ struct ProfileRequest:Codable{
     var isMale:Bool?
 }
 class ProfileRepository{
-    let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
+    let baseURL = "https://jisik2n.store"
     struct ModifyError {
         var hadError = false
         var usernameExists = false
