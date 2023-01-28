@@ -37,6 +37,10 @@ extension UITextField {
 
 class QuestionViewController: UIViewController, UITextFieldDelegate {
     
+    var questionID: Int = -1
+    
+    var isEdit: Bool = false
+    
     var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
     
     var tags: [String] = []
@@ -114,7 +118,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     let textViewPlaceHolder = "무엇이 궁금한가요?"
     
     lazy var accessoryView: UIView = {
-        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 300))
+        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 75))
     }()
     
     lazy var titleField: UITextField = {
@@ -126,7 +130,6 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         field.setPlaceHolderColor(UIColor.lightGray)
         field.backgroundColor = UIColor.white
         field.delegate = self
-        field.becomeFirstResponder()
         field.inputAccessoryView = accessoryView
         
         return field
@@ -140,7 +143,6 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         view.textColor = UIColor.lightGray
         view.delegate = self
         view.backgroundColor = .white
-        
         return view
     }()
     
@@ -156,8 +158,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.titleField.resignFirstResponder()
-        self.contentView.becomeFirstResponder()
+        contentView.becomeFirstResponder()
     }
     
     private func setNavigationBar() {
@@ -190,7 +191,8 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         accessoryView.addSubview(lineView)
         accessoryView.addSubview(tagCollectionView)
         accessoryView.addSubview(addTagButton)
-        accessoryView.addSubview(imageCollectionView)
+        // accessoryView.addSubview(imageCollectionView)
+        view.addSubview(imageCollectionView)
         
         guard let lineSuperView = lineView.superview else { return }
         
@@ -217,7 +219,7 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
             contentView.leadingAnchor.constraint(equalTo: titleField.leadingAnchor, constant: -3),
             contentView.rightAnchor.constraint(equalTo: titleField.rightAnchor),
             contentView.topAnchor.constraint(equalTo: titleField.bottomAnchor, constant: 20),
-            contentView.heightAnchor.constraint(equalToConstant: 300),
+            contentView.heightAnchor.constraint(equalToConstant: 170),
             
             plusImageButton.heightAnchor.constraint(equalToConstant: 38),
             plusImageButton.widthAnchor.constraint(equalToConstant: 38),
@@ -238,10 +240,16 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
             addTagButton.leftAnchor.constraint(equalTo: lineSuperView.leftAnchor, constant: 10),
             addTagButton.widthAnchor.constraint(equalToConstant: 20),
             addTagButton.bottomAnchor.constraint(equalTo: tagCollectionView.bottomAnchor),
+            /*
             imageCollectionView.leftAnchor.constraint(equalTo: lineSuperView.leftAnchor, constant: 10),
             imageCollectionView.rightAnchor.constraint(equalTo: lineSuperView.rightAnchor),
             imageCollectionView.heightAnchor.constraint(equalToConstant: 120),
             imageCollectionView.bottomAnchor.constraint(equalTo: tagCollectionView.topAnchor, constant: -3)
+             */
+            imageCollectionView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            imageCollectionView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+            imageCollectionView.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 5),
+            imageCollectionView.heightAnchor.constraint(equalToConstant: 120)
         ])
     }
     
@@ -390,7 +398,7 @@ extension QuestionViewController: UIImagePickerControllerDelegate & UINavigation
                 thumnail = result!
                 }
                 
-                let data = thumnail.jpegData(compressionQuality: 0.7)
+                let data = thumnail.jpegData(compressionQuality: 1)
                 self.photos.append(UIImage(data: data!)! as UIImage)
                 self.imageCollectionView.reloadData()
             }
