@@ -50,6 +50,8 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     var cnt: Int = 0
     
+    var onEdit:(()->())?
+    
     var tagCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -277,7 +279,20 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
         } else {
             guard let titleText = titleField.text else { return }
             guard let contentText = contentView.text else { return }
-            viewModel.postNewQuestion(titleText: titleText, contentText: contentText, tag: self.tags, photos: self.photos)
+            
+            if isEdit == false {
+                viewModel.postNewQuestion(titleText: titleText, contentText: contentText, tag: self.tags, photos: self.photos)
+            } else {
+                // 수정할 때
+                viewModel.editQuestion(questionID: self.questionID, titleText: titleText, contentText: contentText, tag: self.tags, photos: self.photos){
+                    result in
+                    if result == "success"{
+                        self.onEdit?()
+                        self.navigationController?.popViewController(animated: false)
+                       
+                    }
+                }
+            }
         }
         
         view.endEditing(true)

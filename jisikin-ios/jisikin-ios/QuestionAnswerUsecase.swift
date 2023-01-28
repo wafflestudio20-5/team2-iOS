@@ -116,12 +116,27 @@ class QuestionAnswerUsecase{
         questionRepo.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag, photos: photos)
     }
     
+    func editQuestion(questionID: Int, titleText: String, contentText: String, tag: [String], photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        questionRepo.editQuestion(questionID: questionID, titleText: titleText, contentText: contentText, tag: tag, photos: photos) {
+            result in
+            completionhandler(result)
+        }
+    }
+    
     func postNewAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
         answerRepo.postNewAnswer(id: id, contentText: contentText, photos: photos){
             result in
             completionhandler(result)
         }
     }
+    
+    func editAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        answerRepo.editAnswer(id: id, contentText: contentText, photos: photos) {
+            result in
+            completionhandler(result)
+        }
+    }
+    
     func selectAnswer(questionID:Int,answerID:Int)->Single<String>{
         return Single<String>.create{single in
             self.answerRepo.selectAnswer(id: answerID).subscribe(onSuccess: {

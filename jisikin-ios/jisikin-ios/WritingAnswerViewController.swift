@@ -15,6 +15,8 @@ class WritingAnswerViewController: UIViewController {
   
     var questionID: Int = -1
     
+    var answerID: Int = -1
+    
     var photos: [UIImage] = []
     var content:String? = ""
     var isEdit = false
@@ -167,13 +169,23 @@ class WritingAnswerViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         } else {
             guard let contentText = contentView.text else { return }
-            viewModel.postNewAnswer(id: questionID, contentText: contentText, photos: self.photos){
-                result in
-                if result == "success"{
-                 
-                    self.navigationController?.popViewController(animated: false)
+            
+            if isEdit == false {
+                viewModel.postNewAnswer(id: questionID, contentText: contentText, photos: self.photos){
+                    result in
+                    if result == "success"{
+                        self.navigationController?.popViewController(animated: false)
+                    }
+                }
+            } else {
+                viewModel.editAnswer(id: answerID, contentText: contentText, photos: self.photos){
+                    result in
+                    if result == "success"{
+                        self.navigationController?.popViewController(animated: false)
+                    }
                 }
             }
+            
         }
        
     }

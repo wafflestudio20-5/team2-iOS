@@ -72,11 +72,11 @@ final class QuestionRepository{
                 switch(response.result) {
                 case .success(let data):
                     print("이미지 성공")
-                    print(data)
+                    // print(data)
                     strImages.append(data)
                     i += 1
-                    print("i = " + "\(i)")
-                    print("photos.count = " + "\(photos.count)")
+                    // print("i = " + "\(i)")
+                    // print("photos.count = " + "\(photos.count)")
                     if i == photos.count {
                         print("completionhandler")
                         completionhandler(strImages)
@@ -90,12 +90,44 @@ final class QuestionRepository{
         }
     }
     
+    func editQuestion(questionID: Int, titleText: String, contentText: String, tag: [String], photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        let fullURL = URL(string: baseURL + "/api/question/\(questionID)")
+        
+        postImage(photos: photos) { [weak self] strImages in
+            guard let self = self else { return }
+            // print("strImage = " + "\(strImages)")
+            
+            let queryString: Parameters = [
+                "title": titleText,
+                "content": contentText,
+                "tag": tag,
+                "photos": strImages
+            ]
+            
+            AF.request(fullURL!, method: .put, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
+                response in
+                switch(response.result) {
+                case .success(let data):
+                    print("성공")
+                    print(String(data: data, encoding: .utf8)!)
+                    completionhandler("success")
+                    break
+                case .failure(let error):
+                    print("실패")
+                    print(error.localizedDescription)
+                    completionhandler("failure")
+                    break
+                }
+            }
+        }
+    }
+    
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         let fullURL = URL(string: baseURL + "/api/question/")
     
         postImage(photos: photos) { [weak self] strImages in
             guard let self = self else { return }
-            print("strImage = " + "\(strImages)")
+            // print("strImage = " + "\(strImages)")
             
             let queryString: Parameters = [
                 "title": titleText,

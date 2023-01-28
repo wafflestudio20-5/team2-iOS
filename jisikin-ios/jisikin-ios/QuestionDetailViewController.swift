@@ -23,8 +23,9 @@ class QuestionDetailViewController:UIViewController{
     }
     override func viewWillAppear(_ animated: Bool){
         super.viewWillAppear(animated)
+        print("viewwillappear")
        setBackButton()
-      viewModel.refresh()
+        viewModel.refresh()
         answerTableView.reloadData()
        
    }
@@ -160,8 +161,9 @@ class QuestionDetailViewController:UIViewController{
                 }
                 let vc = WritingAnswerViewController()
                 vc.isEdit = true
+                vc.questionID = (self?.viewModel.questionID)!
+                vc.answerID = self!.viewModel.answers.value[index].id
                 vc.content = (cell as! AnswerTableCell).answerContentView.text
-                                  
                 vc.photos = photos
                                   self!.navigationController?.pushViewController(vc, animated: true)
             }
@@ -229,11 +231,16 @@ extension QuestionDetailViewController:UITableViewDelegate{
                 photos.append((imageView as! UIImageView).image ?? UIImage())
             }
             let vc = QuestionViewController()
+            vc.questionID = (self?.viewModel.questionID)!
             vc.isEdit = true
             vc.questionTitle = self!.viewModel.question.value!.title
             vc.questionContent = self!.viewModel.question.value!.content
             vc.photos = photos
             vc.tags = self!.viewModel.question.value!.tag
+            vc.onEdit = {
+                [weak self] in
+                self?.viewModel.refresh()
+            }
             self?.navigationController?.pushViewController(vc, animated: true)
         }
         questionView.setOnAnswerButtonClicked(){[weak self] in
