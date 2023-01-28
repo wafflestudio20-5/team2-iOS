@@ -18,14 +18,20 @@ class MyQAViewController: UIViewController{
     {
         super.viewWillAppear(animated)
         
-        self.questionTable.deselectSelectedRow(animated: false)
-        if let segmentedControl{
-            if segmentedControl.selectedSegmentIndex == 0{
-                viewModel.getMyQuestions()
+        if(UserDefaults.standard.bool(forKey: "isLogin")){
+            self.questionTable.deselectSelectedRow(animated: false)
+            if let segmentedControl{
+                if segmentedControl.selectedSegmentIndex == 0{
+                    viewModel.getMyQuestions()
+                }
+                else{
+                    viewModel.getMyAnsweredQuestions()
+                }
             }
-            else{
-                viewModel.getMyAnsweredQuestions()
-            }
+        }
+        
+        else{
+            navigationController?.popViewController(animated: false)
         }
     }
     
