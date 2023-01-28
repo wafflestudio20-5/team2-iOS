@@ -149,6 +149,12 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if isEdit {
+            titleField.text = questionTitle
+            contentView.text = questionContent
+            contentView.textColor = .black
+        }
+
         setNavigationBar()
         tagCollectionView.dataSource = self
         tagCollectionView.delegate = self

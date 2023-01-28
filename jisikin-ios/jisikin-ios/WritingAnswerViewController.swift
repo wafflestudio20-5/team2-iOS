@@ -88,6 +88,10 @@ class WritingAnswerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if isEdit {
+            contentView.text = content
+            contentView.textColor = .black
+        }
         imageCollectionView.delegate = self
         imageCollectionView.dataSource = self
         setNavigationBar()
@@ -136,14 +140,15 @@ class WritingAnswerViewController: UIViewController {
             lineView.bottomAnchor.constraint(equalTo: plusImageButton.topAnchor, constant: -1),
             lineView.widthAnchor.constraint(equalTo: lineSuperView.widthAnchor),
             lineView.heightAnchor.constraint(equalToConstant: 1),
-            lineView.centerXAnchor.constraint(equalTo: lineSuperView.centerXAnchor),imageCollectionView.leftAnchor.constraint(equalTo: lineSuperView.leftAnchor, constant: 10),
+            lineView.centerXAnchor.constraint(equalTo: lineSuperView.centerXAnchor),
             /*
+            imageCollectionView.leftAnchor.constraint(equalTo: lineSuperView.leftAnchor, constant: 10),
             imageCollectionView.rightAnchor.constraint(equalTo: lineSuperView.rightAnchor),
             imageCollectionView.heightAnchor.constraint(equalToConstant: 120),
             imageCollectionView.bottomAnchor.constraint(equalTo: lineView.topAnchor, constant: -3)
              */
             imageCollectionView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
-            imageCollectionView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+            imageCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageCollectionView.heightAnchor.constraint(equalToConstant: 120),
             imageCollectionView.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 5)
         ])
