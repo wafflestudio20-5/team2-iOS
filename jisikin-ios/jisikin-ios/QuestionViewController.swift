@@ -42,7 +42,6 @@ class QuestionViewController: UIViewController, UITextFieldDelegate {
     var isEdit: Bool = false
     
     var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
-    var isEdit:Bool = false
     var questionTitle:String? = ""
     var questionContent:String? = ""
     var tags: [String] = []
