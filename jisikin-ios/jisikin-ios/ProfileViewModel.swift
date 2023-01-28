@@ -53,6 +53,9 @@ class ProfileViewModel{
         if let image = profileImage{
             usecase.uploadImage(image: image){[self] photoPath in
                 self.usecase.modifyProfile(photoPath: photoPath, username: username, isMale: isMale){error in
+                    if !error.hadError{
+                        UserDefaults.standard.set(image.jpegData(compressionQuality: 1.0), forKey: "profileImage")
+                    }
                     completionHandler(error)
                 }
             }

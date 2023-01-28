@@ -40,7 +40,14 @@ class PhotoRepository{
     
     func deleteImage(url: String){//} -> Single<String>{
         print("deleteImage에 들어옴")
-        AF.request(url, method:.delete).responseString{
+        
+        let fullURL = URL(string: baseURL + "/api/photo")
+        
+        let queryString: Parameters = [
+            "url": url
+        ]
+        
+        AF.request(fullURL!, method:.delete, parameters: queryString, interceptor:JWTInterceptor()).responseString{
             response in
             switch(response.result){
             case .success(let data):

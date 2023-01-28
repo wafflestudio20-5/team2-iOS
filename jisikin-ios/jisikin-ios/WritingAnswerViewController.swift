@@ -12,11 +12,12 @@ import BSImagePicker
 class WritingAnswerViewController: UIViewController {
     
     var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
-    
+  
     var questionID: Int = -1
     
     var photos: [UIImage] = []
-    
+    var content:String? = ""
+    var isEdit = false
     var cnt: Int = 0
     
     var imageCollectionView: UICollectionView = {
@@ -164,6 +165,7 @@ class WritingAnswerViewController: UIViewController {
             viewModel.postNewAnswer(id: questionID, contentText: contentText, photos: self.photos){
                 result in
                 if result == "success"{
+                 
                     self.navigationController?.popViewController(animated: false)
                 }
             }

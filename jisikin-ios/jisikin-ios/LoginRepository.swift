@@ -95,6 +95,7 @@ final class LoginRepository {
                 }
                 else {
                     UserDefaults.standard.set(false, forKey: "kakaoLogin")
+                    UserDefaults.standard.removeObject(forKey: "username")
                 }
             }
         }
@@ -122,6 +123,7 @@ final class LoginRepository {
             case .success(_):
                 UserDefaults.standard.removeObject(forKey: "accessToken")
                 UserDefaults.standard.removeObject(forKey: "refreshToken")
+                UserDefaults.standard.removeObject(forKey: "username")
                 completionHandler("success")
             case .failure(let error):
                 print(error)
