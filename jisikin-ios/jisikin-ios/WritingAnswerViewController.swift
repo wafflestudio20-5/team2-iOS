@@ -278,7 +278,7 @@ extension WritingAnswerViewController: UIImagePickerControllerDelegate & UINavig
                 
                 var thumnail = UIImage()
                 
-                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: option) { (result, info) in
+                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 360, height: 360), contentMode: .aspectFill, options: option) { (result, info) in
                 thumnail = result!
                 }
                 
