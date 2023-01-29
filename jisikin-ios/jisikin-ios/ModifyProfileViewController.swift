@@ -48,7 +48,6 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         profilePhotoLabel.text = "프로필 사진"
         
         let profilePhotoSize = CGFloat(45)
-//        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
         profilePhotoView.backgroundColor = .systemGray
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
@@ -185,7 +184,6 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         // Do any additional setup after loading the view.
     }
     func presentCamera(){
-            
             let vc = UIImagePickerController()
             vc.sourceType = .camera
             vc.delegate = self
@@ -196,8 +194,6 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         }
         
         func presentAlbum(){
-            
-            
             let vc = UIImagePickerController()
             vc.sourceType = .photoLibrary
             vc.delegate = self
@@ -213,9 +209,6 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
             if let image = info[.editedImage] as? UIImage {
                 profilePhotoView.image = image
                 profilePhotoIsModified = true
-                
-                print(image.size.width,image.size.height)
-                //profilePhotoIsExisted = true
             }
          dismiss(animated: true, completion: nil)
     }
@@ -243,20 +236,14 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     }
     @objc
     func onTapModifySaveBtn() {
-        var isMale: Bool
-        
-        if genderSegment.selectedSegmentIndex == 0{isMale = true}
-        else{isMale = false}
+        var isMale: Bool = (genderSegment.selectedSegmentIndex == 0) ? true : false
         
         if profilePhotoIsModified{
             viewModel.modifyProfile(profileImage: profilePhotoView.image, username: modifyNickNameField.text!, isMale: isMale){ [self] error in
                 if !error.usernameExists{
-                    if viewModel.usecase.profile.value?.profileImage != ""{
-                        print("image must be deleted")
-                        if let url = viewModel.usecase.profile.value?.profileImage{
-                            viewModel.deleteProfileImage(url: url)
-                        }
-                        
+                    print("image must be deleted")
+                    if let url = viewModel.usecase.profile.value?.profileImage{
+                        viewModel.deleteProfileImage(url: url)
                     }
                     self.success()
                 }else{

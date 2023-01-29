@@ -64,7 +64,7 @@ class PhotoRepository{
         }
     }
     
-    func getImageData(url: String, completionhandler: @escaping (Data) -> Void){
+    func getImageData(url: String, completionhandler: @escaping (Data?) -> Void){
         AF.request(url).responseData { response in
             switch response.result{
                 case .success(let imageData):
@@ -74,7 +74,7 @@ class PhotoRepository{
                     }
                 case .failure(let err):
                     print(err.localizedDescription)
-                    completionhandler(Data())
+//                    completionhandler(nil)
                 }
         }
     }

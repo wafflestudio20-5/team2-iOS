@@ -40,7 +40,7 @@ class ProfileRepository{
         }
     }
     
-    func putAccount(photoPath: String, username: String, isMale: Bool,completionHandler:@escaping (ModifyError)->Void) ->Single<ProfileRequest> {
+    func putAccount(photoPath: String?, username: String, isMale: Bool,completionHandler:@escaping (ModifyError)->Void) ->Single<ProfileRequest> {
         print(photoPath, username, isMale)
         let fullURL = URL(string: baseURL + "/api/user/putAccount")
         let queryString: Parameters = [
