@@ -56,6 +56,7 @@ class ProfileRepository{
                 switch(response.result){
                 case .success(let data):
                     self.error.usernameExists = false
+                    UserDefaults.standard.set(username,forKey: "username")
                     single(.success(data))
                     completionHandler(self.error)
                 case .failure(let error):
