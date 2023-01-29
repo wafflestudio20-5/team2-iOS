@@ -9,6 +9,7 @@ class QuestionLikeView:UIView{
     var onLike:(()->())?
     var selectedImage:UIImage = UIImage(systemName: "heart.fill")!.withTintColor(.red,renderingMode:.alwaysOriginal)
     var unSelectedImage:UIImage = UIImage(systemName: "heart")!.withTintColor(.black)
+    
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -23,8 +24,6 @@ class QuestionLikeView:UIView{
 
     func setLayout(){
       
-      
-        
         likeButton = UIButton()
         likeButton.setImage(systemName: "heart", color: .black)
         likeButton.contentMode = .center
@@ -42,7 +41,7 @@ class QuestionLikeView:UIView{
         NSLayoutConstraint.activate([
             likeButton.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant:15.0),
             likeButton.heightAnchor.constraint(equalTo: likeButton.widthAnchor),
-            likeNumber.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor,constant:5.0),
+            likeNumber.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor,constant:10.0),
             trailingAnchor.constraint(equalTo: likeButton.trailingAnchor,constant:50.0),
             likeButton.topAnchor.constraint(equalTo: likeNumber.topAnchor),
             likeNumber.topAnchor.constraint(equalTo: topAnchor,constant:10.0),
@@ -90,6 +89,7 @@ class QuestionView:UIView{
     var onLikeButtonClicked:(()->())?
     var onEditButtonClicked:(()->())?
     var likeView:QuestionLikeView!
+    
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -151,7 +151,6 @@ class QuestionView:UIView{
         imageStackView.spacing = 20
         
         likeView = QuestionLikeView()
-       
         
         lineOnTop.translatesAutoresizingMaskIntoConstraints = false
         questionTitleView.translatesAutoresizingMaskIntoConstraints = false
@@ -251,6 +250,7 @@ class QuestionView:UIView{
         onDeleteButtonClicked?()
     }
     @objc func likeButtonClicked(){
+        print("likeBtn")
         onLikeButtonClicked?()
     }
     @objc func editButtonClicked(){
