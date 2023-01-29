@@ -84,7 +84,7 @@ final class LoginRepository {
                             self.error.passwordWrong = false
                         }
                         
-                        if(errorCode == 400){
+                        if(errorCode == 403){
                             self.error.deletedUser = true
                             self.error.uidWrong = false
                             self.error.passwordWrong = false

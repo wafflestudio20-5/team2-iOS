@@ -417,8 +417,9 @@ extension QuestionViewController: UIImagePickerControllerDelegate & UINavigation
                 
                 var thumnail = UIImage()
                 
-                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: option) { (result, info) in
-                thumnail = result!
+                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 360, height: 360), contentMode: .aspectFill, options: option) { (result, info) in
+                    thumnail = result!
+                    print(thumnail.size.width, thumnail.size.height)
                 }
                 
                 let data = thumnail.jpegData(compressionQuality: 1)
