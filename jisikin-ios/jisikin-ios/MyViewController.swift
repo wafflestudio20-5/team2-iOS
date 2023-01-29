@@ -38,7 +38,7 @@ class MyViewController: UIViewController {
         self.view.backgroundColor = .white
         
         let profilePhotoSize = CGFloat(45)
-        
+        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
         profilePhotoView.backgroundColor = .black
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
@@ -93,7 +93,6 @@ class MyViewController: UIViewController {
                 profile in
                 if self==nil{return}
                 if let profile{
-                    
                     profile.profileImage.subscribe(onNext:{[weak self] image in
                         if let profileImage = image{
                             if UserDefaults.standard.bool(forKey: "isLogin"){
@@ -110,18 +109,15 @@ class MyViewController: UIViewController {
                                     print("There is no profile image in VC")
                                     self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
                                 }
-                            }else{
-                                self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
                             }
-                            
-                            
+//                            else{
+//                                self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+//                            }
                         }
                     })
                     self!.nickName.text = profile.username
                 }
             }).disposed(by: bag)
-            
-            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
             profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
             
             tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifyProfileBtn))
@@ -146,7 +142,6 @@ class MyViewController: UIViewController {
             logInOutBtn.removeTarget(nil, action: nil, for: .allEvents)
             logInOutBtn.addTarget(self, action: #selector(onTapLogOutBtn), for: .touchUpInside)
         }else{
-            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
             profilePhotoView.layer.borderColor = .none
             
             tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapLogInBtn))

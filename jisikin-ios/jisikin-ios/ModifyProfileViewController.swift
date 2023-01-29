@@ -48,6 +48,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         profilePhotoLabel.text = "프로필 사진"
         
         let profilePhotoSize = CGFloat(45)
+        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
         profilePhotoView.backgroundColor = .systemGray
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
@@ -86,9 +87,10 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
                         }else{
                             if let data = UserDefaults.standard.data(forKey: "profileImage"){
                                 self.profilePhotoView.image = UIImage(data: data)
-                            }else{
-                                self.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
                             }
+//                            else{
+//                                self.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+//                            }
                         }
                     }
                 })
