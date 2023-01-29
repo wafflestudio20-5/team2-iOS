@@ -12,11 +12,14 @@ import BSImagePicker
 class WritingAnswerViewController: UIViewController {
     
     var viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
-    
+  
     var questionID: Int = -1
     
-    var photos: [UIImage] = []
+    var answerID: Int = -1
     
+    var photos: [UIImage] = []
+    var content:String? = ""
+    var isEdit = false
     var cnt: Int = 0
     
     var imageCollectionView: UICollectionView = {
@@ -71,7 +74,7 @@ class WritingAnswerViewController: UIViewController {
     """
     
     lazy var accessoryView: UIView = {
-        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 170))
+        return UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
     }()
     
     lazy var contentView: UITextView = {
@@ -81,13 +84,16 @@ class WritingAnswerViewController: UIViewController {
         view.text = textViewPlaceHolder
         view.textColor = UIColor.lightGray
         view.delegate = self
-        // view.becomeFirstResponder()
         
         return view
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if isEdit {
+            contentView.text = content
+            contentView.textColor = .black
+        }
         imageCollectionView.delegate = self
         imageCollectionView.dataSource = self
         setNavigationBar()
@@ -110,9 +116,10 @@ class WritingAnswerViewController: UIViewController {
     
     private func setLayout() {
         view.addSubview(contentView)
+        view.addSubview(imageCollectionView)
         accessoryView.addSubview(plusImageButton)
         accessoryView.addSubview(lineView)
-        accessoryView.addSubview(imageCollectionView)
+        // accessoryView.addSubview(imageCollectionView)
         
         guard let lineSuperView = plusImageButton.superview else { return }
         
@@ -125,7 +132,7 @@ class WritingAnswerViewController: UIViewController {
             contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10.0),
             contentView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -10.0),
             contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.0),
-            contentView.heightAnchor.constraint(equalToConstant: 300),
+            contentView.heightAnchor.constraint(equalToConstant: 240),
             
             plusImageButton.heightAnchor.constraint(equalToConstant: 38),
             plusImageButton.widthAnchor.constraint(equalToConstant: 38),
@@ -135,10 +142,17 @@ class WritingAnswerViewController: UIViewController {
             lineView.bottomAnchor.constraint(equalTo: plusImageButton.topAnchor, constant: -1),
             lineView.widthAnchor.constraint(equalTo: lineSuperView.widthAnchor),
             lineView.heightAnchor.constraint(equalToConstant: 1),
-            lineView.centerXAnchor.constraint(equalTo: lineSuperView.centerXAnchor),imageCollectionView.leftAnchor.constraint(equalTo: lineSuperView.leftAnchor, constant: 10),
+            lineView.centerXAnchor.constraint(equalTo: lineSuperView.centerXAnchor),
+            /*
+            imageCollectionView.leftAnchor.constraint(equalTo: lineSuperView.leftAnchor, constant: 10),
             imageCollectionView.rightAnchor.constraint(equalTo: lineSuperView.rightAnchor),
             imageCollectionView.heightAnchor.constraint(equalToConstant: 120),
             imageCollectionView.bottomAnchor.constraint(equalTo: lineView.topAnchor, constant: -3)
+             */
+            imageCollectionView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            imageCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageCollectionView.heightAnchor.constraint(equalToConstant: 120),
+            imageCollectionView.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 5)
         ])
     }
     
@@ -155,12 +169,23 @@ class WritingAnswerViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         } else {
             guard let contentText = contentView.text else { return }
-            viewModel.postNewAnswer(id: questionID, contentText: contentText, photos: self.photos){
-                result in
-                if result == "success"{
-                    self.navigationController?.popViewController(animated: false)
+            
+            if isEdit == false {
+                viewModel.postNewAnswer(id: questionID, contentText: contentText, photos: self.photos){
+                    result in
+                    if result == "success"{
+                        self.navigationController?.popViewController(animated: false)
+                    }
+                }
+            } else {
+                viewModel.editAnswer(id: answerID, contentText: contentText, photos: self.photos){
+                    result in
+                    if result == "success"{
+                        self.navigationController?.popViewController(animated: false)
+                    }
                 }
             }
+            
         }
        
     }
@@ -257,7 +282,7 @@ extension WritingAnswerViewController: UIImagePickerControllerDelegate & UINavig
                 thumnail = result!
                 }
                 
-                let data = thumnail.jpegData(compressionQuality: 0.7)
+                let data = thumnail.jpegData(compressionQuality: 1)
                 self.photos.append(UIImage(data: data!)! as UIImage)
                 self.imageCollectionView.reloadData()
             }

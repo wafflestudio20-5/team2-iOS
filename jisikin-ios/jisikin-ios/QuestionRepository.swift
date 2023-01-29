@@ -42,7 +42,7 @@ struct QuestionIDAPI:Codable{
     var id:Int
 }
 final class QuestionRepository{
-    let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
+    let baseURL = "https://jisik2n.store"
     var isError = false
     
     func postImage(photos: [UIImage], completionhandler: @escaping ([String]) -> Void) {
@@ -72,11 +72,11 @@ final class QuestionRepository{
                 switch(response.result) {
                 case .success(let data):
                     print("이미지 성공")
-                    print(data)
+                    // print(data)
                     strImages.append(data)
                     i += 1
-                    print("i = " + "\(i)")
-                    print("photos.count = " + "\(photos.count)")
+                    // print("i = " + "\(i)")
+                    // print("photos.count = " + "\(photos.count)")
                     if i == photos.count {
                         print("completionhandler")
                         completionhandler(strImages)
@@ -90,12 +90,44 @@ final class QuestionRepository{
         }
     }
     
+    func editQuestion(questionID: Int, titleText: String, contentText: String, tag: [String], photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        let fullURL = URL(string: baseURL + "/api/question/\(questionID)")
+        
+        postImage(photos: photos) { [weak self] strImages in
+            guard let self = self else { return }
+            // print("strImage = " + "\(strImages)")
+            
+            let queryString: Parameters = [
+                "title": titleText,
+                "content": contentText,
+                "tag": tag,
+                "photos": strImages
+            ]
+            
+            AF.request(fullURL!, method: .put, parameters: queryString, encoding: JSONEncoding.default, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseData {
+                response in
+                switch(response.result) {
+                case .success(let data):
+                    print("성공")
+                    print(String(data: data, encoding: .utf8)!)
+                    completionhandler("success")
+                    break
+                case .failure(let error):
+                    print("실패")
+                    print(error.localizedDescription)
+                    completionhandler("failure")
+                    break
+                }
+            }
+        }
+    }
+    
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         let fullURL = URL(string: baseURL + "/api/question/")
     
         postImage(photos: photos) { [weak self] strImages in
             guard let self = self else { return }
-            print("strImage = " + "\(strImages)")
+            // print("strImage = " + "\(strImages)")
             
             let queryString: Parameters = [
                 "title": titleText,
@@ -249,29 +281,22 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
-    func searchQuestions(keyword:String)->Single<[QuestionSearchAPI]>{
+    func searchQuestions(keyword:String, page:Int)->Single<[QuestionSearchAPI]>{
         let fullURL = URL(string: baseURL + "/api/question/search")
         let parameters = [
-            "order":"date",
-            "keyword":keyword
-        ]
+            "keyword":keyword,
+            "pageNum":page
+        ] as [String : Any]
         return Single<[QuestionSearchAPI]>.create{
             single in
             AF.request(fullURL!,method:.get,parameters: parameters,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[QuestionSearchAPI].self){
                 response in
                 switch(response.result){
                 case .success(let data):
-                    var val = data
-                  //  for (i,v) in val.photos.enumerated(){
-                   //     val[i].photos.append("https://via.placeholder.com/150")
-                   //     val[i].photos.append("https://via.placeholder.com/150")
-                   //     val[i].photos.append("https://via.placeholder.com/150")
-                   // }
-                    single(.success(val))
+                    single(.success(data))
                 case .failure(let error):
                     single(.failure(error))
                 }
-            
             }
             return Disposables.create()
         }
@@ -279,10 +304,6 @@ final class QuestionRepository{
     
     func getMyQuestions()->Single<[MyRelatedQuestionResponse]>{
         let fullURL = URL(string: baseURL + "/api/user/myQuestions")
-//        let header: HTTPHeaders = [
-//            "Content-Type": "application/json",
-//            "Authorization": "Bearer " + UserDefaults.standard.string(forKey: "accessToken")!
-//        ]
         return Single<[MyRelatedQuestionResponse]>.create{
             single in
             AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[MyRelatedQuestionResponse].self){

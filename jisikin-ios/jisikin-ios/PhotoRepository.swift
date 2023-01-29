@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 import RxSwift
 class PhotoRepository{
-    let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
+    let baseURL = "https://jisik2n.store"
     var isError = false
     
     func uploadImage(image: UIImage, completionhandler: @escaping (String) -> Void) {
@@ -38,11 +38,8 @@ class PhotoRepository{
         }
     }
     
-    func deleteImage(url: String){//} -> Single<String>{
-        print("deleteImage에 들어옴")
-        
+    func deleteImage(url: String){
         let fullURL = URL(string: baseURL + "/api/photo")
-        
         let queryString: Parameters = [
             "url": url
         ]
@@ -56,23 +53,6 @@ class PhotoRepository{
                 print("fail to delete image")
             }
         }
-        
-//        return Single<String>.create{single in
-//            AF.request(url, method:.delete).responseString{
-//                response in
-//                switch(response.result){
-//                case .success(let data):
-//                    print("Image Deleted")
-//                    print(data)
-//                    single(.success(data))
-//                case .failure(let error):
-//                    print("fail to delete image")
-//                    single(.failure(error))
-//                }
-//
-//            }
-//            return Disposables.create()
-//        }
     }
     
     func getImageData(url: String, completionhandler: @escaping (Data) -> Void){

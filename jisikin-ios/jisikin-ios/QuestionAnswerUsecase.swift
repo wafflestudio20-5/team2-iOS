@@ -86,14 +86,41 @@ class QuestionAnswerUsecase{
     }
     
     func searchQuestions(keyword:String){
-        questionRepo.searchQuestions(keyword:keyword).subscribe(onSuccess: {
+        isPageEnded = false
+        page = 0
+        questionRepo.searchQuestions(keyword: keyword, page:page).subscribe(onSuccess: {
             result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
             self.questionSearch.accept(result)
+        }).disposed(by: bag)
+    }
+    func searchMoreQuestions(keyword:String){
+        page += 1
+        if isPageEnded{
+            return
+        }
+        questionRepo.searchQuestions(keyword: keyword, page:page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            var value = self.questionSearch.value
+            value.append(contentsOf: result)
+            self.questionSearch.accept(value)
         }).disposed(by: bag)
     }
    
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
         questionRepo.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag, photos: photos)
+    }
+    
+    func editQuestion(questionID: Int, titleText: String, contentText: String, tag: [String], photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        questionRepo.editQuestion(questionID: questionID, titleText: titleText, contentText: contentText, tag: tag, photos: photos) {
+            result in
+            completionhandler(result)
+        }
     }
     
     func postNewAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
@@ -102,6 +129,14 @@ class QuestionAnswerUsecase{
             completionhandler(result)
         }
     }
+    
+    func editAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        answerRepo.editAnswer(id: id, contentText: contentText, photos: photos) {
+            result in
+            completionhandler(result)
+        }
+    }
+    
     func selectAnswer(questionID:Int,answerID:Int)->Single<String>{
         return Single<String>.create{single in
             self.answerRepo.selectAnswer(id: answerID).subscribe(onSuccess: {

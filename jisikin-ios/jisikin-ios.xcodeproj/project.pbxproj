@@ -36,6 +36,8 @@
 		4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */; };
 		4EFEB6F5297B84DA00A45392 /* detailTagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */; };
 		4EFEB6F7297B8B5900A45392 /* selfsizingcollectionview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */; };
+		4EFEB6F92982ACA600A45392 /* QuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F82982ACA600A45392 /* QuestionView.swift */; };
+		4EFEB6FB2982AD0B00A45392 /* AnswerDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6FA2982AD0B00A45392 /* AnswerDetailCell.swift */; };
 		6669E963AA0FE71A0C45E7EE /* Pods_jisikin_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489CD149E57C0EA9C5D9B4C4 /* Pods_jisikin_iosTests.framework */; };
 		8EAA9FD4F818743CC10321BD /* Pods_jisikin_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5748C32360EEF24721FF4D75 /* Pods_jisikin_ios.framework */; };
 		C002B11E295AE1DA003303B7 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B11D295AE1DA003303B7 /* TabBarViewController.swift */; };
@@ -108,6 +110,8 @@
 		4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detailTagViewCell.swift; sourceTree = "<group>"; };
 		4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = selfsizingcollectionview.swift; sourceTree = "<group>"; };
+		4EFEB6F82982ACA600A45392 /* QuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionView.swift; sourceTree = "<group>"; };
+		4EFEB6FA2982AD0B00A45392 /* AnswerDetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerDetailCell.swift; sourceTree = "<group>"; };
 		5541333EDBCB937116F222C7 /* Pods-jisikin-iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jisikin-iosTests.release.xcconfig"; path = "Target Support Files/Pods-jisikin-iosTests/Pods-jisikin-iosTests.release.xcconfig"; sourceTree = "<group>"; };
 		5748C32360EEF24721FF4D75 /* Pods_jisikin_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_jisikin_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C4A7C809D4CC5C4A465821B /* Pods-jisikin-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jisikin-ios.debug.xcconfig"; path = "Target Support Files/Pods-jisikin-ios/Pods-jisikin-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -229,6 +233,8 @@
 				4ECD06612977D76E00E848BF /* JWTInterceptor.swift */,
 				4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */,
 				4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */,
+				4EFEB6F82982ACA600A45392 /* QuestionView.swift */,
+				4EFEB6FA2982AD0B00A45392 /* AnswerDetailCell.swift */,
 			);
 			path = "jisikin-ios";
 			sourceTree = "<group>";
@@ -524,6 +530,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EFEB6F92982ACA600A45392 /* QuestionView.swift in Sources */,
 				4E610E972976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift in Sources */,
 				4EFEB6F7297B8B5900A45392 /* selfsizingcollectionview.swift in Sources */,
 				4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */,
@@ -543,6 +550,7 @@
 				C002B124295AE236003303B7 /* MyViewController.swift in Sources */,
 				C0D6FC1B295F5F2300FF0A0C /* ModifyProfileViewController.swift in Sources */,
 				4E01E17E296D23C300B8EFD2 /* HomeViewController.swift in Sources */,
+				4EFEB6FB2982AD0B00A45392 /* AnswerDetailCell.swift in Sources */,
 				C03F3CF9297A94480046DDDF /* MyRelatedQuestionUsecase.swift in Sources */,
 				4ECD064C29692C1900E848BF /* QuestionRepository.swift in Sources */,
 				4EFEB6F5297B84DA00A45392 /* detailTagViewCell.swift in Sources */,
