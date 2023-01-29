@@ -24,7 +24,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     let profilePhotoView = UIImageView()
     let modifyProfilePhotoBtn = UIButton()
     let nickNameLabel = UILabel()
-    let modifyNickNameField = UITextField()
+    let modifyNickNameField = TextFieldWithPadding()
     let nickNameCriteriaLabel = UILabel()
     let genderLabel = UILabel()
     let genderSegment = UISegmentedControl(items: ["남", "여"])
@@ -68,6 +68,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         nickNameLabel.text = "닉네임"
         modifyNickNameField.backgroundColor = .lightGray
         modifyNickNameField.textColor = .white
+        modifyNickNameField.delegate = self
         nickNameCriteriaLabel.textColor = .red
         nickNameCriteriaLabel.font = UIFont.systemFont(ofSize: 12)
         
@@ -212,6 +213,8 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
             if let image = info[.editedImage] as? UIImage {
                 profilePhotoView.image = image
                 profilePhotoIsModified = true
+                
+                print(image.size.width,image.size.height)
                 //profilePhotoIsExisted = true
             }
          dismiss(animated: true, completion: nil)
@@ -285,4 +288,14 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     }
     */
 
+}
+extension ModifyProfileViewController: UITextFieldDelegate {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // TextField 비활성화
+        return true
+    }
 }

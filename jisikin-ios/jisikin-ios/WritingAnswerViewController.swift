@@ -132,7 +132,7 @@ class WritingAnswerViewController: UIViewController {
             contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10.0),
             contentView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -10.0),
             contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.0),
-            contentView.heightAnchor.constraint(equalToConstant: 240),
+            contentView.heightAnchor.constraint(equalToConstant: 245),
             
             plusImageButton.heightAnchor.constraint(equalToConstant: 38),
             plusImageButton.widthAnchor.constraint(equalToConstant: 38),
@@ -278,7 +278,7 @@ extension WritingAnswerViewController: UIImagePickerControllerDelegate & UINavig
                 
                 var thumnail = UIImage()
                 
-                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: option) { (result, info) in
+                imageManager.requestImage(for: assets[i], targetSize: CGSize(width: 360, height: 360), contentMode: .aspectFill, options: option) { (result, info) in
                 thumnail = result!
                 }
                 

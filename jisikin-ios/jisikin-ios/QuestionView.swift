@@ -5,10 +5,11 @@ import RxCocoa
 import Kingfisher
 class QuestionLikeView:UIView{
     var likeButton:UIButton!
-    var likeNumber:UILabel!
+    var likeNumber:UIButton!
     var onLike:(()->())?
     var selectedImage:UIImage = UIImage(systemName: "heart.fill")!.withTintColor(.red,renderingMode:.alwaysOriginal)
     var unSelectedImage:UIImage = UIImage(systemName: "heart")!.withTintColor(.black)
+    
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -23,16 +24,17 @@ class QuestionLikeView:UIView{
 
     func setLayout(){
       
-      
-        
         likeButton = UIButton()
         likeButton.setImage(systemName: "heart", color: .black)
         likeButton.contentMode = .center
         likeButton.imageView?.contentMode = .scaleAspectFit
         likeButton.addTarget( self, action:#selector(onLikeButtonClicked),for:.touchDown)
-        likeNumber = UILabel()
-        likeNumber.text = "10"
-        likeNumber.font = likeNumber.font.withSize(23)
+        likeNumber = UIButton()
+        likeNumber.setTitle("10", for: .normal)
+        likeNumber.titleLabel?.font = UIFont(name: "Helvetica", size: 23)
+        likeNumber.setTitleColor(UIColor.black, for: .normal)
+        likeNumber.addTarget( self, action:#selector(onLikeButtonClicked),for:.touchDown)
+        //likeNumber.font = likeNumber.font.withSize(23)
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         likeNumber.translatesAutoresizingMaskIntoConstraints = false
         addSubview(likeButton)
@@ -42,7 +44,7 @@ class QuestionLikeView:UIView{
         NSLayoutConstraint.activate([
             likeButton.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant:15.0),
             likeButton.heightAnchor.constraint(equalTo: likeButton.widthAnchor),
-            likeNumber.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor,constant:5.0),
+            likeNumber.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor,constant:10.0),
             trailingAnchor.constraint(equalTo: likeButton.trailingAnchor,constant:50.0),
             likeButton.topAnchor.constraint(equalTo: likeNumber.topAnchor),
             likeNumber.topAnchor.constraint(equalTo: topAnchor,constant:10.0),
@@ -54,8 +56,7 @@ class QuestionLikeView:UIView{
             onLike?()
         }
     func configure(isLike:Bool,likeCount:Int){
-      
-        likeNumber.text = String(likeCount)
+        likeNumber.setTitle(String(likeCount), for: .normal)
         if isLike{
             likeButton.setImage(selectedImage,for:.normal)
         }
@@ -90,6 +91,7 @@ class QuestionView:UIView{
     var onLikeButtonClicked:(()->())?
     var onEditButtonClicked:(()->())?
     var likeView:QuestionLikeView!
+    
     override init(frame:CGRect){
         super.init(frame:frame)
         setLayout()
@@ -151,7 +153,6 @@ class QuestionView:UIView{
         imageStackView.spacing = 20
         
         likeView = QuestionLikeView()
-       
         
         lineOnTop.translatesAutoresizingMaskIntoConstraints = false
         questionTitleView.translatesAutoresizingMaskIntoConstraints = false
@@ -251,6 +252,7 @@ class QuestionView:UIView{
         onDeleteButtonClicked?()
     }
     @objc func likeButtonClicked(){
+        print("likeBtn")
         onLikeButtonClicked?()
     }
     @objc func editButtonClicked(){
