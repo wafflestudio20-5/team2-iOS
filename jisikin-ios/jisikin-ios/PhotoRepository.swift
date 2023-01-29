@@ -13,6 +13,15 @@ class PhotoRepository{
     var isError = false
     
     func uploadImage(image: UIImage, completionhandler: @escaping (String) -> Void) {
+//        if let data = image.jpegData(compressionQuality: 1){
+//            print("There were \(data.count) bytes")
+//            let bcf = ByteCountFormatter()
+//            bcf.allowedUnits = [.useMB] // optional: restricts the units to MB only
+//            bcf.countStyle = .file
+//            let string = bcf.string(fromByteCount: Int64(data.count))
+//            print("formatted result: \(string)")
+//        }
+        
         let fullURL = URL(string: baseURL + "/api/photo")
         
         let queryString: Parameters = [
