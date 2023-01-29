@@ -24,7 +24,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     let profilePhotoView = UIImageView()
     let modifyProfilePhotoBtn = UIButton()
     let nickNameLabel = UILabel()
-    let modifyNickNameField = UITextField()
+    let modifyNickNameField = TextFieldWithPadding()
     let nickNameCriteriaLabel = UILabel()
     let genderLabel = UILabel()
     let genderSegment = UISegmentedControl(items: ["남", "여"])
