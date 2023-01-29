@@ -5,7 +5,7 @@ import RxCocoa
 import Kingfisher
 class QuestionLikeView:UIView{
     var likeButton:UIButton!
-    var likeNumber:UILabel!
+    var likeNumber:UIButton!
     var onLike:(()->())?
     var selectedImage:UIImage = UIImage(systemName: "heart.fill")!.withTintColor(.red,renderingMode:.alwaysOriginal)
     var unSelectedImage:UIImage = UIImage(systemName: "heart")!.withTintColor(.black)
@@ -29,9 +29,12 @@ class QuestionLikeView:UIView{
         likeButton.contentMode = .center
         likeButton.imageView?.contentMode = .scaleAspectFit
         likeButton.addTarget( self, action:#selector(onLikeButtonClicked),for:.touchDown)
-        likeNumber = UILabel()
-        likeNumber.text = "10"
-        likeNumber.font = likeNumber.font.withSize(23)
+        likeNumber = UIButton()
+        likeNumber.setTitle("10", for: .normal)
+        likeNumber.titleLabel?.font = UIFont(name: "Helvetica", size: 23)
+        likeNumber.setTitleColor(UIColor.black, for: .normal)
+        likeNumber.addTarget( self, action:#selector(onLikeButtonClicked),for:.touchDown)
+        //likeNumber.font = likeNumber.font.withSize(23)
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         likeNumber.translatesAutoresizingMaskIntoConstraints = false
         addSubview(likeButton)
@@ -53,8 +56,7 @@ class QuestionLikeView:UIView{
             onLike?()
         }
     func configure(isLike:Bool,likeCount:Int){
-      
-        likeNumber.text = String(likeCount)
+        likeNumber.setTitle(String(likeCount), for: .normal)
         if isLike{
             likeButton.setImage(selectedImage,for:.normal)
         }
