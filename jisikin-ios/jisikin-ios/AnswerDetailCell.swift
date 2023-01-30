@@ -40,7 +40,7 @@ class AnswerProfileView:UIView{
         recentAnswerTime = UILabel()
         recentAnswerTime.textColor = .gray
         
-        profilePicture = UIImageView(image:UIColor.yellow.image(CGSize(width: 50, height: 50)))
+        profilePicture = UIImageView(image:UIImage(named: "DefaultProfilePhoto"))
         profilePicture.layer.cornerRadius = 25
         profilePicture.clipsToBounds = true
         profilePicture.layer.borderColor = UIColor.clear.cgColor
@@ -80,6 +80,9 @@ class AnswerProfileView:UIView{
             print(answer.profileImagePath)
         
             profilePicture.kf.setImage(with:URL(string:answer.profileImagePath!)!)
+        }
+        else{
+            profilePicture.image = UIImage(named:"DefaultProfilePhoto")
         }
     }
 }
