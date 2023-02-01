@@ -165,7 +165,7 @@ class QuestionTableViewCell:UITableViewCell{
             lineAtBottom2.heightAnchor.constraint(equalToConstant: 6.0)
         ])
         NSLayoutConstraint.activate([
-            imagePreview.topAnchor.constraint(equalTo: questionTitleView.centerYAnchor),
+            imagePreview.topAnchor.constraint(equalTo: questionTitleView.topAnchor),
             imagePreview.bottomAnchor.constraint(equalTo: postedTimeView.centerYAnchor),
             imagePreview.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor,constant: -20.0),
            
@@ -201,6 +201,7 @@ class QuestionTableViewCell:UITableViewCell{
             imageWidthActiveConstraint.isActive = true
             titleViewTrailingImageConstant.isActive = true
             titleViewTrailingNoImageConstant.isActive = false
+            questionContentView.text = questionContentView.text! + "\n" //to force contentview with 2 lines, for constant image size
             imagePreview.kf.setImage(with: URL(string: url)!)
             }
         else{
