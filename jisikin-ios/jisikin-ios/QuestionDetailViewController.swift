@@ -97,6 +97,8 @@ class QuestionDetailViewController:UIViewController{
             (cell as! AnswerTableCell).onImageLoaded = {
                 UIView.performWithoutAnimation{
                     self?.answerTableView.beginUpdates()
+                    self?.answerTableView.setNeedsDisplay()
+                    cell.layoutIfNeeded()
                     self?.answerTableView.endUpdates()
                     print("ID print:")
                 }
