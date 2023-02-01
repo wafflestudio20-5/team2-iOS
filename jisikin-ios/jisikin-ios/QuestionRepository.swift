@@ -22,6 +22,8 @@ struct QuestionSearchAPI:Codable{
     var answerCount:Int
     var questionCreatedAt:String
     var questionLikeCount:Int
+    var questionTag:[String]
+    var photo:String?
 }
 struct QuestionDetailAPI:Codable{
     var id:Int

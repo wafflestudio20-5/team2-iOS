@@ -340,8 +340,7 @@ class AnswerTableCell:UITableViewCell{
                     imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
                 ])
                 print("image loaded")
-             
-                
+              
                 self!.onImageLoaded?()
                 
                 

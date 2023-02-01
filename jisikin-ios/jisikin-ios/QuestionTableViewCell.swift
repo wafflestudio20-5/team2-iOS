@@ -14,6 +14,11 @@ class QuestionTableViewCell:UITableViewCell{
     var lineAtBottom:UIView!
     var lineAtBottom2:UIView!
     var lineAtTop:UIView!
+    var imagePreview:UIImageView!
+    var imageWidthActiveConstraint:NSLayoutConstraint!
+    var imageWidthInActiveConstraint:NSLayoutConstraint!
+    var titleViewTrailingImageConstant:NSLayoutConstraint!
+    var titleViewTrailingNoImageConstant:NSLayoutConstraint!
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
@@ -32,21 +37,22 @@ class QuestionTableViewCell:UITableViewCell{
         questionTitleView.textColor = .black
         questionTitleView.font = questionTitleView.font.withSize(18)
         questionTitleView.lineBreakMode = .byTruncatingTail
-        
+        questionTitleView.setContentHuggingPriority(.required, for: .vertical)
         
         questionContentView = UILabel()
         questionContentView.numberOfLines = 2
         questionContentView.font = questionContentView.font.withSize(16)
         questionContentView.textColor = .init(red: 141/255, green: 141/255, blue: 141/255, alpha: 1)
-        
+        questionContentView.setContentHuggingPriority(.required, for: .vertical)
         postedTimeView = UILabel()
         postedTimeView.textColor = .gray
        // postedTimeView.textColor = UIColor(red: 147/255, green: 147/255, blue: 147/255, alpha: 1)
         postedTimeView.textColor = .init(red: 137/255, green: 136/255, blue: 137/255, alpha: 1)
+        postedTimeView.setContentHuggingPriority(.required, for: .vertical)
         postedTimeView.font = postedTimeView.font.withSize(12)
         lineBetweenTimeAndAnswerNumber = UIView()
         lineBetweenTimeAndAnswerNumber.backgroundColor = UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
-    
+        
         answerNumberView = UILabel()
         answerNumberView.textAlignment = .center
         answerNumberView.textColor = .init(red: 111/255, green: 111/255, blue: 111/255, alpha: 1)
@@ -68,6 +74,10 @@ class QuestionTableViewCell:UITableViewCell{
         lineAtBottom2.backgroundColor = UIColor(red: 235/255.0, green: 235/255.0, blue: 235/255.0, alpha: 1)
         lineAtTop = UIView()
         lineAtTop.backgroundColor = UIColor(red: 241/255.0, green: 241/255.0, blue: 241/255.0, alpha: 1)
+        imagePreview = UIImageView()
+        imagePreview.contentMode = .scaleAspectFill
+        imagePreview.layer.masksToBounds = true
+        imagePreview.backgroundColor = .systemTeal
         
         questionTitleView.translatesAutoresizingMaskIntoConstraints = false
         questionContentView.translatesAutoresizingMaskIntoConstraints = false
@@ -79,7 +89,7 @@ class QuestionTableViewCell:UITableViewCell{
         lineAtBottom.translatesAutoresizingMaskIntoConstraints = false
         lineAtBottom2.translatesAutoresizingMaskIntoConstraints = false
         lineAtTop.translatesAutoresizingMaskIntoConstraints = false
-        
+        imagePreview.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(questionTitleView)
         contentView.addSubview(questionContentView)
         contentView.addSubview(postedTimeView)
@@ -89,6 +99,7 @@ class QuestionTableViewCell:UITableViewCell{
         contentView.addSubview(likeNumberView)
         contentView.addSubview(lineAtBottom)
         contentView.addSubview(lineAtBottom2)
+        contentView.addSubview(imagePreview)
         contentView.addSubview(lineAtTop)
     }
     func setConstraints(){
@@ -100,8 +111,7 @@ class QuestionTableViewCell:UITableViewCell{
         ])
         NSLayoutConstraint.activate([
             questionTitleView.topAnchor.constraint(equalTo: lineAtTop.bottomAnchor,constant:10.0),
-            questionTitleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 20.0),
-            questionTitleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -20.0)
+            questionTitleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 20.0)
                         
         ])
         NSLayoutConstraint.activate([
@@ -154,6 +164,20 @@ class QuestionTableViewCell:UITableViewCell{
             lineAtBottom2.bottomAnchor.constraint(equalTo:contentView.safeAreaLayoutGuide.bottomAnchor),
             lineAtBottom2.heightAnchor.constraint(equalToConstant: 6.0)
         ])
+        NSLayoutConstraint.activate([
+            imagePreview.topAnchor.constraint(equalTo: questionTitleView.topAnchor),
+            imagePreview.bottomAnchor.constraint(equalTo: postedTimeView.centerYAnchor),
+            imagePreview.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor,constant: -20.0),
+           
+            
+        ])
+        imageWidthActiveConstraint = imagePreview.widthAnchor.constraint(equalTo: imagePreview.heightAnchor)
+        imageWidthActiveConstraint.isActive = true
+        imageWidthInActiveConstraint = imagePreview.widthAnchor.constraint(equalToConstant: 0)
+        imageWidthInActiveConstraint.isActive = false
+        titleViewTrailingImageConstant = questionTitleView.trailingAnchor.constraint(equalTo: imagePreview.leadingAnchor,constant: -20.0)
+        titleViewTrailingImageConstant.isActive = true
+        titleViewTrailingNoImageConstant = questionTitleView.trailingAnchor.constraint(equalTo: imagePreview.leadingAnchor)
     }
    
     func configure(question:QuestionListModel){
@@ -168,8 +192,29 @@ class QuestionTableViewCell:UITableViewCell{
         likeNumberText.append(NSAttributedString(string:"좋아요 ", attributes:[NSAttributedString.Key.foregroundColor: UIColor.black]))
         likeNumberText.append(NSAttributedString(string:"\(question.questionLikeCount)", attributes:[NSAttributedString.Key.foregroundColor: BLUE_COLOR]))
         likeNumberView.attributedText = likeNumberText
+        configurePhoto(url: question.photo)
         
     }
+    func configurePhoto(url:String?){
+        if let url{
+            imageWidthInActiveConstraint.isActive = false
+            imageWidthActiveConstraint.isActive = true
+            titleViewTrailingImageConstant.isActive = true
+            titleViewTrailingNoImageConstant.isActive = false
+            questionContentView.text = questionContentView.text! + "\n" //to force contentview with 2 lines, for constant image size
+            imagePreview.kf.setImage(with: URL(string: url)!)
+            }
+        else{
+            imageWidthActiveConstraint.isActive = false
+            imageWidthInActiveConstraint.isActive = true
+            titleViewTrailingImageConstant.isActive = false
+            titleViewTrailingNoImageConstant.isActive = true
+        }
+        setNeedsLayout()
+        contentView.layoutIfNeeded()
+    }
+      
+    
     
 }
 
