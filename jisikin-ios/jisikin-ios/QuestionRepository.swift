@@ -304,11 +304,14 @@ final class QuestionRepository{
         }
     }
     
-    func getMyQuestions()->Single<[MyRelatedQuestionResponse]>{
+    func getMyQuestions(page:Int)->Single<[MyRelatedQuestionResponse]>{
         let fullURL = URL(string: baseURL + "/api/user/myQuestions")
+        let parameters = [
+            "pageNum":page
+        ]
         return Single<[MyRelatedQuestionResponse]>.create{
             single in
-            AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[MyRelatedQuestionResponse].self){
+            AF.request(fullURL!,method:.get,parameters: parameters, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[MyRelatedQuestionResponse].self){
                 response in
                 switch(response.result){
                 case .success(let data):
@@ -322,11 +325,14 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
-    func getMyAnsweredQuestions()->Single<[MyRelatedQuestionResponse]>{
+    func getMyAnsweredQuestions(page:Int)->Single<[MyRelatedQuestionResponse]>{
         let fullURL = URL(string: baseURL + "/api/user/myAnswers/")
+        let parameters = [
+            "pageNum":page
+        ]
         return Single<[MyRelatedQuestionResponse]>.create{
             single in
-            AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
+            AF.request(fullURL!,method:.get, parameters: parameters, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
                 response in
                 switch(response.result){
                 case .success(let data):
@@ -339,11 +345,14 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
-    func getMyHeartedQuestions()->Single<[MyRelatedQuestionResponse]>{
+    func getMyHeartedQuestions(page:Int)->Single<[MyRelatedQuestionResponse]>{
         let fullURL = URL(string: baseURL + "/api/user/myLikeQuestions")
+        let parameters = [
+            "pageNum":page
+        ]
         return Single<[MyRelatedQuestionResponse]>.create{
             single in
-            AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
+            AF.request(fullURL!,method:.get, parameters: parameters, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
                 response in
                 switch(response.result){
                 case .success(let data):

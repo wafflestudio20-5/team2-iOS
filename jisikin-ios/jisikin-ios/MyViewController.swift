@@ -288,10 +288,10 @@ class MyViewController: UIViewController {
              })
          })
         let cancelAction = UIAlertAction(title:"취소",style:.default)
-        let alert = UIAlertController(title:nil,message: "회원탈퇴하시겠습니까?",preferredStyle: .alert)
+        let alert = UIAlertController(title:"회원탈퇴",message: "탈퇴를 하면 동일한 계정으로 재가입할 수 없습니다. 정말로 탈퇴를 진행하시겠습니까?",preferredStyle: .alert)
         alert.addAction(cancelAction)
         alert.addAction(signOutAction)
-        self.present(alert,animated: false)
+        self.present(alert,animated: true)
       }
     func logOut(){
         UserDefaults.standard.set(false, forKey: "isLogin")

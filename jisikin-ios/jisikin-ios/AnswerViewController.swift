@@ -161,7 +161,7 @@ extension AnswerViewController:UITableViewDelegate{
         if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 3 && !loading {
             loading = true
             if sortMethodSegment.selectedSegmentIndex == 0{
-                viewModel.getMoreQUestionsByDate()
+                viewModel.getMoreQuestionsByDate()
             }
             else{
                 viewModel.getMoreQuestionsByLikes()

@@ -55,7 +55,7 @@ class QuestionListViewModel{
     func getQuestionsByDate(){
         usecase.getQuestionsByDate()
     }
-    func getMoreQUestionsByDate(){
+    func getMoreQuestionsByDate(){
         usecase.getMoreQuestionsByDate()
     }
     
