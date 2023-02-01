@@ -71,6 +71,7 @@ class HomeViewController: UIViewController {
         setImageView()
         setMyQuestionView()
         setConstraint()
+
     }
     
     func reloadQuestions() {
@@ -341,7 +342,8 @@ class HomeViewController: UIViewController {
         case helpAnswerBanner:
             self.tabBarController?.selectedIndex = 1
         case devBanner:
-            print("hello dev")
+            let vc = DevViewController()
+            navigationController?.pushViewController(vc, animated: true)
         default:
             break
         }
