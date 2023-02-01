@@ -51,13 +51,22 @@ class MyRelatedQuestionListViewModel{
     func getMyQuestions(){
         usecase.getMyQuestions()
     }
+    func getMoreMyQuestions(){
+        usecase.getMoreMyQuestions()
+    }
     
     func getMyAnsweredQuestions(){
         usecase.getMyAnsweredQuestions()
     }
+    func getMoreMyAnsweredQuestions(){
+        usecase.getMoreMyAnsweredQuestions()
+    }
     
     func getMyHeartedQuestions(){
         usecase.getMyHeartedQuestions()
+    }
+    func getMoreMyHeartedQuestions(){
+        usecase.getMoreMyHeartedQuestions()
     }
     
 }
