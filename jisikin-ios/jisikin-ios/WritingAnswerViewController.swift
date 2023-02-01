@@ -161,7 +161,7 @@ class WritingAnswerViewController: UIViewController {
     }
     
     @objc private func doneAnswer(_ sender: Any) {
-        if contentView.text == textViewPlaceHolder {
+        if contentView.text == "" {
             let alert = UIAlertController(title: "주의", message: "내용을 입력하세요.", preferredStyle: .alert)
             let action = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(action)
