@@ -15,6 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         KakaoSDK.initSDK(appKey: "4a41de92291c1ff0fbc28dd17b19a9c2")
+        
+        Thread.sleep(forTimeInterval: 1.0)
         // Override point for customization after application launch.
         return true
     }
