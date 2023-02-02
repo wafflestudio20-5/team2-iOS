@@ -88,6 +88,7 @@
 		4E02465A298C06EF0009FEE9 /* ProfileUsecase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileUsecase.swift; sourceTree = "<group>"; };
 		4E152C17296007A5000E9D9A /* TestRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRepository.swift; sourceTree = "<group>"; };
 		4E3C81FB2984F89F0017459C /* DevViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevViewController.swift; sourceTree = "<group>"; };
+		4E3E6B1F298C21470034C544 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		4E44C25C2963ED5D001165AD /* LoginRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRepository.swift; sourceTree = "<group>"; };
 		4E610E962976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionDetailFromWritingAnswerViewController.swift; sourceTree = "<group>"; };
 		4E682773296E75060001FC35 /* tagViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tagViewCell.swift; sourceTree = "<group>"; };
@@ -204,6 +205,7 @@
 		4E8BAE0429559F62001CE4BD /* jisikin-ios */ = {
 			isa = PBXGroup;
 			children = (
+				4E3E6B1F298C21470034C544 /* Secrets.xcconfig */,
 				4E682773296E75060001FC35 /* tagViewCell.swift */,
 				D4AC7174297718E3007C037B /* ImageViewCell.swift */,
 				4E682774296E75060001FC35 /* WritingAnswerViewController.swift */,
@@ -747,7 +749,7 @@
 		};
 		4E8BAE2D29559F63001CE4BD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5C4A7C809D4CC5C4A465821B /* Pods-jisikin-ios.debug.xcconfig */;
+			baseConfigurationReference = 4E3E6B1F298C21470034C544 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = AppIcon;
@@ -755,7 +757,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9AFU52MJH5;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "jisikin-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "지식2n";
@@ -785,7 +787,7 @@
 		};
 		4E8BAE2E29559F63001CE4BD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 705B740DCE4ADE3B3CE9CEA1 /* Pods-jisikin-ios.release.xcconfig */;
+			baseConfigurationReference = 4E3E6B1F298C21470034C544 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = AppIcon;
@@ -793,7 +795,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9AFU52MJH5;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "jisikin-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "지식2n";
