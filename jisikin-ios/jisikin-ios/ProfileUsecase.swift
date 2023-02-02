@@ -22,7 +22,7 @@ class ProfileUsecase{
         }).disposed(by: bag)
     }
     
-    func getProfileImage(url: String, completionhandler: @escaping ((Data) -> Void)){
+    func getProfileImage(url: String, completionhandler: @escaping ((Data?) -> Void)){
         PhotoRepo.getImageData(url: url){
             data in
             print("usecase got image successfully")
@@ -42,7 +42,7 @@ class ProfileUsecase{
         PhotoRepo.deleteImage(url: url)
     }
     
-    func modifyProfile(photoPath: String, username: String, isMale: Bool,completionHandler:@escaping (ProfileRepository.ModifyError)->Void){
+    func modifyProfile(photoPath: String?, username: String, isMale: Bool,completionHandler:@escaping (ProfileRepository.ModifyError)->Void){
         ProfileRepo.putAccount(photoPath: photoPath,username: username, isMale: isMale, completionHandler: {error in
             completionHandler(error)
         }).subscribe(onSuccess: {[weak self] data in

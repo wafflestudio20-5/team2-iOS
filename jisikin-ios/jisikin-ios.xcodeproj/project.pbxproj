@@ -39,6 +39,8 @@
 		4EF4988B298AC17C00ED9FCD /* NanumSquareNeo-eHv.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EF49888298AC17C00ED9FCD /* NanumSquareNeo-eHv.ttf */; };
 		4EF4988C298AC17C00ED9FCD /* NanumSquareNeo-cBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EF49889298AC17C00ED9FCD /* NanumSquareNeo-cBd.ttf */; };
 		4EF4988D298AC17C00ED9FCD /* NanumSquareNeo-bRg.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EF4988A298AC17C00ED9FCD /* NanumSquareNeo-bRg.ttf */; };
+		4EF49890298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EF4988F298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift */; };
+		4EF49892298BBA4A00ED9FCD /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4EF49891298BBA4A00ED9FCD /* Launch Screen.storyboard */; };
 		4EFEB6F5297B84DA00A45392 /* detailTagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */; };
 		4EFEB6F7297B8B5900A45392 /* selfsizingcollectionview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */; };
 		4EFEB6F92982ACA600A45392 /* QuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F82982ACA600A45392 /* QuestionView.swift */; };
@@ -117,6 +119,8 @@
 		4EF49888298AC17C00ED9FCD /* NanumSquareNeo-eHv.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NanumSquareNeo-eHv.ttf"; path = "fonts/NanumSquareNeo-eHv.ttf"; sourceTree = "<group>"; };
 		4EF49889298AC17C00ED9FCD /* NanumSquareNeo-cBd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NanumSquareNeo-cBd.ttf"; path = "fonts/NanumSquareNeo-cBd.ttf"; sourceTree = "<group>"; };
 		4EF4988A298AC17C00ED9FCD /* NanumSquareNeo-bRg.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NanumSquareNeo-bRg.ttf"; path = "fonts/NanumSquareNeo-bRg.ttf"; sourceTree = "<group>"; };
+		4EF4988F298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionTableViewCellForHomeVC.swift; sourceTree = "<group>"; };
+		4EF49891298BBA4A00ED9FCD /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detailTagViewCell.swift; sourceTree = "<group>"; };
 		4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = selfsizingcollectionview.swift; sourceTree = "<group>"; };
 		4EFEB6F82982ACA600A45392 /* QuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionView.swift; sourceTree = "<group>"; };
@@ -229,13 +233,14 @@
 				4E152C17296007A5000E9D9A /* TestRepository.swift */,
 				4E010325296009860060F342 /* TestViewcontroller.swift */,
 				4E9CAE7D296066F300D92F30 /* QuestionTableViewCell.swift */,
+				4EF4988F298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift */,
 				4E44C25C2963ED5D001165AD /* LoginRepository.swift */,
 				4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */,
 				4ECD064D296933BE00E848BF /* QuestionListViewModel.swift */,
 				C03F3CFA297A95490046DDDF /* MyRelatedQuestionListViewModel.swift */,
+				C03F3CF8297A94480046DDDF /* MyRelatedQuestionUsecase.swift */,
 				4ECD06512969567900E848BF /* AnswerRepository.swift */,
 				4ECD0657296BE7B100E848BF /* QuestionAnswerUsecase.swift */,
-				C03F3CF8297A94480046DDDF /* MyRelatedQuestionUsecase.swift */,
 				4ECD064B29692C1900E848BF /* QuestionRepository.swift */,
 				4ECD0659296BFB2700E848BF /* QuestionDetailViewModel.swift */,
 				C03F3CE42976AA2F0046DDDF /* ProfileViewModel.swift */,
@@ -247,6 +252,7 @@
 				4E02465A298C06EF0009FEE9 /* ProfileUsecase.swift */,
 				4EFEB6F82982ACA600A45392 /* QuestionView.swift */,
 				4EFEB6FA2982AD0B00A45392 /* AnswerDetailCell.swift */,
+				4EF49891298BBA4A00ED9FCD /* Launch Screen.storyboard */,
 			);
 			path = "jisikin-ios";
 			sourceTree = "<group>";
@@ -417,6 +423,7 @@
 				4EF4988D298AC17C00ED9FCD /* NanumSquareNeo-bRg.ttf in Resources */,
 				4EF4988B298AC17C00ED9FCD /* NanumSquareNeo-eHv.ttf in Resources */,
 				4EF4988C298AC17C00ED9FCD /* NanumSquareNeo-cBd.ttf in Resources */,
+				4EF49892298BBA4A00ED9FCD /* Launch Screen.storyboard in Resources */,
 				4E8BAE0F29559F63001CE4BD /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -573,6 +580,7 @@
 				4EFEB6F5297B84DA00A45392 /* detailTagViewCell.swift in Sources */,
 				C0D6FC15295F319A00FF0A0C /* MyQAViewController.swift in Sources */,
 				4ECD065A296BFB2700E848BF /* QuestionDetailViewModel.swift in Sources */,
+				4EF49890298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift in Sources */,
 				C03F3CFB297A95490046DDDF /* MyRelatedQuestionListViewModel.swift in Sources */,
 				4E9CAE7C2960001800D92F30 /* QuestionDetailViewController.swift in Sources */,
 				C002B120295AE21B003303B7 /* AnswerViewController.swift in Sources */,

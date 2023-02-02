@@ -15,7 +15,7 @@ struct ProfileRequest:Codable{
     var isMale:Bool?
 }
 class ProfileRepository{
-    let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
+    let baseURL = "https://jisik2n.store"
     struct ModifyError {
         var hadError = false
         var usernameExists = false
@@ -40,7 +40,7 @@ class ProfileRepository{
         }
     }
     
-    func putAccount(photoPath: String, username: String, isMale: Bool,completionHandler:@escaping (ModifyError)->Void) ->Single<ProfileRequest> {
+    func putAccount(photoPath: String?, username: String, isMale: Bool,completionHandler:@escaping (ModifyError)->Void) ->Single<ProfileRequest> {
         print(photoPath, username, isMale)
         let fullURL = URL(string: baseURL + "/api/user/putAccount")
         let queryString: Parameters = [
@@ -56,6 +56,7 @@ class ProfileRepository{
                 switch(response.result){
                 case .success(let data):
                     self.error.usernameExists = false
+                    UserDefaults.standard.set(username,forKey: "username")
                     single(.success(data))
                     completionHandler(self.error)
                 case .failure(let error):

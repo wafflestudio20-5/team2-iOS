@@ -10,6 +10,10 @@ import RxSwift
 import RxCocoa
 
 class MyRelatedQuestionUsecase{
+    var page = 0
+    var isPageEnded = false
+    let ITEM_IN_PAGE = 20
+    
     let bag = DisposeBag()
     let questionRepo = QuestionRepository()
     let answerRepo = AnswerRepository()
@@ -17,22 +21,83 @@ class MyRelatedQuestionUsecase{
     var myRelatedQuestionDetail = BehaviorRelay<QuestionDetailAPI?>(value:nil)
     var answersByQuestionID = BehaviorRelay<[Int:[AnswerAPI]]>(value:[:])
     var answerDetail = BehaviorRelay<[AnswerAPI]>(value:[])
+    
     func getMyQuestions(){
-        questionRepo.getMyQuestions().subscribe(onSuccess: {[weak self]
-            data in
-            self!.myRelatedQuestions.accept(data)
+        page = 0
+        isPageEnded = false
+        questionRepo.getMyQuestions(page: page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            self.myRelatedQuestions.accept(result)
+        }).disposed(by: bag)
+    }
+    func getMoreMyQuestions(){
+        if isPageEnded{
+            return
+        }
+        page += 1
+        questionRepo.getMyQuestions(page:page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            var value = self.myRelatedQuestions.value
+            value.append(contentsOf: result)
+            self.myRelatedQuestions.accept(value)
         }).disposed(by: bag)
     }
     func getMyAnsweredQuestions(){
-        questionRepo.getMyAnsweredQuestions().subscribe(onSuccess: {[weak self]
-            data in
-            self!.myRelatedQuestions.accept(data)
+        page = 0
+        isPageEnded = false
+        questionRepo.getMyAnsweredQuestions(page: page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            self.myRelatedQuestions.accept(result)
+        }).disposed(by: bag)
+    }
+    func getMoreMyAnsweredQuestions(){
+        if isPageEnded{
+            return
+        }
+        page += 1
+        questionRepo.getMyAnsweredQuestions(page:page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            var value = self.myRelatedQuestions.value
+            value.append(contentsOf: result)
+            self.myRelatedQuestions.accept(value)
         }).disposed(by: bag)
     }
     func getMyHeartedQuestions(){
-        questionRepo.getMyHeartedQuestions().subscribe(onSuccess: {[weak self]
-            data in
-            self!.myRelatedQuestions.accept(data)
+        page = 0
+        isPageEnded = false
+        questionRepo.getMyHeartedQuestions(page: page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            self.myRelatedQuestions.accept(result)
+        }).disposed(by: bag)
+    }
+    func getMoreMyHeartedQuestions(){
+        if isPageEnded{
+            return
+        }
+        page += 1
+        questionRepo.getMyHeartedQuestions(page:page).subscribe(onSuccess: {
+            result in
+            if result.count < self.ITEM_IN_PAGE{
+                self.isPageEnded = true
+            }
+            var value = self.myRelatedQuestions.value
+            value.append(contentsOf: result)
+            self.myRelatedQuestions.accept(value)
         }).disposed(by: bag)
     }
     func getQuestionAndAnswersByID(id:Int){

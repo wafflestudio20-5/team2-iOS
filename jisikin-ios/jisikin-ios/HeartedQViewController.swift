@@ -9,6 +9,8 @@ import UIKit
 import RxSwift
 
 class HeartedQViewController: UIViewController {
+    var loading = false
+    
     var bag = DisposeBag()
     var questionTable:UITableView!
     var viewModel = MyRelatedQuestionListViewModel(usecase:MyRelatedQuestionUsecase())
@@ -63,6 +65,14 @@ class HeartedQViewController: UIViewController {
 }
 extension HeartedQViewController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: QuestionAnswerUsecase(), questionID: viewModel.questions.value[indexPath.row].id)), animated: true)
+        let detailViewModel = QuestionDetailViewModel(usecase: QuestionAnswerUsecase(), questionID: viewModel.questions.value[indexPath.row].id)
+        detailViewModel.refresh()
+        navigationController?.pushViewController(QuestionDetailViewController(viewModel: detailViewModel), animated: true)
+    }
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 3 && !loading {
+            loading = true
+            viewModel.getMoreMyHeartedQuestions()
+        }
     }
 }

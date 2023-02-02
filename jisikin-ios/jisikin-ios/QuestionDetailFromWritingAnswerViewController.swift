@@ -38,6 +38,7 @@ class SimpleQuestionView:UIView {
         questionTitleView = UILabel()
         questionTitleView.font = questionTitleView.font.withSize(30)
         questionTitleView.textColor = .black
+        questionTitleView.numberOfLines = 0
         questionTitleView.text = "게임 이름 기억 안남"
      
         questionUserInfo = UILabel()
@@ -47,7 +48,7 @@ class SimpleQuestionView:UIView {
         questionContentView = UILabel()
         questionContentView.text = ""
         questionContentView.numberOfLines = 0
-        questionContentView.lineBreakMode = .byWordWrapping
+        questionContentView.lineBreakMode = .byCharWrapping
         questionContentView.font = questionTitleView.font.withSize(20)
         
         questionTimeView = UILabel()
@@ -231,5 +232,8 @@ class QuestionDetailFromWritingAnswerViewController:UIViewController{
             questionView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             questionView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
         ])
+        
+        questionView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+
     }
 }

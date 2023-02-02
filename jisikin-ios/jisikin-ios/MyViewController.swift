@@ -25,6 +25,7 @@ class MyViewController: UIViewController {
     let QABtn = UIButton()
     let heartedQBtn = UIButton()
     let logInOutBtn = UIButton()
+    let signOutBtn = UIButton()
     
     var viewModel = ProfileViewModel()
     
@@ -37,7 +38,7 @@ class MyViewController: UIViewController {
         self.view.backgroundColor = .white
         
         let profilePhotoSize = CGFloat(45)
-        
+        profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
         profilePhotoView.backgroundColor = .black
         profilePhotoView.layer.cornerRadius = profilePhotoSize
         profilePhotoView.clipsToBounds = true
@@ -79,6 +80,12 @@ class MyViewController: UIViewController {
         logInOutBtn.setTitleColor(.black, for: .normal)
         logInOutBtn.setTitleColor(.black, for: .highlighted)
         
+        signOutBtn.setTitle("회원탈퇴", for: .normal)
+        signOutBtn.setTitleColor(.red, for: .normal)
+        signOutBtn.layer.borderColor = UIColor.gray.cgColor
+        signOutBtn.layer.borderWidth = 1
+        signOutBtn.addTarget(self, action: #selector(showSignOutAlert), for: .touchUpInside)
+        signOutBtn.layer.cornerRadius = 3
         
         if isLogin{
             viewModel.getProfile()
@@ -86,7 +93,6 @@ class MyViewController: UIViewController {
                 profile in
                 if self==nil{return}
                 if let profile{
-                    
                     profile.profileImage.subscribe(onNext:{[weak self] image in
                         if let profileImage = image{
                             if UserDefaults.standard.bool(forKey: "isLogin"){
@@ -103,18 +109,15 @@ class MyViewController: UIViewController {
                                     print("There is no profile image in VC")
                                     self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
                                 }
-                            }else{
-                                self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
                             }
-                            
-                            
+//                            else{
+//                                self!.profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
+//                            }
                         }
                     })
                     self!.nickName.text = profile.username
                 }
             }).disposed(by: bag)
-            
-            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
             profilePhotoView.layer.borderColor = BLUE_COLOR.cgColor
             
             tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapModifyProfileBtn))
@@ -139,7 +142,6 @@ class MyViewController: UIViewController {
             logInOutBtn.removeTarget(nil, action: nil, for: .allEvents)
             logInOutBtn.addTarget(self, action: #selector(onTapLogOutBtn), for: .touchUpInside)
         }else{
-            profilePhotoView.image = UIImage(named:"DefaultProfilePhoto")
             profilePhotoView.layer.borderColor = .none
             
             tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapLogInBtn))
@@ -194,6 +196,16 @@ class MyViewController: UIViewController {
             logInOutBtn.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor, constant: 120),
             logInOutBtn.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 180),//180
         ])
+        
+        if isLogin{
+            view.addSubview(signOutBtn)
+            signOutBtn.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                signOutBtn.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                signOutBtn.leftAnchor.constraint(equalTo: QABtn.leftAnchor),
+                signOutBtn.rightAnchor.constraint(equalTo: logInOutBtn.rightAnchor)
+            ])
+        }
     }
 
     
@@ -232,11 +244,9 @@ class MyViewController: UIViewController {
     }
     @objc
     func onTapLogOutBtn() {
-        
-        LoginRepo.logout(completionHandler: { completionHandler in
+        LoginRepo.logout(completionHandler: { [weak self] completionHandler in
             if(completionHandler == "success"){
-                UserDefaults.standard.set(false, forKey: "isLogin")
-                UserDefaults.standard.removeObject(forKey: "profileImage")
+                self!.logOut()
             }
             
             else {
@@ -245,16 +255,47 @@ class MyViewController: UIViewController {
                 
                 errorAlert.addAction(errorAction)
                 
-                self.present(errorAlert, animated: false)
+                self!.present(errorAlert, animated: false)
             }
             
-            self.loadView()
+            self!.loadView()
         })
     }
     @objc
     func onTapLogInBtn() {
         let vc = LoginViewController()
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+    @objc
+    func showSignOutAlert(){
+         let signOutAction = UIAlertAction(title:"탈퇴",style: .default,handler: {[weak self]
+             setAction in
+             self!.LoginRepo.signOut(completionHandler: { [weak self] completionHandler in
+                 if(completionHandler == "success"){
+                     self!.logOut()
+                 }
+                 
+                 else {
+                     let errorAlert = UIAlertController(title: nil, message: "회원탈퇴 실패", preferredStyle: .alert)
+                     let errorAction = UIAlertAction(title: "확인", style:UIAlertAction.Style.default)
+                     
+                     errorAlert.addAction(errorAction)
+                     
+                     self!.present(errorAlert, animated: false)
+                 }
+                 
+                 self!.loadView()
+             })
+         })
+        let cancelAction = UIAlertAction(title:"취소",style:.default)
+        let alert = UIAlertController(title:"회원탈퇴",message: "탈퇴를 하면 동일한 계정으로 재가입할 수 없습니다. 정말로 탈퇴를 진행하시겠습니까?",preferredStyle: .alert)
+        alert.addAction(cancelAction)
+        alert.addAction(signOutAction)
+        self.present(alert,animated: true)
+      }
+    func logOut(){
+        UserDefaults.standard.set(false, forKey: "isLogin")
+        UserDefaults.standard.removeObject(forKey: "profileImage")
     }
     
 

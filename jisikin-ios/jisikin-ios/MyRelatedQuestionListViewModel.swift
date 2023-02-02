@@ -10,11 +10,12 @@ import RxSwift
 import RxCocoa
 struct MyRelatedQuestionListModel{
     var title:String
+    var content:String
     var answerCount:Int?
     var createdAt:String?
     var id:Int
     static func fromQuestionAPI(questionAPI:MyRelatedQuestionResponse)->MyRelatedQuestionListModel{
-        return MyRelatedQuestionListModel(title:questionAPI.title, answerCount:questionAPI.answerCount, createdAt: convertTimeFormat(time: questionAPI.createdAt),id:questionAPI.id)
+        return MyRelatedQuestionListModel(title:questionAPI.title, content: questionAPI.content, answerCount:questionAPI.answerCount, createdAt: convertTimeFormat(time: questionAPI.createdAt),id:questionAPI.id)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
@@ -51,13 +52,22 @@ class MyRelatedQuestionListViewModel{
     func getMyQuestions(){
         usecase.getMyQuestions()
     }
+    func getMoreMyQuestions(){
+        usecase.getMoreMyQuestions()
+    }
     
     func getMyAnsweredQuestions(){
         usecase.getMyAnsweredQuestions()
     }
+    func getMoreMyAnsweredQuestions(){
+        usecase.getMoreMyAnsweredQuestions()
+    }
     
     func getMyHeartedQuestions(){
         usecase.getMyHeartedQuestions()
+    }
+    func getMoreMyHeartedQuestions(){
+        usecase.getMoreMyHeartedQuestions()
     }
     
 }

@@ -16,9 +16,10 @@ struct QuestionListModel{
     var answerCount:Int
     var questionLikeCount:Int
     var createdAt:String
-    
+    var questionTag:[String]
+    var photo:String?
     static func fromQuestionAPI(questionAPI:QuestionSearchAPI)->QuestionListModel{
-        return QuestionListModel(questionId: questionAPI.questionId, title: questionAPI.title, content: questionAPI.content, answerContent: questionAPI.answerContent, answerCount: questionAPI.answerCount, questionLikeCount: questionAPI.questionLikeCount,createdAt:convertTimeFormat(time: questionAPI.questionCreatedAt))
+        return QuestionListModel(questionId: questionAPI.questionId, title: questionAPI.title, content: questionAPI.content, answerContent: questionAPI.answerContent, answerCount: questionAPI.answerCount, questionLikeCount: questionAPI.questionLikeCount,createdAt:convertTimeFormat(time: questionAPI.questionCreatedAt), questionTag: questionAPI.questionTag,photo: questionAPI.photo)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
@@ -54,12 +55,15 @@ class QuestionListViewModel{
     func getQuestionsByDate(){
         usecase.getQuestionsByDate()
     }
-    func getMoreQUestionsByDate(){
+    func getMoreQuestionsByDate(){
         usecase.getMoreQuestionsByDate()
     }
     
     func searchQuestions(keyword:String){
         usecase.searchQuestions(keyword: keyword)
+    }
+    func searchMoreQuestions(keyword:String){
+        usecase.searchMoreQuestions(keyword: keyword)
     }
     
     func postNewQuestion(titleText: String, contentText: String, tag: [String], photos: [UIImage]) {
@@ -67,10 +71,24 @@ class QuestionListViewModel{
         usecase.postNewQuestion(titleText: titleText, contentText: contentText, tag: tag, photos: photos)
     }
     
+    func editQuestion(questionID: Int, titleText: String, contentText: String, tag: [String], photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        usecase.editQuestion(questionID: questionID, titleText: titleText, contentText: contentText, tag: tag, photos: photos){
+            result in
+            completionhandler(result)
+        }
+    }
+    
     func postNewAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
         usecase.postNewAnswer(id: id, contentText: contentText, photos: photos){
             result in
           completionhandler(result)
+        }
+    }
+    
+    func editAnswer(id: Int, contentText: String, photos: [UIImage], completionhandler: @escaping ((String) -> Void)) {
+        usecase.editAnswer(id: id, contentText: contentText, photos: photos){
+            result in
+            completionhandler(result)
         }
     }
 }

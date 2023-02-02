@@ -1,20 +1,27 @@
+//
+//  QuestoinTableViewCellForHomeVC.swift
+//  jisikin-ios
+//
+//  Created by Chaehyun Park on 2023/02/02.
+//
+
 import UIKit
 
-class QuestionTableViewCell:UITableViewCell{
+class QuestionTableViewCellForHomeVC:UITableViewCell{
     
     static let ID = "QuestionTableViewCell"
     
     var questionTitleView:UILabel!
     var questionContentView:UILabel!
     var postedTimeView:UILabel!
-    var answerNumberView:UILabel!
-    var likeNumberView:UILabel!
-    var lineBetweenTimeAndAnswerNumber:UIView!
-    var lineBetweenAnswerNumberAndLikeNumber:UIView!
+    //var answerNumberView:UILabel!
+    //var likeNumberView:UILabel!
+    //var lineBetweenTimeAndAnswerNumber:UIView!
+    //var lineBetweenAnswerNumberAndLikeNumber:UIView!
     var lineAtBottom:UIView!
-    var lineAtBottom2:UIView!
+    //var lineAtBottom2:UIView!
     var lineAtTop:UIView!
-    var imagePreview:UIImageView!
+    //var imagePreview:UIImageView!
     var imageWidthActiveConstraint:NSLayoutConstraint!
     var imageWidthInActiveConstraint:NSLayoutConstraint!
     var titleViewTrailingImageConstant:NSLayoutConstraint!
@@ -24,6 +31,9 @@ class QuestionTableViewCell:UITableViewCell{
         selectionStyle = .none
         setLayout()
         setConstraints()
+        
+        //setNeedsLayout()
+        //contentView.layoutIfNeeded()
     }
     
     required init?(coder: NSCoder) {
@@ -46,13 +56,14 @@ class QuestionTableViewCell:UITableViewCell{
         questionContentView.setContentHuggingPriority(.required, for: .vertical)
         postedTimeView = UILabel()
         postedTimeView.textColor = .gray
-       // postedTimeView.textColor = UIColor(red: 147/255, green: 147/255, blue: 147/255, alpha: 1)
+        postedTimeView.textColor = UIColor(red: 147/255, green: 147/255, blue: 147/255, alpha: 1)
         postedTimeView.textColor = .init(red: 137/255, green: 136/255, blue: 137/255, alpha: 1)
         postedTimeView.setContentHuggingPriority(.required, for: .vertical)
         postedTimeView.font = postedTimeView.font.withSize(12)
-        lineBetweenTimeAndAnswerNumber = UIView()
+        /*lineBetweenTimeAndAnswerNumber = UIView()
         lineBetweenTimeAndAnswerNumber.backgroundColor = UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
-        
+        */
+        /*
         answerNumberView = UILabel()
         answerNumberView.textAlignment = .center
         answerNumberView.textColor = .init(red: 111/255, green: 111/255, blue: 111/255, alpha: 1)
@@ -67,39 +78,41 @@ class QuestionTableViewCell:UITableViewCell{
         
         lineBetweenAnswerNumberAndLikeNumber = UIView()
         lineBetweenAnswerNumberAndLikeNumber.backgroundColor = UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
+        */
         
         lineAtBottom = UIView()
         lineAtBottom.backgroundColor = UIColor(red: 230/255.0, green: 230/255.0, blue: 230/255.0, alpha: 1)
-        lineAtBottom2 = UIView()
-        lineAtBottom2.backgroundColor = UIColor(red: 235/255.0, green: 235/255.0, blue: 235/255.0, alpha: 1)
+        //lineAtBottom2 = UIView()
+        //lineAtBottom2.backgroundColor = UIColor(red: 235/255.0, green: 235/255.0, blue: 235/255.0, alpha: 1)*/
         lineAtTop = UIView()
         lineAtTop.backgroundColor = UIColor(red: 241/255.0, green: 241/255.0, blue: 241/255.0, alpha: 1)
-        imagePreview = UIImageView()
+        /*imagePreview = UIImageView()
         imagePreview.contentMode = .scaleAspectFill
         imagePreview.layer.masksToBounds = true
         imagePreview.backgroundColor = .systemTeal
+        */
         
         questionTitleView.translatesAutoresizingMaskIntoConstraints = false
         questionContentView.translatesAutoresizingMaskIntoConstraints = false
         postedTimeView.translatesAutoresizingMaskIntoConstraints = false
-        lineBetweenTimeAndAnswerNumber.translatesAutoresizingMaskIntoConstraints = false
-        answerNumberView.translatesAutoresizingMaskIntoConstraints = false
-        lineBetweenAnswerNumberAndLikeNumber.translatesAutoresizingMaskIntoConstraints = false
-        likeNumberView.translatesAutoresizingMaskIntoConstraints = false
+        //lineBetweenTimeAndAnswerNumber.translatesAutoresizingMaskIntoConstraints = false
+        //answerNumberView.translatesAutoresizingMaskIntoConstraints = false
+        //lineBetweenAnswerNumberAndLikeNumber.translatesAutoresizingMaskIntoConstraints = false
+        //likeNumberView.translatesAutoresizingMaskIntoConstraints = false
         lineAtBottom.translatesAutoresizingMaskIntoConstraints = false
-        lineAtBottom2.translatesAutoresizingMaskIntoConstraints = false
-        lineAtTop.translatesAutoresizingMaskIntoConstraints = false
-        imagePreview.translatesAutoresizingMaskIntoConstraints = false
+        //lineAtBottom2.translatesAutoresizingMaskIntoConstraints = false
+        //lineAtTop.translatesAutoresizingMaskIntoConstraints = false
+        //imagePreview.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(questionTitleView)
         contentView.addSubview(questionContentView)
         contentView.addSubview(postedTimeView)
-        contentView.addSubview(lineBetweenTimeAndAnswerNumber)
-        contentView.addSubview(answerNumberView)
-        contentView.addSubview(lineBetweenAnswerNumberAndLikeNumber)
-        contentView.addSubview(likeNumberView)
+        //contentView.addSubview(lineBetweenTimeAndAnswerNumber)
+        //contentView.addSubview(answerNumberView)
+        //contentView.addSubview(lineBetweenAnswerNumberAndLikeNumber)
+        //contentView.addSubview(likeNumberView)
         contentView.addSubview(lineAtBottom)
-        contentView.addSubview(lineAtBottom2)
-        contentView.addSubview(imagePreview)
+        //contentView.addSubview(lineAtBottom2)
+        //contentView.addSubview(imagePreview)
         contentView.addSubview(lineAtTop)
     }
     func setConstraints(){
@@ -111,26 +124,26 @@ class QuestionTableViewCell:UITableViewCell{
         ])
         NSLayoutConstraint.activate([
             questionTitleView.topAnchor.constraint(equalTo: lineAtTop.bottomAnchor,constant:10.0),
-            questionTitleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 20.0)
+            questionTitleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 20.0),
+            questionTitleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20.0)
                         
         ])
         NSLayoutConstraint.activate([
             questionContentView.topAnchor.constraint(equalTo: questionTitleView.bottomAnchor,constant: 5.0),
             questionContentView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor),
             questionContentView.trailingAnchor.constraint(equalTo: questionTitleView.trailingAnchor)
-            
         ])
         NSLayoutConstraint.activate([
             postedTimeView.topAnchor.constraint(equalTo: questionContentView.bottomAnchor,constant: 5.0),
             postedTimeView.leadingAnchor.constraint(equalTo: questionTitleView.leadingAnchor)
         ])
-        NSLayoutConstraint.activate([
+        /*NSLayoutConstraint.activate([
             lineBetweenTimeAndAnswerNumber.topAnchor.constraint(equalTo: postedTimeView.bottomAnchor,constant: 5.0),
             lineBetweenTimeAndAnswerNumber.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             lineBetweenTimeAndAnswerNumber.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             lineBetweenTimeAndAnswerNumber.heightAnchor.constraint(equalToConstant: 1.0)
-        ])
-        NSLayoutConstraint.activate([
+        ])*/
+       /*NSLayoutConstraint.activate([
             answerNumberView.topAnchor.constraint(equalTo: lineBetweenTimeAndAnswerNumber.bottomAnchor),
             answerNumberView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
         
@@ -149,15 +162,17 @@ class QuestionTableViewCell:UITableViewCell{
             likeNumberView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor),
             likeNumberView.bottomAnchor.constraint(equalTo: answerNumberView.bottomAnchor),
             likeNumberView.widthAnchor.constraint(equalTo: answerNumberView.widthAnchor)
-        ])
+        ])*/
+        
         NSLayoutConstraint.activate([
-            lineAtBottom.topAnchor.constraint(equalTo: answerNumberView.bottomAnchor),
+            lineAtBottom.topAnchor.constraint(equalTo: postedTimeView.bottomAnchor,constant: 5.0),
             lineAtBottom.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
             lineAtBottom.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor),
-            lineAtBottom.heightAnchor.constraint(equalToConstant: 2.0),
-           
+            lineAtBottom.heightAnchor.constraint(equalToConstant: 1.0),
+            lineAtBottom.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor)
+
         ])
-        NSLayoutConstraint.activate([
+        /*NSLayoutConstraint.activate([
             lineAtBottom2.topAnchor.constraint(equalTo: lineAtBottom.bottomAnchor),
             lineAtBottom2.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
             lineAtBottom2.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor),
@@ -170,32 +185,26 @@ class QuestionTableViewCell:UITableViewCell{
             imagePreview.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor,constant: -20.0),
            
             
-        ])
+        ])*/
+        /*
         imageWidthActiveConstraint = imagePreview.widthAnchor.constraint(equalTo: imagePreview.heightAnchor)
         imageWidthActiveConstraint.isActive = true
         imageWidthInActiveConstraint = imagePreview.widthAnchor.constraint(equalToConstant: 0)
         imageWidthInActiveConstraint.isActive = false
         titleViewTrailingImageConstant = questionTitleView.trailingAnchor.constraint(equalTo: imagePreview.leadingAnchor,constant: -20.0)
-        titleViewTrailingImageConstant.isActive = true
-        titleViewTrailingNoImageConstant = questionTitleView.trailingAnchor.constraint(equalTo: imagePreview.leadingAnchor)
+        titleViewTrailingImageConstant.isActive = true*/
+        //titleViewTrailingNoImageConstant = questionTitleView.trailingAnchor.constraint(equalTo: imagePreview.leadingAnchor)
     }
    
-    func configure(question:QuestionListModel){
+    func configure(question:MyRelatedQuestionListModel){
         questionTitleView.text = question.title
         questionContentView.text = question.content
         postedTimeView.text = question.createdAt
-        let answerNumberText = NSMutableAttributedString()
-        answerNumberText.append(NSAttributedString(string: "답변하기 ", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black]))
-        answerNumberText.append(NSAttributedString(string: "\(question.answerCount)", attributes: [NSAttributedString.Key.foregroundColor: BLUE_COLOR]))
-        answerNumberView.attributedText = answerNumberText
-        let likeNumberText = NSMutableAttributedString()
-        likeNumberText.append(NSAttributedString(string:"좋아요 ", attributes:[NSAttributedString.Key.foregroundColor: UIColor.black]))
-        likeNumberText.append(NSAttributedString(string:"\(question.questionLikeCount)", attributes:[NSAttributedString.Key.foregroundColor: BLUE_COLOR]))
-        likeNumberView.attributedText = likeNumberText
-        configurePhoto(url: question.photo)
         
+        postedTimeView.text = "\(question.createdAt!)\(question.answerCount != nil ? " | 답변 \(question.answerCount!)" : "")"
     }
-    func configurePhoto(url:String?){
+    
+    /*func configurePhoto(url:String?){
         if let url{
             imageWidthInActiveConstraint.isActive = false
             imageWidthActiveConstraint.isActive = true
@@ -212,7 +221,7 @@ class QuestionTableViewCell:UITableViewCell{
         }
         setNeedsLayout()
         contentView.layoutIfNeeded()
-    }
+    }*/
       
     
     

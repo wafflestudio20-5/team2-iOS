@@ -484,7 +484,7 @@ extension UIScrollView {
     }
 }
 
-extension SignupViewController: MyCustomTextFieldDelegate {
+extension SignupViewController: SignupTextFieldDelegate {
     func doneButtonPressed() {
         //
     }
@@ -516,14 +516,14 @@ extension SignupViewController: MyCustomTextFieldDelegate {
     }
 }
 
-protocol MyCustomTextFieldDelegate: AnyObject {
+protocol SignupTextFieldDelegate: AnyObject {
     func doneButtonPressed()
     func arrowDownPressed()
     func arrowUpPressed()
 }
 
 class TextFieldWithPaddingForSignup: UITextField {
-    weak var customTextFieldDelegate: MyCustomTextFieldDelegate?
+    weak var customTextFieldDelegate: SignupTextFieldDelegate?
     
     var textPadding = UIEdgeInsets(
         top: 10,

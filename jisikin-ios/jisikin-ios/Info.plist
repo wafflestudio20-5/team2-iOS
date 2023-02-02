@@ -48,12 +48,5 @@
 			</array>
 		</dict>
 	</dict>
-	<key>UILaunchScreen</key>
-	<dict>
-		<key>UIColorName</key>
-		<string>MainColor</string>
-		<key>UIImageName</key>
-		<string>TextLogoInverted</string>
-	</dict>
 </dict>
 </plist>

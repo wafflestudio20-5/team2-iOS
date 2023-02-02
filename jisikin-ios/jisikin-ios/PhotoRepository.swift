@@ -9,10 +9,19 @@ import Foundation
 import Alamofire
 import RxSwift
 class PhotoRepository{
-    let baseURL = "http://jisik2n.ap-northeast-2.elasticbeanstalk.com"
+    let baseURL = "https://jisik2n.store"
     var isError = false
     
     func uploadImage(image: UIImage, completionhandler: @escaping (String) -> Void) {
+//        if let data = image.jpegData(compressionQuality: 1){
+//            print("There were \(data.count) bytes")
+//            let bcf = ByteCountFormatter()
+//            bcf.allowedUnits = [.useMB] // optional: restricts the units to MB only
+//            bcf.countStyle = .file
+//            let string = bcf.string(fromByteCount: Int64(data.count))
+//            print("formatted result: \(string)")
+//        }
+        
         let fullURL = URL(string: baseURL + "/api/photo")
         
         let queryString: Parameters = [
@@ -38,11 +47,8 @@ class PhotoRepository{
         }
     }
     
-    func deleteImage(url: String){//} -> Single<String>{
-        print("deleteImage에 들어옴")
-        
+    func deleteImage(url: String){
         let fullURL = URL(string: baseURL + "/api/photo")
-        
         let queryString: Parameters = [
             "url": url
         ]
@@ -56,26 +62,9 @@ class PhotoRepository{
                 print("fail to delete image")
             }
         }
-        
-//        return Single<String>.create{single in
-//            AF.request(url, method:.delete).responseString{
-//                response in
-//                switch(response.result){
-//                case .success(let data):
-//                    print("Image Deleted")
-//                    print(data)
-//                    single(.success(data))
-//                case .failure(let error):
-//                    print("fail to delete image")
-//                    single(.failure(error))
-//                }
-//
-//            }
-//            return Disposables.create()
-//        }
     }
     
-    func getImageData(url: String, completionhandler: @escaping (Data) -> Void){
+    func getImageData(url: String, completionhandler: @escaping (Data?) -> Void){
         AF.request(url).responseData { response in
             switch response.result{
                 case .success(let imageData):
@@ -85,7 +74,7 @@ class PhotoRepository{
                     }
                 case .failure(let err):
                     print(err.localizedDescription)
-                    completionhandler(Data())
+//                    completionhandler(nil)
                 }
         }
     }

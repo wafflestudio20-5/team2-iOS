@@ -40,7 +40,7 @@ class AnswerProfileView:UIView{
         recentAnswerTime = UILabel()
         recentAnswerTime.textColor = .gray
         
-        profilePicture = UIImageView(image:UIColor.yellow.image(CGSize(width: 50, height: 50)))
+        profilePicture = UIImageView(image:UIImage(named: "DefaultProfilePhoto"))
         profilePicture.layer.cornerRadius = 25
         profilePicture.clipsToBounds = true
         profilePicture.layer.borderColor = UIColor.clear.cgColor
@@ -81,6 +81,9 @@ class AnswerProfileView:UIView{
         
             profilePicture.kf.setImage(with:URL(string:answer.profileImagePath!)!)
         }
+        else{
+            profilePicture.image = UIImage(named:"DefaultProfilePhoto")
+        }
     }
 }
 class AnswerTableCell:UITableViewCell{
@@ -112,6 +115,7 @@ class AnswerTableCell:UITableViewCell{
     var onAgreeButtonPressed:(()->())?
     var onDisagreeButtonPressed:(()->())?
     var onDeleteButtonPressed:(()->())?
+    var onEditButtonPressed:(()->())?
     var onImageLoaded:(()->())?
     
     var lineAtTopHeightConstraint:NSLayoutConstraint!
@@ -140,7 +144,7 @@ class AnswerTableCell:UITableViewCell{
         answerContentView.font = answerContentView.font.withSize(20)
         answerContentView.numberOfLines = 0
         answerContentView.lineBreakMode = .byCharWrapping
-        
+      
         answerTimeView = UILabel()
         answerTimeView.textColor = .lightGray
         
@@ -158,11 +162,11 @@ class AnswerTableCell:UITableViewCell{
         
         answerDeleteButton = UIButton()
         answerDeleteButton.setTitle("삭제", for: .normal)
-        answerDeleteButton.setTitleColor(.black, for: .normal)
+        answerDeleteButton.setTitleColor(.lightGray, for: .normal)
         
         answerEditButton = UIButton()
         answerEditButton.setTitle("수정", for: .normal)
-        answerEditButton.setTitleColor(.black, for: .normal)
+        answerEditButton.setTitleColor(.lightGray, for: .normal)
         answerChoiceButton = UIButton()
         answerChoiceButton.setImage(UIImage(named: "selectedButton"), for: .normal)
         answerChoiceButton.contentMode = .scaleAspectFit
@@ -194,6 +198,7 @@ class AnswerTableCell:UITableViewCell{
         answerChoiceButton.addTarget(self, action: #selector(onSelect), for: .touchDown)
         
         answerDeleteButton.addTarget(self, action: #selector(onDelete), for: .touchDown)
+        answerEditButton.addTarget(self, action: #selector(onEdit), for: .touchDown)
         contentView.addSubview(lineAtTop)
         contentView.addSubview(selectedLabel)
         contentView.addSubview(profile)
@@ -267,7 +272,7 @@ class AnswerTableCell:UITableViewCell{
         NSLayoutConstraint.activate([
             answerDeleteButton.topAnchor.constraint(equalTo: answerTimeView.topAnchor),
             answerDeleteButton.bottomAnchor.constraint(equalTo: answerTimeView.bottomAnchor),
-            answerDeleteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -5.0)
+            answerDeleteButton.trailingAnchor.constraint(equalTo: profile.trailingAnchor)
         ])
         NSLayoutConstraint.activate([
             answerEditButton.topAnchor.constraint(equalTo: answerTimeView.topAnchor),
@@ -298,7 +303,7 @@ class AnswerTableCell:UITableViewCell{
         }
         answerTimeView.text = answer.createdAt
         answerContentView.text = answer.content
-        
+        answerContentView.setLineSpacing(spacing: 4.0)
         profile.configure(answer:answer)
         agreed = answer.userIsAgreed
         agreeNumber = answer.agree
@@ -335,8 +340,7 @@ class AnswerTableCell:UITableViewCell{
                     imageView.widthAnchor.constraint(equalTo:imageView.heightAnchor,multiplier: imageView.image!.size.width/imageView.image!.size.height)
                 ])
                 print("image loaded")
-             
-                
+              
                 self!.onImageLoaded?()
                 
                 
@@ -361,8 +365,8 @@ class AnswerTableCell:UITableViewCell{
         
         if let accessToken = UserDefaults.standard.string(forKey: "accessToken"){
             let username = UserDefaults.standard.string(forKey: "username")!
-            answerEditButton.isHidden =  username != answer.username || answer.selected
-            answerDeleteButton.isHidden =  username != answer.username || answer.selected
+            answerEditButton.isHidden =  username != answer.username || question!.close
+            answerDeleteButton.isHidden =  username != answer.username || question!.close
             answerChoiceButton.isHidden = question!.close || username != question!.username
         }
         else{
@@ -390,6 +394,9 @@ class AnswerTableCell:UITableViewCell{
     }
     @objc func onDelete(){
         onDeleteButtonPressed?()
+    }
+    @objc func onEdit(){
+        onEditButtonPressed?()
     }
     func pressAgree(){
         if agreed == true{
