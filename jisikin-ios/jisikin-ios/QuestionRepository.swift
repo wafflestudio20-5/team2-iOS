@@ -301,6 +301,47 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
+    
+    func getRandomQuestionID()->Single<QuestionDetailAPI>{
+        let fullURL = URL(string: baseURL + "/api/question/random")
+        return Single<QuestionDetailAPI>.create{
+            single in
+            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:QuestionDetailAPI.self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var v = data
+                 
+                    single(.success(v))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+
+    func getAdminQuestionID()->Single<QuestionDetailAPI>{
+        let fullURL = URL(string: baseURL + "/api/question/admin")
+        return Single<QuestionDetailAPI>.create{
+            single in
+            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:QuestionDetailAPI.self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var v = data
+                 
+                    single(.success(v))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    
     func searchQuestions(keyword:String, page:Int)->Single<[QuestionSearchAPI]>{
         let fullURL = URL(string: baseURL + "/api/question/search")
         let parameters = [

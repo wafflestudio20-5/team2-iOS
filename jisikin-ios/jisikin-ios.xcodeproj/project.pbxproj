@@ -10,7 +10,9 @@
 		12B383F79502CEE8511EAE7D /* Pods_jisikin_ios_jisikin_iosUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D669D50969F68A07EFBE6C2 /* Pods_jisikin_ios_jisikin_iosUITests.framework */; };
 		4E010326296009860060F342 /* TestViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E010325296009860060F342 /* TestViewcontroller.swift */; };
 		4E01E17E296D23C300B8EFD2 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E01E17D296D23C300B8EFD2 /* HomeViewController.swift */; };
+		4E02465B298C06EF0009FEE9 /* ProfileUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E02465A298C06EF0009FEE9 /* ProfileUsecase.swift */; };
 		4E152C18296007A5000E9D9A /* TestRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E152C17296007A5000E9D9A /* TestRepository.swift */; };
+		4E3C81FC2984F89F0017459C /* DevViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3C81FB2984F89F0017459C /* DevViewController.swift */; };
 		4E44C25D2963ED5D001165AD /* LoginRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E44C25C2963ED5D001165AD /* LoginRepository.swift */; };
 		4E610E972976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E610E962976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift */; };
 		4E682775296E75060001FC35 /* tagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E682773296E75060001FC35 /* tagViewCell.swift */; };
@@ -34,6 +36,9 @@
 		4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */; };
 		4ED26AC8295F0D670034F1A7 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */; };
 		4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */; };
+		4EF4988B298AC17C00ED9FCD /* NanumSquareNeo-eHv.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EF49888298AC17C00ED9FCD /* NanumSquareNeo-eHv.ttf */; };
+		4EF4988C298AC17C00ED9FCD /* NanumSquareNeo-cBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EF49889298AC17C00ED9FCD /* NanumSquareNeo-cBd.ttf */; };
+		4EF4988D298AC17C00ED9FCD /* NanumSquareNeo-bRg.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EF4988A298AC17C00ED9FCD /* NanumSquareNeo-bRg.ttf */; };
 		4EF49890298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EF4988F298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift */; };
 		4EF49892298BBA4A00ED9FCD /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4EF49891298BBA4A00ED9FCD /* Launch Screen.storyboard */; };
 		4EFEB6F5297B84DA00A45392 /* detailTagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */; };
@@ -47,7 +52,6 @@
 		C002B122295AE228003303B7 /* QuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B121295AE228003303B7 /* QuestionViewController.swift */; };
 		C002B124295AE236003303B7 /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C002B123295AE236003303B7 /* MyViewController.swift */; };
 		C03F3CE52976AA2F0046DDDF /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CE42976AA2F0046DDDF /* ProfileViewModel.swift */; };
-		C03F3CE72976AB510046DDDF /* ProfileUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CE62976AB510046DDDF /* ProfileUsecase.swift */; };
 		C03F3CEB2976AD4A0046DDDF /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CEA2976AD4A0046DDDF /* ProfileRepository.swift */; };
 		C03F3CF52977A4070046DDDF /* PhotoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CF42977A4070046DDDF /* PhotoRepository.swift */; };
 		C03F3CF9297A94480046DDDF /* MyRelatedQuestionUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03F3CF8297A94480046DDDF /* MyRelatedQuestionUsecase.swift */; };
@@ -81,7 +85,9 @@
 		489CD149E57C0EA9C5D9B4C4 /* Pods_jisikin_iosTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_jisikin_iosTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E010325296009860060F342 /* TestViewcontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewcontroller.swift; sourceTree = "<group>"; };
 		4E01E17D296D23C300B8EFD2 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		4E02465A298C06EF0009FEE9 /* ProfileUsecase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileUsecase.swift; sourceTree = "<group>"; };
 		4E152C17296007A5000E9D9A /* TestRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRepository.swift; sourceTree = "<group>"; };
+		4E3C81FB2984F89F0017459C /* DevViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevViewController.swift; sourceTree = "<group>"; };
 		4E44C25C2963ED5D001165AD /* LoginRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRepository.swift; sourceTree = "<group>"; };
 		4E610E962976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionDetailFromWritingAnswerViewController.swift; sourceTree = "<group>"; };
 		4E682773296E75060001FC35 /* tagViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tagViewCell.swift; sourceTree = "<group>"; };
@@ -110,6 +116,9 @@
 		4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
+		4EF49888298AC17C00ED9FCD /* NanumSquareNeo-eHv.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NanumSquareNeo-eHv.ttf"; path = "fonts/NanumSquareNeo-eHv.ttf"; sourceTree = "<group>"; };
+		4EF49889298AC17C00ED9FCD /* NanumSquareNeo-cBd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NanumSquareNeo-cBd.ttf"; path = "fonts/NanumSquareNeo-cBd.ttf"; sourceTree = "<group>"; };
+		4EF4988A298AC17C00ED9FCD /* NanumSquareNeo-bRg.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NanumSquareNeo-bRg.ttf"; path = "fonts/NanumSquareNeo-bRg.ttf"; sourceTree = "<group>"; };
 		4EF4988F298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionTableViewCellForHomeVC.swift; sourceTree = "<group>"; };
 		4EF49891298BBA4A00ED9FCD /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detailTagViewCell.swift; sourceTree = "<group>"; };
@@ -128,7 +137,6 @@
 		C002B121295AE228003303B7 /* QuestionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewController.swift; sourceTree = "<group>"; };
 		C002B123295AE236003303B7 /* MyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
 		C03F3CE42976AA2F0046DDDF /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
-		C03F3CE62976AB510046DDDF /* ProfileUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUsecase.swift; sourceTree = "<group>"; };
 		C03F3CEA2976AD4A0046DDDF /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
 		C03F3CF42977A4070046DDDF /* PhotoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoRepository.swift; sourceTree = "<group>"; };
 		C03F3CF8297A94480046DDDF /* MyRelatedQuestionUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRelatedQuestionUsecase.swift; sourceTree = "<group>"; };
@@ -204,6 +212,7 @@
 				4E8BAE0729559F62001CE4BD /* SceneDelegate.swift */,
 				C002B11D295AE1DA003303B7 /* TabBarViewController.swift */,
 				4E01E17D296D23C300B8EFD2 /* HomeViewController.swift */,
+				4E3C81FB2984F89F0017459C /* DevViewController.swift */,
 				C002B11F295AE21B003303B7 /* AnswerViewController.swift */,
 				4E9CAE752960001800D92F30 /* plainSegmentedControl.swift */,
 				4E9CAE782960001800D92F30 /* QuestionDetailViewController.swift */,
@@ -218,6 +227,9 @@
 				4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */,
 				4E8BAE0E29559F63001CE4BD /* Assets.xcassets */,
 				4E8BAE1329559F63001CE4BD /* Info.plist */,
+				4EF4988A298AC17C00ED9FCD /* NanumSquareNeo-bRg.ttf */,
+				4EF49889298AC17C00ED9FCD /* NanumSquareNeo-cBd.ttf */,
+				4EF49888298AC17C00ED9FCD /* NanumSquareNeo-eHv.ttf */,
 				4E152C17296007A5000E9D9A /* TestRepository.swift */,
 				4E010325296009860060F342 /* TestViewcontroller.swift */,
 				4E9CAE7D296066F300D92F30 /* QuestionTableViewCell.swift */,
@@ -232,12 +244,12 @@
 				4ECD064B29692C1900E848BF /* QuestionRepository.swift */,
 				4ECD0659296BFB2700E848BF /* QuestionDetailViewModel.swift */,
 				C03F3CE42976AA2F0046DDDF /* ProfileViewModel.swift */,
-				C03F3CE62976AB510046DDDF /* ProfileUsecase.swift */,
 				C03F3CF42977A4070046DDDF /* PhotoRepository.swift */,
 				C03F3CEA2976AD4A0046DDDF /* ProfileRepository.swift */,
 				4ECD06612977D76E00E848BF /* JWTInterceptor.swift */,
 				4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */,
 				4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */,
+				4E02465A298C06EF0009FEE9 /* ProfileUsecase.swift */,
 				4EFEB6F82982ACA600A45392 /* QuestionView.swift */,
 				4EFEB6FA2982AD0B00A45392 /* AnswerDetailCell.swift */,
 				4EF49891298BBA4A00ED9FCD /* Launch Screen.storyboard */,
@@ -408,6 +420,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EF4988D298AC17C00ED9FCD /* NanumSquareNeo-bRg.ttf in Resources */,
+				4EF4988B298AC17C00ED9FCD /* NanumSquareNeo-eHv.ttf in Resources */,
+				4EF4988C298AC17C00ED9FCD /* NanumSquareNeo-cBd.ttf in Resources */,
 				4EF49892298BBA4A00ED9FCD /* Launch Screen.storyboard in Resources */,
 				4E8BAE0F29559F63001CE4BD /* Assets.xcassets in Resources */,
 			);
@@ -537,10 +552,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E3C81FC2984F89F0017459C /* DevViewController.swift in Sources */,
 				4EFEB6F92982ACA600A45392 /* QuestionView.swift in Sources */,
 				4E610E972976565400197149 /* QuestionDetailFromWritingAnswerViewController.swift in Sources */,
 				4EFEB6F7297B8B5900A45392 /* selfsizingcollectionview.swift in Sources */,
 				4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */,
+				4E02465B298C06EF0009FEE9 /* ProfileUsecase.swift in Sources */,
 				C03F3CF52977A4070046DDDF /* PhotoRepository.swift in Sources */,
 				4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */,
 				4E682775296E75060001FC35 /* tagViewCell.swift in Sources */,
@@ -561,7 +578,6 @@
 				C03F3CF9297A94480046DDDF /* MyRelatedQuestionUsecase.swift in Sources */,
 				4ECD064C29692C1900E848BF /* QuestionRepository.swift in Sources */,
 				4EFEB6F5297B84DA00A45392 /* detailTagViewCell.swift in Sources */,
-				C03F3CE72976AB510046DDDF /* ProfileUsecase.swift in Sources */,
 				C0D6FC15295F319A00FF0A0C /* MyQAViewController.swift in Sources */,
 				4ECD065A296BFB2700E848BF /* QuestionDetailViewModel.swift in Sources */,
 				4EF49890298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift in Sources */,

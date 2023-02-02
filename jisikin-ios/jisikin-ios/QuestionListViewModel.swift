@@ -91,6 +91,18 @@ class QuestionListViewModel{
             completionhandler(result)
         }
     }
+    
+    func getRandomQuestionID(completionHandler:@escaping (Int)->Void){
+        usecase.getRandomQuestionAndAnswers(completionHandler: { _ in
+            completionHandler(self.usecase.qid)
+        })
+    }
+    
+    func getAdminQuestionID(completionHandler:@escaping (Int)->Void){
+        usecase.getAdminQuestionAndAnswers(completionHandler: { _ in
+            completionHandler(self.usecase.qid)
+        })
+    }
 }
  
 

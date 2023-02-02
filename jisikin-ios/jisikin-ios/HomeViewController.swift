@@ -71,6 +71,7 @@ class HomeViewController: UIViewController {
         setImageView()
         setMyQuestionView()
         setConstraint()
+
     }
     
     func reloadQuestions() {
@@ -333,16 +334,22 @@ class HomeViewController: UIViewController {
         
         switch tappedImage{
         case randomBanner:
-            let randomInt = Int.random(in: 1..<10)
             let viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
             viewModel.getQuestionsByDate()
-            navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: randomInt)), animated: true)
+            viewModel.getRandomQuestionID(completionHandler: { randomID in
+                self.navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: randomID)), animated: true)
+            })
         case newYearBanner:
-            print("hello new")
+            let viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
+            viewModel.getQuestionsByDate()
+            viewModel.getAdminQuestionID(completionHandler: { questionID in
+                self.navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: questionID)), animated: true)
+            })
         case helpAnswerBanner:
             self.tabBarController?.selectedIndex = 1
         case devBanner:
-            print("hello dev")
+            let vc = DevViewController()
+            navigationController?.pushViewController(vc, animated: true)
         default:
             break
         }

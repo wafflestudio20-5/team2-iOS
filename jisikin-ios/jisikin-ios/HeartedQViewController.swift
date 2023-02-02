@@ -39,7 +39,7 @@ class HeartedQViewController: UIViewController {
         
         questionTable.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            questionTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            questionTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),    
             questionTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             questionTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
             questionTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
