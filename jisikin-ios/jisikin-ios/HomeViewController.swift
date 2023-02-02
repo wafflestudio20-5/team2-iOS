@@ -71,6 +71,7 @@ class HomeViewController: UIViewController {
         setImageView()
         setMyQuestionView()
         setConstraint()
+
     }
     
     func reloadQuestions() {
@@ -245,12 +246,13 @@ class HomeViewController: UIViewController {
         myQuestionTable.delegate = self
     
         myQuestionTable.separatorStyle = UITableViewCell.SeparatorStyle.none
-        myQuestionTable.register(MyRelatedQuestionTableViewCell.self,forCellReuseIdentifier: MyRelatedQuestionTableViewCell.ID)
+        myQuestionTable.register(QuestionTableViewCellForHomeVC.self,forCellReuseIdentifier: QuestionTableViewCellForHomeVC.ID)
         myQuestionTable.refreshControl = UIRefreshControl()
         myQuestionTable.refreshControl?.addTarget(self, action: #selector(onQuestionRefresh), for: .valueChanged)
         
-        viewModel.questions.asObservable().bind(to:myQuestionTable.rx.items(cellIdentifier: MyRelatedQuestionTableViewCell.ID)){index,model,cell in
-            (cell as! MyRelatedQuestionTableViewCell).configure(question:model)
+        viewModel.questions.asObservable().bind(to:myQuestionTable.rx.items(cellIdentifier: QuestionTableViewCellForHomeVC.ID)){index,model,cell in
+            (cell as! QuestionTableViewCellForHomeVC).configure(question:model)
+            
             self.myQuestionCountLabel.text = String(self.myQuestionTable.numberOfRows(inSection: 0))
           
         }.disposed(by: bag)
@@ -332,16 +334,22 @@ class HomeViewController: UIViewController {
         
         switch tappedImage{
         case randomBanner:
-            let randomInt = Int.random(in: 1..<10)
             let viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
             viewModel.getQuestionsByDate()
-            navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: randomInt)), animated: true)
+            viewModel.getRandomQuestionID(completionHandler: { randomID in
+                self.navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: randomID)), animated: true)
+            })
         case newYearBanner:
-            print("hello new")
+            let viewModel = QuestionListViewModel(usecase:QuestionAnswerUsecase())
+            viewModel.getQuestionsByDate()
+            viewModel.getAdminQuestionID(completionHandler: { questionID in
+                self.navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: viewModel.usecase, questionID: questionID)), animated: true)
+            })
         case helpAnswerBanner:
             self.tabBarController?.selectedIndex = 1
         case devBanner:
-            print("hello dev")
+            let vc = DevViewController()
+            navigationController?.pushViewController(vc, animated: true)
         default:
             break
         }

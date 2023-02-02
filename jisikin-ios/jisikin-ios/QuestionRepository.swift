@@ -11,6 +11,7 @@ import RxSwift
 struct MyRelatedQuestionResponse:Codable{
     var id:Int
     var title:String
+    var content:String
     var createdAt:String
     var answerCount:Int?
 }
@@ -22,6 +23,8 @@ struct QuestionSearchAPI:Codable{
     var answerCount:Int
     var questionCreatedAt:String
     var questionLikeCount:Int
+    var questionTag:[String]
+    var photo:String?
 }
 struct QuestionDetailAPI:Codable{
     var id:Int
@@ -48,45 +51,62 @@ final class QuestionRepository{
     func postImage(photos: [UIImage], completionhandler: @escaping ([String]) -> Void) {
         var strImages: [String] = []
         
-        let fullURL2 = URL(string: baseURL + "/api/photo")
-        
-        var i: Int = 0
+        let fullURL2 = URL(string: baseURL + "/api/photo/content")
         
         if photos.count == 0 {
             completionhandler([])
             return
         }
         
-        for image in photos {
+        for _ in 1...photos.count {
+            strImages.append("")
+        }
+        
+        for i in 0...(photos.count - 1) {
             let queryString: Parameters = [
-                "image": image.jpegData(compressionQuality: 1)
+                "order": i
             ]
             
             AF.upload(multipartFormData: { multipartFormData in
                 for (key, value) in queryString {
+                    //print("i = \(i)")
+                    multipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
+                }
+                if let imageData = photos[i].jpegData(compressionQuality: 1) {
                     let uuidName = UUID().uuidString
-                    multipartFormData.append(value as! Data, withName: "\(key)", fileName: "\(uuidName).jpg", mimeType: "image/jpeg")
+                    multipartFormData.append(imageData, withName: "image", fileName: "\(uuidName).jpg", mimeType: "image/jpeg")
                 }
                 
-            }, to: fullURL2!, usingThreshold: UInt64.init(), method: .post, interceptor:JWTInterceptor()).responseString { response in
+            }, to: fullURL2!, usingThreshold: UInt64.init(), method: .post, interceptor:JWTInterceptor()).responseJSON { response in
                 switch(response.result) {
                 case .success(let data):
                     print("이미지 성공")
-                    // print(data)
-                    strImages.append(data)
-                    i += 1
-                    // print("i = " + "\(i)")
-                    // print("photos.count = " + "\(photos.count)")
-                    if i == photos.count {
+                    let imageURL: String = (data as AnyObject).object(forKey: "url")! as! String
+                    let index: Int = (data as AnyObject).object(forKey: "order")! as! Int
+                    
+                    //print("url = \(imageURL)")
+                    //print("index = \(index)")
+                    
+                    strImages[index] = imageURL
+                    
+                    var flag: Bool = true
+                    
+                    for str in strImages {
+                        if str == "" {
+                            flag = false
+                        }
+                    }
+                    
+                    if flag {
                         print("completionhandler")
                         completionhandler(strImages)
                     }
+                    
                 case .failure(let error):
                     print("이미지 실패")
-                    print(error.localizedDescription)
+                    print(String(data: response.data!, encoding: .utf8)!)
                 }
             }
-            
         }
     }
     
@@ -281,6 +301,47 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
+    
+    func getRandomQuestionID()->Single<QuestionDetailAPI>{
+        let fullURL = URL(string: baseURL + "/api/question/random")
+        return Single<QuestionDetailAPI>.create{
+            single in
+            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:QuestionDetailAPI.self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var v = data
+                 
+                    single(.success(v))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+
+    func getAdminQuestionID()->Single<QuestionDetailAPI>{
+        let fullURL = URL(string: baseURL + "/api/question/admin")
+        return Single<QuestionDetailAPI>.create{
+            single in
+            AF.request(fullURL!,method:.get,interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:QuestionDetailAPI.self){
+                response in
+                switch(response.result){
+                case .success(let data):
+                    var v = data
+                 
+                    single(.success(v))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            
+            }
+            return Disposables.create()
+        }
+    }
+    
     func searchQuestions(keyword:String, page:Int)->Single<[QuestionSearchAPI]>{
         let fullURL = URL(string: baseURL + "/api/question/search")
         let parameters = [
@@ -302,11 +363,14 @@ final class QuestionRepository{
         }
     }
     
-    func getMyQuestions()->Single<[MyRelatedQuestionResponse]>{
+    func getMyQuestions(page:Int)->Single<[MyRelatedQuestionResponse]>{
         let fullURL = URL(string: baseURL + "/api/user/myQuestions")
+        let parameters = [
+            "pageNum":page
+        ]
         return Single<[MyRelatedQuestionResponse]>.create{
             single in
-            AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[MyRelatedQuestionResponse].self){
+            AF.request(fullURL!,method:.get,parameters: parameters, interceptor:JWTInterceptor()).validate(statusCode:200..<300).responseDecodable(of:[MyRelatedQuestionResponse].self){
                 response in
                 switch(response.result){
                 case .success(let data):
@@ -320,11 +384,14 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
-    func getMyAnsweredQuestions()->Single<[MyRelatedQuestionResponse]>{
+    func getMyAnsweredQuestions(page:Int)->Single<[MyRelatedQuestionResponse]>{
         let fullURL = URL(string: baseURL + "/api/user/myAnswers/")
+        let parameters = [
+            "pageNum":page
+        ]
         return Single<[MyRelatedQuestionResponse]>.create{
             single in
-            AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
+            AF.request(fullURL!,method:.get, parameters: parameters, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
                 response in
                 switch(response.result){
                 case .success(let data):
@@ -337,11 +404,14 @@ final class QuestionRepository{
             return Disposables.create()
         }
     }
-    func getMyHeartedQuestions()->Single<[MyRelatedQuestionResponse]>{
+    func getMyHeartedQuestions(page:Int)->Single<[MyRelatedQuestionResponse]>{
         let fullURL = URL(string: baseURL + "/api/user/myLikeQuestions")
+        let parameters = [
+            "pageNum":page
+        ]
         return Single<[MyRelatedQuestionResponse]>.create{
             single in
-            AF.request(fullURL!,method:.get, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
+            AF.request(fullURL!,method:.get, parameters: parameters, interceptor:JWTInterceptor()).responseDecodable(of:[MyRelatedQuestionResponse].self){
                 response in
                 switch(response.result){
                 case .success(let data):

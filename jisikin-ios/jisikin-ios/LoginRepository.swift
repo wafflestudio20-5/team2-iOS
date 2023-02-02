@@ -291,7 +291,7 @@ final class LoginRepository {
                                 self.error.uidExists = false
                             }
                             
-                            if(self.errorMessage == "이미 가입한 아이디입니다."){
+                            if(self.errorMessage == "이미 가입한 아이디입니다"){
                                 self.error.deletedUser = false
                                 self.error.usernameExists = false
                                 self.error.uidExists = true

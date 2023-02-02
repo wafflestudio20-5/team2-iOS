@@ -11,6 +11,7 @@ import RxCocoa
 
 class QuestionAnswerUsecase{
     var page = 0
+    var qid = 0
     var isPageEnded = false
     let ITEM_IN_PAGE = 20
     let bag = DisposeBag()
@@ -83,6 +84,32 @@ class QuestionAnswerUsecase{
             data in
             self.answerDetail.accept(data)
         })
+    }
+    
+    func getRandomQuestionAndAnswers(completionHandler:@escaping (String)->Void){
+        questionRepo.getRandomQuestionID().subscribe(onSuccess: {
+            data in
+            self.questionDetail.accept(data)
+            self.qid = data.id
+            self.answerRepo.getAnswersByQuestionID(id: self.qid).subscribe(onSuccess:{
+                data in
+                self.answerDetail.accept(data)
+                completionHandler("success")
+            })
+        }).disposed(by: bag)
+    }
+    
+    func getAdminQuestionAndAnswers(completionHandler:@escaping (String)->Void){
+        questionRepo.getAdminQuestionID().subscribe(onSuccess: {
+            data in
+            self.questionDetail.accept(data)
+            self.qid = data.id
+            self.answerRepo.getAnswersByQuestionID(id: self.qid).subscribe(onSuccess:{
+                data in
+                self.answerDetail.accept(data)
+                completionHandler("success")
+            })
+        }).disposed(by: bag)
     }
     
     func searchQuestions(keyword:String){

@@ -16,9 +16,10 @@ struct QuestionListModel{
     var answerCount:Int
     var questionLikeCount:Int
     var createdAt:String
-    
+    var questionTag:[String]
+    var photo:String?
     static func fromQuestionAPI(questionAPI:QuestionSearchAPI)->QuestionListModel{
-        return QuestionListModel(questionId: questionAPI.questionId, title: questionAPI.title, content: questionAPI.content, answerContent: questionAPI.answerContent, answerCount: questionAPI.answerCount, questionLikeCount: questionAPI.questionLikeCount,createdAt:convertTimeFormat(time: questionAPI.questionCreatedAt))
+        return QuestionListModel(questionId: questionAPI.questionId, title: questionAPI.title, content: questionAPI.content, answerContent: questionAPI.answerContent, answerCount: questionAPI.answerCount, questionLikeCount: questionAPI.questionLikeCount,createdAt:convertTimeFormat(time: questionAPI.questionCreatedAt), questionTag: questionAPI.questionTag,photo: questionAPI.photo)
     }
     static func convertTimeFormat(time:String)->String{
         let dateFormatter = DateFormatter()
@@ -54,7 +55,7 @@ class QuestionListViewModel{
     func getQuestionsByDate(){
         usecase.getQuestionsByDate()
     }
-    func getMoreQUestionsByDate(){
+    func getMoreQuestionsByDate(){
         usecase.getMoreQuestionsByDate()
     }
     
@@ -89,6 +90,18 @@ class QuestionListViewModel{
             result in
             completionhandler(result)
         }
+    }
+    
+    func getRandomQuestionID(completionHandler:@escaping (Int)->Void){
+        usecase.getRandomQuestionAndAnswers(completionHandler: { _ in
+            completionHandler(self.usecase.qid)
+        })
+    }
+    
+    func getAdminQuestionID(completionHandler:@escaping (Int)->Void){
+        usecase.getAdminQuestionAndAnswers(completionHandler: { _ in
+            completionHandler(self.usecase.qid)
+        })
     }
 }
  

@@ -19,15 +19,17 @@ struct ProfileModel{
         if let imageURL = request.profileImage{
             print("User has profile image in server")
             usecase.getProfileImage(url: imageURL){data in
-                profileImage.accept(UIImage(data:data))
+                if let imageData = data{
+                    profileImage.accept(UIImage(data:imageData))
+                }
             }
         }
-        usecase.profilePhoto.asObservable().subscribe(onNext: {data in
-            if let value = data{
-                print("ProfileViewModel got the image")
-                profileImage.accept(UIImage(data:value))
-            }
-        }).disposed(by: DisposeBag())
+//        usecase.profilePhoto.asObservable().subscribe(onNext: {data in
+//            if let value = data{
+//                print("ProfileViewModel got the image")
+//                profileImage.accept(UIImage(data:value))
+//            }
+//        }).disposed(by: DisposeBag())
         return ProfileModel(profileImage: profileImage, username:request.username, isMale:request.isMale)
     }
 }
@@ -61,14 +63,8 @@ class ProfileViewModel{
             }
         }
         else{
-            if let imageURL = usecase.profile.value?.profileImage{
-                self.usecase.modifyProfile(photoPath: imageURL, username: username, isMale: isMale){error in
-                    completionHandler(error)
-                }
-            }else{
-                self.usecase.modifyProfile(photoPath: "", username: username, isMale: isMale){error in
-                    completionHandler(error)
-                }
+            self.usecase.modifyProfile(photoPath: usecase.profile.value?.profileImage, username: username, isMale: isMale){error in
+                completionHandler(error)
             }
         }
     }

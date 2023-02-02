@@ -9,6 +9,8 @@ import UIKit
 import RxSwift
 
 class MyQAViewController: UIViewController{
+    var loading = false
+    
     var bag = DisposeBag()
     var segmentedControl: PlainSegmentedControl!
     var questionTable:UITableView!
@@ -18,14 +20,20 @@ class MyQAViewController: UIViewController{
     {
         super.viewWillAppear(animated)
         
-        self.questionTable.deselectSelectedRow(animated: false)
-        if let segmentedControl{
-            if segmentedControl.selectedSegmentIndex == 0{
-                viewModel.getMyQuestions()
+        if(UserDefaults.standard.bool(forKey: "isLogin")){
+            self.questionTable.deselectSelectedRow(animated: false)
+            if let segmentedControl{
+                if segmentedControl.selectedSegmentIndex == 0{
+                    viewModel.getMyQuestions()
+                }
+                else{
+                    viewModel.getMyAnsweredQuestions()
+                }
             }
-            else{
-                viewModel.getMyAnsweredQuestions()
-            }
+        }
+        
+        else{
+            navigationController?.popViewController(animated: false)
         }
     }
     
@@ -119,7 +127,20 @@ class MyQAViewController: UIViewController{
 }
 extension MyQAViewController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(viewModel.questions.value[indexPath.row].id)
-        navigationController?.pushViewController(QuestionDetailViewController(viewModel: QuestionDetailViewModel(usecase: QuestionAnswerUsecase(), questionID: viewModel.questions.value[indexPath.row].id)), animated: true)
+        let detailViewModel = QuestionDetailViewModel(usecase: QuestionAnswerUsecase(), questionID: viewModel.questions.value[indexPath.row].id)
+        detailViewModel.refresh()
+        navigationController?.pushViewController(QuestionDetailViewController(viewModel: detailViewModel), animated: true)
+    }
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 3 && !loading {
+            loading = true
+            if segmentedControl.selectedSegmentIndex == 0{
+                viewModel.getMoreMyQuestions()
+            }
+            else{
+                viewModel.getMoreMyAnsweredQuestions()
+            }
+        }
     }
 }
+
