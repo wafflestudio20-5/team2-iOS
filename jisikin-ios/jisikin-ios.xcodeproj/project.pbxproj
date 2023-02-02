@@ -34,6 +34,7 @@
 		4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */; };
 		4ED26AC8295F0D670034F1A7 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */; };
 		4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */; };
+		4EF49890298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EF4988F298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift */; };
 		4EFEB6F5297B84DA00A45392 /* detailTagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */; };
 		4EFEB6F7297B8B5900A45392 /* selfsizingcollectionview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */; };
 		4EFEB6F92982ACA600A45392 /* QuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F82982ACA600A45392 /* QuestionView.swift */; };
@@ -108,6 +109,7 @@
 		4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
+		4EF4988F298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionTableViewCellForHomeVC.swift; sourceTree = "<group>"; };
 		4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detailTagViewCell.swift; sourceTree = "<group>"; };
 		4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = selfsizingcollectionview.swift; sourceTree = "<group>"; };
 		4EFEB6F82982ACA600A45392 /* QuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionView.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				4E152C17296007A5000E9D9A /* TestRepository.swift */,
 				4E010325296009860060F342 /* TestViewcontroller.swift */,
 				4E9CAE7D296066F300D92F30 /* QuestionTableViewCell.swift */,
+				4EF4988F298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift */,
 				4E44C25C2963ED5D001165AD /* LoginRepository.swift */,
 				4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */,
 				4ECD064D296933BE00E848BF /* QuestionListViewModel.swift */,
@@ -557,6 +560,7 @@
 				C03F3CE72976AB510046DDDF /* ProfileUsecase.swift in Sources */,
 				C0D6FC15295F319A00FF0A0C /* MyQAViewController.swift in Sources */,
 				4ECD065A296BFB2700E848BF /* QuestionDetailViewModel.swift in Sources */,
+				4EF49890298BA19E00ED9FCD /* QuestionTableViewCellForHomeVC.swift in Sources */,
 				C03F3CFB297A95490046DDDF /* MyRelatedQuestionListViewModel.swift in Sources */,
 				4E9CAE7C2960001800D92F30 /* QuestionDetailViewController.swift in Sources */,
 				C002B120295AE21B003303B7 /* AnswerViewController.swift in Sources */,
