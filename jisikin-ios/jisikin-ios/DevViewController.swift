@@ -10,6 +10,18 @@ import SafariServices
 
 class DevView: UIView {
     
+    let hideInstaButton: Bool
+
+    required init(hideInstaButton: Bool){
+        self.hideInstaButton = hideInstaButton
+        super.init(frame: CGRect.zero)
+        self.commonInit()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     let nameLabel:UILabel = {
         let label = UILabel()
         label.frame = CGRect(x: 0, y: 0, width: 60, height: 25)
@@ -46,8 +58,9 @@ class DevView: UIView {
     let githubButton:UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "GithubLogo"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.contentMode = .scaleAspectFit
-        button.frame = CGRect(x: 270, y: 115, width: 25, height: 25)
+        button.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
         
         return button
     }()
@@ -55,20 +68,11 @@ class DevView: UIView {
     let instaButton:UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "InstaLogo"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.contentMode = .scaleAspectFit
-        button.frame = CGRect(x: 300, y: 115.5, width: 25, height: 25)
+        button.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
         return button
     }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.commonInit()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        self.commonInit()
-    }
     
     private func commonInit(){
         self.backgroundColor = UIColor(displayP3Red: 248/255, green: 245/255, blue: 241/255, alpha: 1)
@@ -102,9 +106,30 @@ class DevView: UIView {
             introLabel.topAnchor.constraint(equalTo: positionLabel.bottomAnchor, constant: 10)
         ])
         
-        NSLayoutConstraint.activate([
-            self.bottomAnchor.constraint(equalTo: self.topAnchor, constant: 150)
-        ])
+        if(hideInstaButton == true){
+            NSLayoutConstraint.activate([
+                githubButton.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -35),
+                githubButton.trailingAnchor.constraint(equalTo: githubButton.leadingAnchor, constant: 25),
+                githubButton.topAnchor.constraint(equalTo: githubButton.bottomAnchor, constant: -25),
+                githubButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10)
+            ])
+        }
+        
+        else{
+            NSLayoutConstraint.activate([
+                githubButton.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -65),
+                githubButton.trailingAnchor.constraint(equalTo: githubButton.leadingAnchor, constant: 25),
+                githubButton.topAnchor.constraint(equalTo: githubButton.bottomAnchor, constant: -25),
+                githubButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10)
+            ])
+            
+            NSLayoutConstraint.activate([
+                instaButton.leadingAnchor.constraint(equalTo: githubButton.trailingAnchor, constant: 5),
+                instaButton.trailingAnchor.constraint(equalTo: instaButton.leadingAnchor, constant: 25),
+                instaButton.topAnchor.constraint(equalTo: instaButton.bottomAnchor, constant: -25),
+                instaButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10)
+            ])
+        }
     }
     
     override var intrinsicContentSize: CGSize {
@@ -120,7 +145,7 @@ class DevViewController: UIViewController {
     var logoImageView = UIImageView()
     var titleLabel = UILabel()
     var subtitleLabel = UILabel()
-    var devViews = [DevView(), DevView(), DevView(), DevView(), DevView(), DevView(), DevView()]
+    var devViews = [DevView(hideInstaButton: false), DevView(hideInstaButton: false), DevView(hideInstaButton: true), DevView(hideInstaButton: false), DevView(hideInstaButton: false), DevView(hideInstaButton: false), DevView(hideInstaButton: false)]
     
     private let verticalStackView: UIStackView = {
         let view: UIStackView = UIStackView()
@@ -177,8 +202,7 @@ class DevViewController: UIViewController {
         devViews[2].introLabel.text = "안녕하세요. ios 개발자 박정헌입니다."
         devViews[2].introLabel.numberOfLines = 0
         devViews[2].instaButton.removeFromSuperview()
-        devViews[2].githubButton.frame = CGRect(x: 300, y: 115, width: 25, height: 25)
-
+        devViews[2].githubButton.translatesAutoresizingMaskIntoConstraints = false
         
         devViews[3].nameLabel.text = "박채현"
         devViews[3].positionLabel.text = "iOS Developer"
