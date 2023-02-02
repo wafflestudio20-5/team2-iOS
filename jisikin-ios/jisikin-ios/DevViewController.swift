@@ -202,7 +202,6 @@ class DevViewController: UIViewController {
         devViews[2].introLabel.text = "안녕하세요. ios 개발자 박정헌입니다."
         devViews[2].introLabel.numberOfLines = 0
         devViews[2].instaButton.removeFromSuperview()
-        devViews[2].githubButton.translatesAutoresizingMaskIntoConstraints = false
         
         devViews[3].nameLabel.text = "박채현"
         devViews[3].positionLabel.text = "iOS Developer"
