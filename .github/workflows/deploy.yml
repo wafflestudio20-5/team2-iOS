@@ -43,6 +43,12 @@ jobs:
           sudo xcode-select -s /Applications/Xcode_${XCODE_VERSION}.app/Contents/Developer
           ls
 
+      - name: Inject secret file dependencies
+        env:
+          SECRETS_CONFIG: ${{ secrets.SECRETS_CONFIG }}
+        run: |
+          echo "$SECRETS_CONFIG" > jisikin-ios/Secrets.xcconfig
+
       - name: Set version number and build number
         run: |
           echo "VERSION_NUMBER=${{ steps.regex.outputs.group2 }}.${{ steps.regex.outputs.group3 }}.${{ steps.regex.outputs.group4 }}" >> $GITHUB_ENV
