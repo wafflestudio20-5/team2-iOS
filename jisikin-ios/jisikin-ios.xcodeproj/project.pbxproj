@@ -34,6 +34,7 @@
 		4ED26AC4295EF59A0034F1A7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */; };
 		4ED26AC8295F0D670034F1A7 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */; };
 		4EE8D1FF2961520700CB6EB5 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */; };
+		4EF49892298BBA4A00ED9FCD /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4EF49891298BBA4A00ED9FCD /* Launch Screen.storyboard */; };
 		4EFEB6F5297B84DA00A45392 /* detailTagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */; };
 		4EFEB6F7297B8B5900A45392 /* selfsizingcollectionview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */; };
 		4EFEB6F92982ACA600A45392 /* QuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFEB6F82982ACA600A45392 /* QuestionView.swift */; };
@@ -108,6 +109,7 @@
 		4ED26AC3295EF59A0034F1A7 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4ED26AC7295F0D670034F1A7 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		4EE8D1FE2961520700CB6EB5 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
+		4EF49891298BBA4A00ED9FCD /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		4EFEB6F4297B84DA00A45392 /* detailTagViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detailTagViewCell.swift; sourceTree = "<group>"; };
 		4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = selfsizingcollectionview.swift; sourceTree = "<group>"; };
 		4EFEB6F82982ACA600A45392 /* QuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionView.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				4EFEB6F6297B8B5900A45392 /* selfsizingcollectionview.swift */,
 				4EFEB6F82982ACA600A45392 /* QuestionView.swift */,
 				4EFEB6FA2982AD0B00A45392 /* AnswerDetailCell.swift */,
+				4EF49891298BBA4A00ED9FCD /* Launch Screen.storyboard */,
 			);
 			path = "jisikin-ios";
 			sourceTree = "<group>";
@@ -402,6 +405,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EF49892298BBA4A00ED9FCD /* Launch Screen.storyboard in Resources */,
 				4E8BAE0F29559F63001CE4BD /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
