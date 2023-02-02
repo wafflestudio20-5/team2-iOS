@@ -245,12 +245,13 @@ class HomeViewController: UIViewController {
         myQuestionTable.delegate = self
     
         myQuestionTable.separatorStyle = UITableViewCell.SeparatorStyle.none
-        myQuestionTable.register(MyRelatedQuestionTableViewCell.self,forCellReuseIdentifier: MyRelatedQuestionTableViewCell.ID)
+        myQuestionTable.register(QuestionTableViewCellForHomeVC.self,forCellReuseIdentifier: QuestionTableViewCellForHomeVC.ID)
         myQuestionTable.refreshControl = UIRefreshControl()
         myQuestionTable.refreshControl?.addTarget(self, action: #selector(onQuestionRefresh), for: .valueChanged)
         
-        viewModel.questions.asObservable().bind(to:myQuestionTable.rx.items(cellIdentifier: MyRelatedQuestionTableViewCell.ID)){index,model,cell in
-            (cell as! MyRelatedQuestionTableViewCell).configure(question:model)
+        viewModel.questions.asObservable().bind(to:myQuestionTable.rx.items(cellIdentifier: QuestionTableViewCellForHomeVC.ID)){index,model,cell in
+            (cell as! QuestionTableViewCellForHomeVC).configure(question:model)
+            
             self.myQuestionCountLabel.text = String(self.myQuestionTable.numberOfRows(inSection: 0))
           
         }.disposed(by: bag)
