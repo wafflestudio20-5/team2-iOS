@@ -42,7 +42,7 @@ class ProfileUsecase{
         PhotoRepo.deleteImage(url: url)
     }
     
-    func modifyProfile(photoPath: String?, username: String, isMale: Bool,completionHandler:@escaping (ProfileRepository.ModifyError)->Void){
+    func modifyProfile(photoPath: String?, username: String, isMale: Bool?,completionHandler:@escaping (ProfileRepository.ModifyError)->Void){
         ProfileRepo.putAccount(photoPath: photoPath,username: username, isMale: isMale, completionHandler: {error in
             completionHandler(error)
         }).subscribe(onSuccess: {[weak self] data in
