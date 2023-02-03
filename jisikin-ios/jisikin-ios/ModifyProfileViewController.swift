@@ -95,10 +95,12 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
                     }
                 })
                 self!.modifyNickNameField.text = profile.username
-                if profile.isMale!{
-                    self!.genderSegment.selectedSegmentIndex = 0
-                }else{
-                    self!.genderSegment.selectedSegmentIndex = 1
+                if let isMale = profile.isMale{
+                    if isMale{
+                        self!.genderSegment.selectedSegmentIndex = 0
+                    }else{
+                        self!.genderSegment.selectedSegmentIndex = 1
+                    }
                 }
             }
         }).disposed(by: bag)
