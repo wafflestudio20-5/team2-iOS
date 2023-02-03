@@ -19,6 +19,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
     
     let defaultProfilePhoto = UIImage(named:"DefaultProfilePhoto")
     var profilePhotoIsModified = false
+    var hasIsMale = false
     
     let profilePhotoLabel = UILabel()
     let profilePhotoView = UIImageView()
@@ -96,6 +97,7 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
                 })
                 self!.modifyNickNameField.text = profile.username
                 if let isMale = profile.isMale{
+                    self!.hasIsMale = true
                     if isMale{
                         self!.genderSegment.selectedSegmentIndex = 0
                     }else{
@@ -234,13 +236,19 @@ class ModifyProfileViewController: UIViewController, UIImagePickerControllerDele
         
         present(alert, animated: true, completion: nil)
     }
+    @objc func indexChanged(_ sender: UISegmentedControl) {
+        hasIsMale = true
+    }
     @objc
     func onTapModifyCancelBtn() {
         self.navigationController?.popViewController(animated: true)
     }
     @objc
     func onTapModifySaveBtn() {
-        var isMale: Bool = (genderSegment.selectedSegmentIndex == 0) ? true : false
+        var isMale: Bool? = nil
+        if hasIsMale{
+            isMale = (genderSegment.selectedSegmentIndex == 0) ? true : false
+        }
         
         if profilePhotoIsModified{
             viewModel.modifyProfile(profileImage: profilePhotoView.image, username: modifyNickNameField.text!, isMale: isMale){ [self] error in

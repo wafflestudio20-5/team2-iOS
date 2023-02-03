@@ -51,7 +51,7 @@ class ProfileViewModel{
         usecase.getProfile()
     }
     
-    func modifyProfile(profileImage: UIImage?, username:String, isMale:Bool, completionHandler:@escaping (ProfileRepository.ModifyError)->Void){
+    func modifyProfile(profileImage: UIImage?, username:String, isMale:Bool?, completionHandler:@escaping (ProfileRepository.ModifyError)->Void){
         if let image = profileImage{
             usecase.uploadImage(image: image){[self] photoPath in
                 self.usecase.modifyProfile(photoPath: photoPath, username: username, isMale: isMale){error in
