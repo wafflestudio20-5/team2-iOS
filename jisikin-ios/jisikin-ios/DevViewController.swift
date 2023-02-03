@@ -323,28 +323,50 @@ class DevViewController: UIViewController {
     }
     
     @objc func tapInstaButton(sender: UIButton) {
-        var url : URL!
-
+        var username : String
         switch sender.tag{
         case 0:
-            url = URL(string: "https://www.instagram.com/26___gyu")
+            username = "26___gyu"
         case 1:
-            url = URL(string: "https://www.instagram.com/lumirevel")
+            username = "lumirevel"
         case 2:
-            url = URL(string: "https://www.instagram.com/")
+            username = ""
         case 3:
-            url = URL(string: "https://www.instagram.com/park_chaehyun")
+            username = "park_chaehyun"
         case 4:
-            url = URL(string: "https://www.instagram.com/whjoon0225")
+            username = "whjoon0225"
         case 5:
-            url = URL(string: "https://www.instagram.com/easy_sleepy")
+            username = "easy_sleepy"
         case 6:
-            url = URL(string: "https://www.instagram.com/cxerrxxieceontox")
+            username = "cxerrxxieceontox"
         default:
-            break
+            username = ""
         }
         
-        self.present(SFSafariViewController(url: url), animated: true, completion: nil)
+        let appURL = URL(string: "instagram://user?username=\(username)")!
+        let webURL = URL(string: "https://instagram.com/\(username)")!
+        
+        if UIApplication.shared.canOpenURL(appURL) {
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.open(appURL, options: [:], completionHandler: nil)
+            }
+            
+            else {
+                UIApplication.shared.openURL(appURL)
+            }
+        }
+        else {
+              // redirect to safari because the user doesn't have Instagram
+            self.present(SFSafariViewController(url: webURL), animated: true, completion: nil)
+
+            /*if #available(iOS 10.0, *) {
+                UIApplication.shared.open(webURL, options: [:], completionHandler: nil)
+            }
+            else {
+                UIApplication.shared.openURL(webURL)
+            }*/
+        }
+        
     }
 }
 

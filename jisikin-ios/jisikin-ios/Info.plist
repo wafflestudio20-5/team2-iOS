@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>KakaoAppKey</key>
-	<string>$(KAKAO_APP_KEY)</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>NanumSquareNeo-eHv.ttf</string>
-		<string>NanumSquareNeo-cBd.ttf</string>
-		<string>NanumSquareNeo-bRg.ttf</string>
-	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -21,8 +13,11 @@
 			</array>
 		</dict>
 	</array>
+	<key>KakaoAppKey</key>
+	<string>$(KAKAO_APP_KEY)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>instagram</string>
 		<string>kakaokompassauth</string>
 		<string>kakaolink</string>
 	</array>
@@ -33,6 +28,12 @@
 		<key>NSAllowsArbitraryLoadsUsageDescription</key>
 		<dict/>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>NanumSquareNeo-eHv.ttf</string>
+		<string>NanumSquareNeo-cBd.ttf</string>
+		<string>NanumSquareNeo-bRg.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
