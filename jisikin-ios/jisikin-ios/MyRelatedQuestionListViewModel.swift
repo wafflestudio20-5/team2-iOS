@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 struct MyRelatedQuestionListModel{
     var title:String
-    var content:String
+    var content:String?
     var answerCount:Int?
     var createdAt:String?
     var id:Int
